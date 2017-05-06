@@ -25,8 +25,9 @@ public class Board implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Size(min = 1)
-    @Column(name = "name")
+    @NotNull
+    @Size(min = 3, max = 48)
+    @Column(name = "name", length = 48, nullable = false)
     private String name;
 
     @ManyToOne(optional = false)

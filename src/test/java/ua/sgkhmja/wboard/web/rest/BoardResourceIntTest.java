@@ -140,6 +140,24 @@ public class BoardResourceIntTest {
 
     @Test
     @Transactional
+    public void checkNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = boardRepository.findAll().size();
+        // set the field null
+        board.setName(null);
+
+        // Create the Board, which fails.
+
+        restBoardMockMvc.perform(post("/api/boards")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(board)))
+            .andExpect(status().isBadRequest());
+
+        List<Board> boardList = boardRepository.findAll();
+        assertThat(boardList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllBoards() throws Exception {
         // Initialize the database
         boardRepository.saveAndFlush(board);

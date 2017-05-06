@@ -5,10 +5,9 @@
         {
             "fieldName": "name",
             "fieldType": "String",
-             "fieldValidateRules": [
-                "minlength"
-            ],
-            "fieldValidateRulesMinlength": "1"
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "changelogDate": "20170504143022",

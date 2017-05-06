@@ -134,6 +134,24 @@ public class PermissionTypeResourceIntTest {
 
     @Test
     @Transactional
+    public void checkNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = permissionTypeRepository.findAll().size();
+        // set the field null
+        permissionType.setName(null);
+
+        // Create the PermissionType, which fails.
+
+        restPermissionTypeMockMvc.perform(post("/api/permission-types")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(permissionType)))
+            .andExpect(status().isBadRequest());
+
+        List<PermissionType> permissionTypeList = permissionTypeRepository.findAll();
+        assertThat(permissionTypeList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllPermissionTypes() throws Exception {
         // Initialize the database
         permissionTypeRepository.saveAndFlush(permissionType);

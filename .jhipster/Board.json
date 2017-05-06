@@ -18,9 +18,12 @@
             "fieldName": "name",
             "fieldType": "String",
             "fieldValidateRules": [
-                "minlength"
+                "required",
+                "minlength",
+                "maxlength"
             ],
-            "fieldValidateRulesMinlength": "1"
+            "fieldValidateRulesMinlength": "3",
+            "fieldValidateRulesMaxlength": "48"
         }
     ],
     "changelogDate": "20170504133113",

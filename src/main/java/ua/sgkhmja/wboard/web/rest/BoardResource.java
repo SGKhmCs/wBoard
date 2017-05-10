@@ -4,7 +4,9 @@ import com.codahale.metrics.annotation.Timed;
 import ua.sgkhmja.wboard.domain.Board;
 
 import ua.sgkhmja.wboard.repository.BoardRepository;
+import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.repository.search.BoardSearchRepository;
+import ua.sgkhmja.wboard.service.dao.UserDAO;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -32,14 +34,21 @@ public class BoardResource {
     private final Logger log = LoggerFactory.getLogger(BoardResource.class);
 
     private static final String ENTITY_NAME = "board";
-        
+
     private final BoardRepository boardRepository;
 
     private final BoardSearchRepository boardSearchRepository;
 
-    public BoardResource(BoardRepository boardRepository, BoardSearchRepository boardSearchRepository) {
+    private UserRepository userRepository;
+
+    private UserDAO userDAO;
+
+    public BoardResource(BoardRepository boardRepository, BoardSearchRepository boardSearchRepository,
+                         UserRepository userRepository, UserDAO userDAO) {
         this.boardRepository = boardRepository;
         this.boardSearchRepository = boardSearchRepository;
+        this.userRepository = userRepository;
+        this.userDAO = userDAO;
     }
 
     /**
@@ -56,6 +65,9 @@ public class BoardResource {
         if (board.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new board cannot already have an ID")).body(null);
         }
+
+        board.setOwner(userRepository.findOne(userDAO.getUserIdByCurrentLogin()));
+
         Board result = boardRepository.save(board);
         boardSearchRepository.save(result);
         return ResponseEntity.created(new URI("/api/boards/" + result.getId()))
@@ -132,7 +144,7 @@ public class BoardResource {
      * SEARCH  /_search/boards?query=:query : search for the board corresponding
      * to the query.
      *
-     * @param query the query of the board search 
+     * @param query the query of the board search
      * @return the result of the search
      */
     @GetMapping("/_search/boards")

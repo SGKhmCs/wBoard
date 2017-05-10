@@ -3,11 +3,14 @@ package ua.sgkhmja.wboard.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
+import ua.sgkhmja.wboard.security.SecurityUtils;
+import ua.sgkhmja.wboard.service.UserService;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
+
 
 /**
  * A Board.
@@ -25,13 +28,11 @@ public class Board implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @NotNull
-    @Size(min = 3, max = 48)
-    @Column(name = "name", length = 48, nullable = false)
+    @Size(min = 1)
+    @Column(name = "name")
     private String name;
 
     @ManyToOne(optional = false)
-    @NotNull
     private User owner;
 
     public Long getId() {

@@ -3,6 +3,7 @@ import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/ht
 import { Observable } from 'rxjs/Rx';
 
 import { Board } from './board.model';
+
 @Injectable()
 export class BoardService {
 
@@ -12,14 +13,14 @@ export class BoardService {
     constructor(private http: Http) { }
 
     create(board: Board): Observable<Board> {
-        const copy: Board = Object.assign({}, board);
+        const copy = this.convert(board);
         return this.http.post(this.resourceUrl, copy).map((res: Response) => {
             return res.json();
         });
     }
 
     update(board: Board): Observable<Board> {
-        const copy: Board = Object.assign({}, board);
+        const copy = this.convert(board);
         return this.http.put(this.resourceUrl, copy).map((res: Response) => {
             return res.json();
         });
@@ -46,7 +47,6 @@ export class BoardService {
         return this.http.get(this.resourceSearchUrl, options)
         ;
     }
-
     private createRequestOption(req?: any): BaseRequestOptions {
         const options: BaseRequestOptions = new BaseRequestOptions();
         if (req) {
@@ -61,5 +61,10 @@ export class BoardService {
             options.search = params;
         }
         return options;
+    }
+
+    private convert(board: Board): Board {
+        const copy: Board = Object.assign({}, board);
+        return copy;
     }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EventManager, JhiLanguageService } from 'ng-jhipster';
+import { EventManager } from 'ng-jhipster';
 
 import { PermissionType } from './permission-type.model';
 import { PermissionTypePopupService } from './permission-type-popup.service';
@@ -17,12 +17,10 @@ export class PermissionTypeDeleteDialogComponent {
     permissionType: PermissionType;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private permissionTypeService: PermissionTypeService,
         public activeModal: NgbActiveModal,
         private eventManager: EventManager
     ) {
-        this.jhiLanguageService.setLocations(['permissionType']);
     }
 
     clear() {

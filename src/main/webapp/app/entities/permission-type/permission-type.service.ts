@@ -3,6 +3,7 @@ import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/ht
 import { Observable } from 'rxjs/Rx';
 
 import { PermissionType } from './permission-type.model';
+
 @Injectable()
 export class PermissionTypeService {
 
@@ -12,14 +13,14 @@ export class PermissionTypeService {
     constructor(private http: Http) { }
 
     create(permissionType: PermissionType): Observable<PermissionType> {
-        const copy: PermissionType = Object.assign({}, permissionType);
+        const copy = this.convert(permissionType);
         return this.http.post(this.resourceUrl, copy).map((res: Response) => {
             return res.json();
         });
     }
 
     update(permissionType: PermissionType): Observable<PermissionType> {
-        const copy: PermissionType = Object.assign({}, permissionType);
+        const copy = this.convert(permissionType);
         return this.http.put(this.resourceUrl, copy).map((res: Response) => {
             return res.json();
         });
@@ -46,7 +47,6 @@ export class PermissionTypeService {
         return this.http.get(this.resourceSearchUrl, options)
         ;
     }
-
     private createRequestOption(req?: any): BaseRequestOptions {
         const options: BaseRequestOptions = new BaseRequestOptions();
         if (req) {
@@ -61,5 +61,10 @@ export class PermissionTypeService {
             options.search = params;
         }
         return options;
+    }
+
+    private convert(permissionType: PermissionType): PermissionType {
+        const copy: PermissionType = Object.assign({}, permissionType);
+        return copy;
     }
 }

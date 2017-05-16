@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EventManager, JhiLanguageService } from 'ng-jhipster';
+import { EventManager } from 'ng-jhipster';
 
 import { Board } from './board.model';
 import { BoardPopupService } from './board-popup.service';
@@ -17,12 +17,10 @@ export class BoardDeleteDialogComponent {
     board: Board;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private boardService: BoardService,
         public activeModal: NgbActiveModal,
         private eventManager: EventManager
     ) {
-        this.jhiLanguageService.setLocations(['board']);
     }
 
     clear() {

@@ -17,6 +17,7 @@
                 "title": "Board"
             },
             "name": "Name",
+            "pub": "Pub",
             "owner": "Owner"
         }
     }

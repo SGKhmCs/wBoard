@@ -12,54 +12,54 @@ import { BoardDeletePopupComponent } from './board-delete-dialog.component';
 import { Principal } from '../../shared';
 
 export const boardRoute: Routes = [
-  {
-    path: 'board',
-    component: BoardComponent,
-    data: {
-        authorities: ['ROLE_USER'],
-        pageTitle: 'wBoardApp.board.home.title'
-    },
-    canActivate: [UserRouteAccessService]
-  }, {
-    path: 'board/:id',
-    component: BoardDetailComponent,
-    data: {
-        authorities: ['ROLE_USER'],
-        pageTitle: 'wBoardApp.board.home.title'
-    },
-    canActivate: [UserRouteAccessService]
-  }
+    {
+        path: 'board',
+        component: BoardComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'wBoardApp.board.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    }, {
+        path: 'board/:id',
+        component: BoardDetailComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'wBoardApp.board.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    }
 ];
 
 export const boardPopupRoute: Routes = [
-  {
-    path: 'board-new',
-    component: BoardPopupComponent,
-    data: {
-        authorities: ['ROLE_USER'],
-        pageTitle: 'wBoardApp.board.home.title'
+    {
+        path: 'board-new',
+        component: BoardPopupComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'wBoardApp.board.home.title'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
     },
-    canActivate: [UserRouteAccessService],
-    outlet: 'popup'
-  },
-  {
-    path: 'board/:id/edit',
-    component: BoardPopupComponent,
-    data: {
-        authorities: ['ROLE_USER'],
-        pageTitle: 'wBoardApp.board.home.title'
+    {
+        path: 'board/:id/edit',
+        component: BoardPopupComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'wBoardApp.board.home.title'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
     },
-    canActivate: [UserRouteAccessService],
-    outlet: 'popup'
-  },
-  {
-    path: 'board/:id/delete',
-    component: BoardDeletePopupComponent,
-    data: {
-        authorities: ['ROLE_USER'],
-        pageTitle: 'wBoardApp.board.home.title'
-    },
-    canActivate: [UserRouteAccessService],
-    outlet: 'popup'
-  }
+    {
+        path: 'board/:id/delete',
+        component: BoardDeletePopupComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'wBoardApp.board.home.title'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    }
 ];

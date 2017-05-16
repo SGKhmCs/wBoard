@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
-import { EventManager , JhiLanguageService  } from 'ng-jhipster';
+import { EventManager  } from 'ng-jhipster';
 
 import { Board } from './board.model';
 import { BoardService } from './board.service';
@@ -13,16 +13,14 @@ import { BoardService } from './board.service';
 export class BoardDetailComponent implements OnInit, OnDestroy {
 
     board: Board;
-    private subscription: any;
+    private subscription: Subscription;
     private eventSubscriber: Subscription;
 
     constructor(
         private eventManager: EventManager,
-        private jhiLanguageService: JhiLanguageService,
         private boardService: BoardService,
         private route: ActivatedRoute
     ) {
-        this.jhiLanguageService.setLocations(['board']);
     }
 
     ngOnInit() {
@@ -47,6 +45,9 @@ export class BoardDetailComponent implements OnInit, OnDestroy {
     }
 
     registerChangeInBoards() {
-        this.eventSubscriber = this.eventManager.subscribe('boardListModification', (response) => this.load(this.board.id));
+        this.eventSubscriber = this.eventManager.subscribe(
+            'boardListModification',
+            (response) => this.load(this.board.id)
+        );
     }
 }

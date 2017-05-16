@@ -12,54 +12,54 @@ import { PermissionDeletePopupComponent } from './permission-delete-dialog.compo
 import { Principal } from '../../shared';
 
 export const permissionRoute: Routes = [
-  {
-    path: 'permission',
-    component: PermissionComponent,
-    data: {
-        authorities: ['ROLE_USER'],
-        pageTitle: 'wBoardApp.permission.home.title'
-    },
-    canActivate: [UserRouteAccessService]
-  }, {
-    path: 'permission/:id',
-    component: PermissionDetailComponent,
-    data: {
-        authorities: ['ROLE_USER'],
-        pageTitle: 'wBoardApp.permission.home.title'
-    },
-    canActivate: [UserRouteAccessService]
-  }
+    {
+        path: 'permission',
+        component: PermissionComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'wBoardApp.permission.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    }, {
+        path: 'permission/:id',
+        component: PermissionDetailComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'wBoardApp.permission.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    }
 ];
 
 export const permissionPopupRoute: Routes = [
-  {
-    path: 'permission-new',
-    component: PermissionPopupComponent,
-    data: {
-        authorities: ['ROLE_USER'],
-        pageTitle: 'wBoardApp.permission.home.title'
+    {
+        path: 'permission-new',
+        component: PermissionPopupComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'wBoardApp.permission.home.title'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
     },
-    canActivate: [UserRouteAccessService],
-    outlet: 'popup'
-  },
-  {
-    path: 'permission/:id/edit',
-    component: PermissionPopupComponent,
-    data: {
-        authorities: ['ROLE_USER'],
-        pageTitle: 'wBoardApp.permission.home.title'
+    {
+        path: 'permission/:id/edit',
+        component: PermissionPopupComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'wBoardApp.permission.home.title'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
     },
-    canActivate: [UserRouteAccessService],
-    outlet: 'popup'
-  },
-  {
-    path: 'permission/:id/delete',
-    component: PermissionDeletePopupComponent,
-    data: {
-        authorities: ['ROLE_USER'],
-        pageTitle: 'wBoardApp.permission.home.title'
-    },
-    canActivate: [UserRouteAccessService],
-    outlet: 'popup'
-  }
+    {
+        path: 'permission/:id/delete',
+        component: PermissionDeletePopupComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'wBoardApp.permission.home.title'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    }
 ];

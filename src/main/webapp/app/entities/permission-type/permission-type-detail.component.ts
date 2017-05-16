@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
-import { EventManager , JhiLanguageService  } from 'ng-jhipster';
+import { EventManager  } from 'ng-jhipster';
 
 import { PermissionType } from './permission-type.model';
 import { PermissionTypeService } from './permission-type.service';
@@ -13,16 +13,14 @@ import { PermissionTypeService } from './permission-type.service';
 export class PermissionTypeDetailComponent implements OnInit, OnDestroy {
 
     permissionType: PermissionType;
-    private subscription: any;
+    private subscription: Subscription;
     private eventSubscriber: Subscription;
 
     constructor(
         private eventManager: EventManager,
-        private jhiLanguageService: JhiLanguageService,
         private permissionTypeService: PermissionTypeService,
         private route: ActivatedRoute
     ) {
-        this.jhiLanguageService.setLocations(['permissionType']);
     }
 
     ngOnInit() {
@@ -47,6 +45,9 @@ export class PermissionTypeDetailComponent implements OnInit, OnDestroy {
     }
 
     registerChangeInPermissionTypes() {
-        this.eventSubscriber = this.eventManager.subscribe('permissionTypeListModification', (response) => this.load(this.permissionType.id));
+        this.eventSubscriber = this.eventManager.subscribe(
+            'permissionTypeListModification',
+            (response) => this.load(this.permissionType.id)
+        );
     }
 }

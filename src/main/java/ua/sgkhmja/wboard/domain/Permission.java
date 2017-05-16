@@ -93,21 +93,21 @@ public class Permission implements Serializable {
             return false;
         }
         Permission permission = (Permission) o;
-        if (permission.id == null || id == null) {
+        if (permission.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(id, permission.id);
+        return Objects.equals(getId(), permission.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(getId());
     }
 
     @Override
     public String toString() {
         return "Permission{" +
-            "id=" + id +
-            '}';
+            "id=" + getId() +
+            "}";
     }
 }

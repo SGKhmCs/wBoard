@@ -20,7 +20,6 @@ permissionTypes: PermissionType[];
     currentSearch: string;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private permissionTypeService: PermissionTypeService,
         private alertService: AlertService,
         private eventManager: EventManager,
@@ -28,7 +27,6 @@ permissionTypes: PermissionType[];
         private principal: Principal
     ) {
         this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
-        this.jhiLanguageService.setLocations(['permissionType']);
     }
 
     loadAll() {

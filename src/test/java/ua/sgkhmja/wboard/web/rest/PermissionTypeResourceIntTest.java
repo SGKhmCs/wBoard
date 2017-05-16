@@ -274,5 +274,14 @@ public class PermissionTypeResourceIntTest {
     @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(PermissionType.class);
+        PermissionType permissionType1 = new PermissionType();
+        permissionType1.setId(1L);
+        PermissionType permissionType2 = new PermissionType();
+        permissionType2.setId(permissionType1.getId());
+        assertThat(permissionType1).isEqualTo(permissionType2);
+        permissionType2.setId(2L);
+        assertThat(permissionType1).isNotEqualTo(permissionType2);
+        permissionType1.setId(null);
+        assertThat(permissionType1).isNotEqualTo(permissionType2);
     }
 }

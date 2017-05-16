@@ -44,6 +44,9 @@ public class BoardResourceIntTest {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
+    private static final Boolean DEFAULT_PUB = false;
+    private static final Boolean UPDATED_PUB = true;
+
     @Autowired
     private BoardRepository boardRepository;
 
@@ -84,7 +87,8 @@ public class BoardResourceIntTest {
      */
     public static Board createEntity(EntityManager em) {
         Board board = new Board()
-            .name(DEFAULT_NAME);
+            .name(DEFAULT_NAME)
+            .pub(DEFAULT_PUB);
         // Add required entity
         User owner = UserResourceIntTest.createEntity(em);
         em.persist(owner);
@@ -115,6 +119,7 @@ public class BoardResourceIntTest {
         assertThat(boardList).hasSize(databaseSizeBeforeCreate + 1);
         Board testBoard = boardList.get(boardList.size() - 1);
         assertThat(testBoard.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testBoard.isPub()).isEqualTo(DEFAULT_PUB);
 
         // Validate the Board in Elasticsearch
         Board boardEs = boardSearchRepository.findOne(testBoard.getId());
@@ -160,6 +165,24 @@ public class BoardResourceIntTest {
 
     @Test
     @Transactional
+    public void checkPubIsRequired() throws Exception {
+        int databaseSizeBeforeTest = boardRepository.findAll().size();
+        // set the field null
+        board.setPub(null);
+
+        // Create the Board, which fails.
+
+        restBoardMockMvc.perform(post("/api/boards")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(board)))
+            .andExpect(status().isBadRequest());
+
+        List<Board> boardList = boardRepository.findAll();
+        assertThat(boardList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllBoards() throws Exception {
         // Initialize the database
         boardRepository.saveAndFlush(board);
@@ -169,7 +192,8 @@ public class BoardResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(board.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].pub").value(hasItem(DEFAULT_PUB.booleanValue())));
     }
 
     @Test
@@ -183,7 +207,8 @@ public class BoardResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(board.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()));
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
+            .andExpect(jsonPath("$.pub").value(DEFAULT_PUB.booleanValue()));
     }
 
     @Test
@@ -205,7 +230,8 @@ public class BoardResourceIntTest {
         // Update the board
         Board updatedBoard = boardRepository.findOne(board.getId());
         updatedBoard
-            .name(UPDATED_NAME);
+            .name(UPDATED_NAME)
+            .pub(UPDATED_PUB);
 
         restBoardMockMvc.perform(put("/api/boards")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -217,6 +243,7 @@ public class BoardResourceIntTest {
         assertThat(boardList).hasSize(databaseSizeBeforeUpdate);
         Board testBoard = boardList.get(boardList.size() - 1);
         assertThat(testBoard.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testBoard.isPub()).isEqualTo(UPDATED_PUB);
 
         // Validate the Board in Elasticsearch
         Board boardEs = boardSearchRepository.findOne(testBoard.getId());
@@ -275,12 +302,22 @@ public class BoardResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(board.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].pub").value(hasItem(DEFAULT_PUB.booleanValue())));
     }
 
     @Test
     @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(Board.class);
+        Board board1 = new Board();
+        board1.setId(1L);
+        Board board2 = new Board();
+        board2.setId(board1.getId());
+        assertThat(board1).isEqualTo(board2);
+        board2.setId(2L);
+        assertThat(board1).isNotEqualTo(board2);
+        board1.setId(null);
+        assertThat(board1).isNotEqualTo(board2);
     }
 }

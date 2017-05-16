@@ -20,7 +20,6 @@ boards: Board[];
     currentSearch: string;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private boardService: BoardService,
         private alertService: AlertService,
         private eventManager: EventManager,
@@ -28,7 +27,6 @@ boards: Board[];
         private principal: Principal
     ) {
         this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
-        this.jhiLanguageService.setLocations(['board']);
     }
 
     loadAll() {

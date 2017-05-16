@@ -44,7 +44,7 @@ public class BoardResource {
     private UserDAO userDAO;
 
     public BoardResource(BoardRepository boardRepository, BoardSearchRepository boardSearchRepository,
-                         UserRepository userRepository, UserDAO userDAO) {
+                          UserRepository userRepository, UserDAO userDAO) {
         this.boardRepository = boardRepository;
         this.boardSearchRepository = boardSearchRepository;
         this.userRepository = userRepository;

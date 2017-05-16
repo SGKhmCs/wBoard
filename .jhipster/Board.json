@@ -5,9 +5,6 @@
             "relationshipName": "owner",
             "otherEntityName": "user",
             "relationshipType": "many-to-one",
-            "relationshipValidateRules": [
-                "required"
-            ],
             "otherEntityField": "login",
             "ownerSide": true,
             "otherEntityRelationshipName": "board"
@@ -24,6 +21,13 @@
             ],
             "fieldValidateRulesMinlength": "3",
             "fieldValidateRulesMaxlength": "48"
+        },
+        {
+            "fieldName": "pub",
+            "fieldType": "Boolean",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "changelogDate": "20170504133113",

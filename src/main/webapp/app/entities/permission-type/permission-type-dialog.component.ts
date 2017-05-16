@@ -2,8 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Response } from '@angular/http';
 
+import { Observable } from 'rxjs/Rx';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EventManager, AlertService, JhiLanguageService } from 'ng-jhipster';
+import { EventManager, AlertService } from 'ng-jhipster';
 
 import { PermissionType } from './permission-type.model';
 import { PermissionTypePopupService } from './permission-type-popup.service';
@@ -18,14 +19,13 @@ export class PermissionTypeDialogComponent implements OnInit {
     permissionType: PermissionType;
     authorities: any[];
     isSaving: boolean;
+
     constructor(
         public activeModal: NgbActiveModal,
-        private jhiLanguageService: JhiLanguageService,
         private alertService: AlertService,
         private permissionTypeService: PermissionTypeService,
         private eventManager: EventManager
     ) {
-        this.jhiLanguageService.setLocations(['permissionType']);
     }
 
     ngOnInit() {
@@ -39,14 +39,17 @@ export class PermissionTypeDialogComponent implements OnInit {
     save() {
         this.isSaving = true;
         if (this.permissionType.id !== undefined) {
-            this.permissionTypeService.update(this.permissionType)
-                .subscribe((res: PermissionType) =>
-                    this.onSaveSuccess(res), (res: Response) => this.onSaveError(res));
+            this.subscribeToSaveResponse(
+                this.permissionTypeService.update(this.permissionType));
         } else {
-            this.permissionTypeService.create(this.permissionType)
-                .subscribe((res: PermissionType) =>
-                    this.onSaveSuccess(res), (res: Response) => this.onSaveError(res));
+            this.subscribeToSaveResponse(
+                this.permissionTypeService.create(this.permissionType));
         }
+    }
+
+    private subscribeToSaveResponse(result: Observable<PermissionType>) {
+        result.subscribe((res: PermissionType) =>
+            this.onSaveSuccess(res), (res: Response) => this.onSaveError(res));
     }
 
     private onSaveSuccess(result: PermissionType) {

@@ -3,14 +3,11 @@ package ua.sgkhmja.wboard.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
-import ua.sgkhmja.wboard.security.SecurityUtils;
-import ua.sgkhmja.wboard.service.UserService;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
-
 
 /**
  * A Board.
@@ -32,6 +29,10 @@ public class Board implements Serializable {
     @Size(min = 3, max = 48)
     @Column(name = "name", length = 48, nullable = false)
     private String name;
+
+    @NotNull
+    @Column(name = "pub", nullable = false)
+    private Boolean pub;
 
     @ManyToOne(optional = false)
     private User owner;
@@ -57,6 +58,19 @@ public class Board implements Serializable {
         this.name = name;
     }
 
+    public Boolean isPub() {
+        return pub;
+    }
+
+    public Board pub(Boolean pub) {
+        this.pub = pub;
+        return this;
+    }
+
+    public void setPub(Boolean pub) {
+        this.pub = pub;
+    }
+
     public User getOwner() {
         return owner;
     }
@@ -79,22 +93,23 @@ public class Board implements Serializable {
             return false;
         }
         Board board = (Board) o;
-        if (board.id == null || id == null) {
+        if (board.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(id, board.id);
+        return Objects.equals(getId(), board.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(getId());
     }
 
     @Override
     public String toString() {
         return "Board{" +
-            "id=" + id +
-            ", name='" + name + "'" +
-            '}';
+            "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", pub='" + isPub() + "'" +
+            "}";
     }
 }

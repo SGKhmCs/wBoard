@@ -10,12 +10,12 @@ import { WBoardAdminModule } from './admin/admin.module';
 import { WBoardAccountModule } from './account/account.module';
 import { WBoardEntityModule } from './entities/entity.module';
 
-import { LayoutRoutingModule } from './layouts';
 import { customHttpProvider } from './blocks/interceptor/http.provider';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
 
 import {
     JhiMainComponent,
+    LayoutRoutingModule,
     NavbarComponent,
     FooterComponent,
     ProfileService,

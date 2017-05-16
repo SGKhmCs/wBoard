@@ -2,8 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Response } from '@angular/http';
 
+import { Observable } from 'rxjs/Rx';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EventManager, AlertService, JhiLanguageService } from 'ng-jhipster';
+import { EventManager, AlertService } from 'ng-jhipster';
 
 import { Permission } from './permission.model';
 import { PermissionPopupService } from './permission-popup.service';
@@ -27,9 +28,9 @@ export class PermissionDialogComponent implements OnInit {
     boards: Board[];
 
     permissiontypes: PermissionType[];
+
     constructor(
         public activeModal: NgbActiveModal,
-        private jhiLanguageService: JhiLanguageService,
         private alertService: AlertService,
         private permissionService: PermissionService,
         private userService: UserService,
@@ -37,7 +38,6 @@ export class PermissionDialogComponent implements OnInit {
         private permissionTypeService: PermissionTypeService,
         private eventManager: EventManager
     ) {
-        this.jhiLanguageService.setLocations(['permission']);
     }
 
     ngOnInit() {
@@ -57,14 +57,17 @@ export class PermissionDialogComponent implements OnInit {
     save() {
         this.isSaving = true;
         if (this.permission.id !== undefined) {
-            this.permissionService.update(this.permission)
-                .subscribe((res: Permission) =>
-                    this.onSaveSuccess(res), (res: Response) => this.onSaveError(res));
+            this.subscribeToSaveResponse(
+                this.permissionService.update(this.permission));
         } else {
-            this.permissionService.create(this.permission)
-                .subscribe((res: Permission) =>
-                    this.onSaveSuccess(res), (res: Response) => this.onSaveError(res));
+            this.subscribeToSaveResponse(
+                this.permissionService.create(this.permission));
         }
+    }
+
+    private subscribeToSaveResponse(result: Observable<Permission>) {
+        result.subscribe((res: Permission) =>
+            this.onSaveSuccess(res), (res: Response) => this.onSaveError(res));
     }
 
     private onSaveSuccess(result: Permission) {

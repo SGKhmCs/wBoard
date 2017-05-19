@@ -107,7 +107,9 @@ public class BoardResource {
     @Timed
     public List<Board> getAllBoards() {
         log.debug("REST request to get all Boards");
-        List<Board> boards = boardRepository.findAll();
+
+        List<Board> boards = userDAO.isAdmin()?boardRepository.findAll()
+            :boardRepository.findByOwnerIsCurrentUserExt();
         return boards;
     }
 
@@ -121,7 +123,7 @@ public class BoardResource {
     @Timed
     public ResponseEntity<Board> getBoard(@PathVariable Long id) {
         log.debug("REST request to get Board : {}", id);
-        Board board = boardRepository.findOne(id);
+        Board board = userDAO.isAdmin()?boardRepository.findOne(id):boardRepository.findOneExt(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(board));
     }
 

@@ -20,4 +20,11 @@ public class UserDAO {
         String sql = "select id from jhi_user where login ='" + SecurityUtils.getCurrentUserLogin() + "'";
         return this.jdbcTemplate.queryForObject(sql, long.class);
     }
+
+    //TODO Зробити перевырку на адміна
+    public boolean isAdmin(){
+        //String sql = "select user_id from jhi_user_authority where authority_name = 'ROLE_ADMIN' " +
+        //    "and user_id = " + getUserIdByCurrentLogin();
+        return false;
+    }
 }

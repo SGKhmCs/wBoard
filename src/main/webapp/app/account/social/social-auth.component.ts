@@ -6,7 +6,7 @@ import { CookieService } from 'angular2-cookie/core';
 
 @Component({
     selector: 'jhi-auth',
-    templateUrl: '../../shared/login/login.component.html'
+    template: ''
 })
 export class SocialAuthComponent implements OnInit {
 
@@ -18,7 +18,7 @@ export class SocialAuthComponent implements OnInit {
     }
 
     ngOnInit() {
-        let token = this.cookieService.get('social-authentication');
+        const token = this.cookieService.get('social-authentication');
         if (token.length) {
             this.loginService.loginWithToken(token, false).then(() => {
                     this.cookieService.remove('social-authentication');

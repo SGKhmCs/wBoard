@@ -10,6 +10,7 @@ import { Board } from './board.model';
 import { BoardPopupService } from './board-popup.service';
 import { BoardService } from './board.service';
 import { User, UserService } from '../../shared';
+import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-board-dialog',
@@ -35,8 +36,8 @@ export class BoardDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        this.userService.query().subscribe(
-            (res: Response) => { this.users = res.json(); }, (res: Response) => this.onError(res.json()));
+        this.userService.query()
+            .subscribe((res: ResponseWrapper) => { this.users = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
     clear() {
         this.activeModal.dismiss('cancel');

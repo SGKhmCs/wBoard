@@ -18,6 +18,8 @@ export * from './login/login-modal.service';
 export * from './user/account.model';
 export * from './user/user.model';
 export * from './user/user.service';
+export * from './model/response-wrapper.model';
+export * from './model/request-util';
 export * from './social/social.service';
 export * from './social/social.component';
 export * from './shared-libs.module';

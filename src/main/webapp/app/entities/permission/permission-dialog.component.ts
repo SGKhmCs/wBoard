@@ -12,6 +12,7 @@ import { PermissionService } from './permission.service';
 import { User, UserService } from '../../shared';
 import { Board, BoardService } from '../board';
 import { PermissionType, PermissionTypeService } from '../permission-type';
+import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-permission-dialog',
@@ -43,12 +44,12 @@ export class PermissionDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        this.userService.query().subscribe(
-            (res: Response) => { this.users = res.json(); }, (res: Response) => this.onError(res.json()));
-        this.boardService.query().subscribe(
-            (res: Response) => { this.boards = res.json(); }, (res: Response) => this.onError(res.json()));
-        this.permissionTypeService.query().subscribe(
-            (res: Response) => { this.permissiontypes = res.json(); }, (res: Response) => this.onError(res.json()));
+        this.userService.query()
+            .subscribe((res: ResponseWrapper) => { this.users = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.boardService.query()
+            .subscribe((res: ResponseWrapper) => { this.boards = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.permissionTypeService.query()
+            .subscribe((res: ResponseWrapper) => { this.permissiontypes = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
     clear() {
         this.activeModal.dismiss('cancel');

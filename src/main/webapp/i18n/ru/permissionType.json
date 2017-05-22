@@ -1,0 +1,22 @@
+{
+    "wBoardApp": {
+        "permissionType" : {
+            "home": {
+                "title": "Permission Types",
+                "createLabel": "Создать новый Permission Type",
+                "createOrEditLabel": "Создать или отредактировать Permission Type",
+                "search": "Найти Permission Type"
+            },
+            "created": "Новый Permission Type создан с идентификатором {{ param }}",
+            "updated": "Permission Type обновлен с идентификатором {{ param }}",
+            "deleted": "Permission Type удален с идентификатором {{ param }}",
+            "delete": {
+                "question": "Вы уверены что хотите удалить Permission Type {{ id }}?"
+            },
+            "detail": {
+                "title": "Permission Type"
+            },
+            "name": "Name"
+        }
+    }
+}

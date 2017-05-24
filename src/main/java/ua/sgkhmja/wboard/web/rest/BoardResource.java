@@ -1,8 +1,11 @@
 package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.hibernate.Hibernate;
+import ua.sgkhmja.wboard.domain.Authority;
 import ua.sgkhmja.wboard.domain.Board;
 
+import ua.sgkhmja.wboard.domain.User;
 import ua.sgkhmja.wboard.repository.BoardRepository;
 import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.repository.search.BoardSearchRepository;
@@ -20,6 +23,7 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -109,7 +113,7 @@ public class BoardResource {
     public List<Board> getAllBoards() {
         log.debug("REST request to get all Boards");
 
-        List<Board> boards = userDAO.isAdmin()?boardRepository.findAll()
+        List<Board> boards = isAdmin()?boardRepository.findAll()
             :boardRepository.findByOwnerIsCurrentUserExt();
         return boards;
     }
@@ -124,7 +128,7 @@ public class BoardResource {
     @Timed
     public ResponseEntity<Board> getBoard(@PathVariable Long id) {
         log.debug("REST request to get Board : {}", id);
-        Board board = userDAO.isAdmin()?boardRepository.findOne(id):boardRepository.findOneExt(id);
+        Board board = isAdmin()?boardRepository.findOne(id):boardRepository.findOneExt(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(board));
     }
 
@@ -159,5 +163,12 @@ public class BoardResource {
             .collect(Collectors.toList());
     }
 
+
+    boolean isAdmin(){
+        User user = userRepository.findOne(userDAO.getUserIdByCurrentLogin());
+        Set<Authority> authorities = user.getAuthorities();
+
+        return false;
+    }
 
 }

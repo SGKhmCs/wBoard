@@ -1,0 +1,25 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "board",
+            "otherEntityName": "board",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "name"
+        },
+        {
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "reader"
+        }
+    ],
+    "fields": [],
+    "changelogDate": "20170524101511",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "reader",
+    "pagination": "no"
+}

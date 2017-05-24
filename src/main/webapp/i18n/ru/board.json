@@ -18,7 +18,10 @@
             },
             "name": "Name",
             "pub": "Pub",
-            "owner": "Owner"
+            "owner": "Owner",
+            "reader": "Reader",
+            "writer": "Writer",
+            "admin": "Admin"
         }
     }
 }

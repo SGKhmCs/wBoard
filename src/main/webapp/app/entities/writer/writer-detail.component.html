@@ -1,0 +1,33 @@
+
+<div *ngIf="writer">
+    <h2><span jhiTranslate="wBoardApp.writer.detail.title">Writer</span> {{writer.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="wBoardApp.writer.board">Board</span></dt>
+        <dd>
+            <div *ngIf="writer.board">
+                <a [routerLink]="['/board', writer.board?.id]">{{writer.board?.name}}</a>
+            </div>
+        </dd>
+        <dt><span jhiTranslate="wBoardApp.writer.reader">Reader</span></dt>
+        <dd>
+            <div *ngIf="writer.reader">
+                <a [routerLink]="['/reader', writer.reader?.id]">{{writer.reader?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'writer/'+ writer.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,23 @@
+{
+    "wBoardApp": {
+        "reader" : {
+            "home": {
+                "title": "Readers",
+                "createLabel": "Создать новый Reader",
+                "createOrEditLabel": "Создать или отредактировать Reader",
+                "search": "Найти Reader"
+            },
+            "created": "Новый Reader создан с идентификатором {{ param }}",
+            "updated": "Reader обновлен с идентификатором {{ param }}",
+            "deleted": "Reader удален с идентификатором {{ param }}",
+            "delete": {
+                "question": "Вы уверены что хотите удалить Reader {{ id }}?"
+            },
+            "detail": {
+                "title": "Reader"
+            },
+            "board": "Board",
+            "user": "User"
+        }
+    }
+}

@@ -1,15 +1,10 @@
 package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import org.hibernate.Hibernate;
-import ua.sgkhmja.wboard.domain.Authority;
 import ua.sgkhmja.wboard.domain.Board;
 
-import ua.sgkhmja.wboard.domain.User;
 import ua.sgkhmja.wboard.repository.BoardRepository;
-import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.repository.search.BoardSearchRepository;
-import ua.sgkhmja.wboard.service.dao.UserDAO;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -23,7 +18,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -39,21 +33,14 @@ public class BoardResource {
     private final Logger log = LoggerFactory.getLogger(BoardResource.class);
 
     private static final String ENTITY_NAME = "board";
-
+        
     private final BoardRepository boardRepository;
 
     private final BoardSearchRepository boardSearchRepository;
 
-    private UserRepository userRepository;
-
-    private UserDAO userDAO;
-
-    public BoardResource(BoardRepository boardRepository, BoardSearchRepository boardSearchRepository,
-                          UserRepository userRepository, UserDAO userDAO) {
+    public BoardResource(BoardRepository boardRepository, BoardSearchRepository boardSearchRepository) {
         this.boardRepository = boardRepository;
         this.boardSearchRepository = boardSearchRepository;
-        this.userRepository = userRepository;
-        this.userDAO = userDAO;
     }
 
     /**
@@ -70,9 +57,6 @@ public class BoardResource {
         if (board.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new board cannot already have an ID")).body(null);
         }
-
-        board.setOwner(userRepository.findOne(userDAO.getUserIdByCurrentLogin()));
-
         Board result = boardRepository.save(board);
         boardSearchRepository.save(result);
         return ResponseEntity.created(new URI("/api/boards/" + result.getId()))
@@ -112,9 +96,7 @@ public class BoardResource {
     @Timed
     public List<Board> getAllBoards() {
         log.debug("REST request to get all Boards");
-
-        List<Board> boards = isAdmin()?boardRepository.findAll()
-            :boardRepository.findByOwnerIsCurrentUserExt();
+        List<Board> boards = boardRepository.findAll();
         return boards;
     }
 
@@ -128,7 +110,7 @@ public class BoardResource {
     @Timed
     public ResponseEntity<Board> getBoard(@PathVariable Long id) {
         log.debug("REST request to get Board : {}", id);
-        Board board = isAdmin()?boardRepository.findOne(id):boardRepository.findOneExt(id);
+        Board board = boardRepository.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(board));
     }
 
@@ -151,7 +133,7 @@ public class BoardResource {
      * SEARCH  /_search/boards?query=:query : search for the board corresponding
      * to the query.
      *
-     * @param query the query of the board search
+     * @param query the query of the board search 
      * @return the result of the search
      */
     @GetMapping("/_search/boards")
@@ -163,12 +145,5 @@ public class BoardResource {
             .collect(Collectors.toList());
     }
 
-
-    boolean isAdmin(){
-        User user = userRepository.findOne(userDAO.getUserIdByCurrentLogin());
-        Set<Authority> authorities = user.getAuthorities();
-
-        return false;
-    }
 
 }

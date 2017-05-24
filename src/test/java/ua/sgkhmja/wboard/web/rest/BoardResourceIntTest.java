@@ -3,11 +3,8 @@ package ua.sgkhmja.wboard.web.rest;
 import ua.sgkhmja.wboard.WBoardApp;
 
 import ua.sgkhmja.wboard.domain.Board;
-import ua.sgkhmja.wboard.domain.User;
 import ua.sgkhmja.wboard.repository.BoardRepository;
-import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.repository.search.BoardSearchRepository;
-import ua.sgkhmja.wboard.service.dao.UserDAO;
 import ua.sgkhmja.wboard.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -70,9 +67,9 @@ public class BoardResourceIntTest {
     private Board board;
 
     @Before
-    public void setup(UserRepository userRepository, UserDAO userDAO) {
+    public void setup() {
         MockitoAnnotations.initMocks(this);
-        BoardResource boardResource = new BoardResource(boardRepository, boardSearchRepository, userRepository, userDAO);
+        BoardResource boardResource = new BoardResource(boardRepository, boardSearchRepository);
         this.restBoardMockMvc = MockMvcBuilders.standaloneSetup(boardResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -89,11 +86,6 @@ public class BoardResourceIntTest {
         Board board = new Board()
             .name(DEFAULT_NAME)
             .pub(DEFAULT_PUB);
-        // Add required entity
-        User owner = UserResourceIntTest.createEntity(em);
-        em.persist(owner);
-        em.flush();
-        board.setOwner(owner);
         return board;
     }
 

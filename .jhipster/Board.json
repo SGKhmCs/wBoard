@@ -8,6 +8,24 @@
             "otherEntityField": "login",
             "ownerSide": true,
             "otherEntityRelationshipName": "board"
+        },
+        {
+            "relationshipName": "reader",
+            "otherEntityName": "reader",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "board"
+        },
+        {
+            "relationshipName": "writer",
+            "otherEntityName": "writer",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "board"
+        },
+        {
+            "relationshipName": "admin",
+            "otherEntityName": "admin",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "board"
         }
     ],
     "fields": [

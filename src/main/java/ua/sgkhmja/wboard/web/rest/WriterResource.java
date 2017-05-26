@@ -1,11 +1,9 @@
 package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import ua.sgkhmja.wboard.domain.Writer;
-
-import ua.sgkhmja.wboard.repository.WriterRepository;
-import ua.sgkhmja.wboard.repository.search.WriterSearchRepository;
+import ua.sgkhmja.wboard.service.WriterService;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
+import ua.sgkhmja.wboard.service.dto.WriterDTO;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -33,31 +30,27 @@ public class WriterResource {
 
     private static final String ENTITY_NAME = "writer";
         
-    private final WriterRepository writerRepository;
+    private final WriterService writerService;
 
-    private final WriterSearchRepository writerSearchRepository;
-
-    public WriterResource(WriterRepository writerRepository, WriterSearchRepository writerSearchRepository) {
-        this.writerRepository = writerRepository;
-        this.writerSearchRepository = writerSearchRepository;
+    public WriterResource(WriterService writerService) {
+        this.writerService = writerService;
     }
 
     /**
      * POST  /writers : Create a new writer.
      *
-     * @param writer the writer to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new writer, or with status 400 (Bad Request) if the writer has already an ID
+     * @param writerDTO the writerDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new writerDTO, or with status 400 (Bad Request) if the writer has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/writers")
     @Timed
-    public ResponseEntity<Writer> createWriter(@RequestBody Writer writer) throws URISyntaxException {
-        log.debug("REST request to save Writer : {}", writer);
-        if (writer.getId() != null) {
+    public ResponseEntity<WriterDTO> createWriter(@RequestBody WriterDTO writerDTO) throws URISyntaxException {
+        log.debug("REST request to save Writer : {}", writerDTO);
+        if (writerDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new writer cannot already have an ID")).body(null);
         }
-        Writer result = writerRepository.save(writer);
-        writerSearchRepository.save(result);
+        WriterDTO result = writerService.save(writerDTO);
         return ResponseEntity.created(new URI("/api/writers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -66,23 +59,22 @@ public class WriterResource {
     /**
      * PUT  /writers : Updates an existing writer.
      *
-     * @param writer the writer to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated writer,
-     * or with status 400 (Bad Request) if the writer is not valid,
-     * or with status 500 (Internal Server Error) if the writer couldnt be updated
+     * @param writerDTO the writerDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated writerDTO,
+     * or with status 400 (Bad Request) if the writerDTO is not valid,
+     * or with status 500 (Internal Server Error) if the writerDTO couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/writers")
     @Timed
-    public ResponseEntity<Writer> updateWriter(@RequestBody Writer writer) throws URISyntaxException {
-        log.debug("REST request to update Writer : {}", writer);
-        if (writer.getId() == null) {
-            return createWriter(writer);
+    public ResponseEntity<WriterDTO> updateWriter(@RequestBody WriterDTO writerDTO) throws URISyntaxException {
+        log.debug("REST request to update Writer : {}", writerDTO);
+        if (writerDTO.getId() == null) {
+            return createWriter(writerDTO);
         }
-        Writer result = writerRepository.save(writer);
-        writerSearchRepository.save(result);
+        WriterDTO result = writerService.save(writerDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, writer.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, writerDTO.getId().toString()))
             .body(result);
     }
 
@@ -93,38 +85,36 @@ public class WriterResource {
      */
     @GetMapping("/writers")
     @Timed
-    public List<Writer> getAllWriters() {
+    public List<WriterDTO> getAllWriters() {
         log.debug("REST request to get all Writers");
-        List<Writer> writers = writerRepository.findAll();
-        return writers;
+        return writerService.findAll();
     }
 
     /**
      * GET  /writers/:id : get the "id" writer.
      *
-     * @param id the id of the writer to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the writer, or with status 404 (Not Found)
+     * @param id the id of the writerDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the writerDTO, or with status 404 (Not Found)
      */
     @GetMapping("/writers/{id}")
     @Timed
-    public ResponseEntity<Writer> getWriter(@PathVariable Long id) {
+    public ResponseEntity<WriterDTO> getWriter(@PathVariable Long id) {
         log.debug("REST request to get Writer : {}", id);
-        Writer writer = writerRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(writer));
+        WriterDTO writerDTO = writerService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(writerDTO));
     }
 
     /**
      * DELETE  /writers/:id : delete the "id" writer.
      *
-     * @param id the id of the writer to delete
+     * @param id the id of the writerDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/writers/{id}")
     @Timed
     public ResponseEntity<Void> deleteWriter(@PathVariable Long id) {
         log.debug("REST request to delete Writer : {}", id);
-        writerRepository.delete(id);
-        writerSearchRepository.delete(id);
+        writerService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -137,11 +127,9 @@ public class WriterResource {
      */
     @GetMapping("/_search/writers")
     @Timed
-    public List<Writer> searchWriters(@RequestParam String query) {
+    public List<WriterDTO> searchWriters(@RequestParam String query) {
         log.debug("REST request to search Writers for query {}", query);
-        return StreamSupport
-            .stream(writerSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+        return writerService.search(query);
     }
 
 

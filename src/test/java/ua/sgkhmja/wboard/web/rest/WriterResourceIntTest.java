@@ -4,7 +4,10 @@ import ua.sgkhmja.wboard.WBoardApp;
 
 import ua.sgkhmja.wboard.domain.Writer;
 import ua.sgkhmja.wboard.repository.WriterRepository;
+import ua.sgkhmja.wboard.service.WriterService;
 import ua.sgkhmja.wboard.repository.search.WriterSearchRepository;
+import ua.sgkhmja.wboard.service.dto.WriterDTO;
+import ua.sgkhmja.wboard.service.mapper.WriterMapper;
 import ua.sgkhmja.wboard.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -42,6 +45,12 @@ public class WriterResourceIntTest {
     private WriterRepository writerRepository;
 
     @Autowired
+    private WriterMapper writerMapper;
+
+    @Autowired
+    private WriterService writerService;
+
+    @Autowired
     private WriterSearchRepository writerSearchRepository;
 
     @Autowired
@@ -63,7 +72,7 @@ public class WriterResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        WriterResource writerResource = new WriterResource(writerRepository, writerSearchRepository);
+        WriterResource writerResource = new WriterResource(writerService);
         this.restWriterMockMvc = MockMvcBuilders.standaloneSetup(writerResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -93,9 +102,10 @@ public class WriterResourceIntTest {
         int databaseSizeBeforeCreate = writerRepository.findAll().size();
 
         // Create the Writer
+        WriterDTO writerDTO = writerMapper.toDto(writer);
         restWriterMockMvc.perform(post("/api/writers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(writer)))
+            .content(TestUtil.convertObjectToJsonBytes(writerDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Writer in the database
@@ -115,11 +125,12 @@ public class WriterResourceIntTest {
 
         // Create the Writer with an existing ID
         writer.setId(1L);
+        WriterDTO writerDTO = writerMapper.toDto(writer);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restWriterMockMvc.perform(post("/api/writers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(writer)))
+            .content(TestUtil.convertObjectToJsonBytes(writerDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
@@ -171,10 +182,11 @@ public class WriterResourceIntTest {
 
         // Update the writer
         Writer updatedWriter = writerRepository.findOne(writer.getId());
+        WriterDTO writerDTO = writerMapper.toDto(updatedWriter);
 
         restWriterMockMvc.perform(put("/api/writers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedWriter)))
+            .content(TestUtil.convertObjectToJsonBytes(writerDTO)))
             .andExpect(status().isOk());
 
         // Validate the Writer in the database
@@ -193,11 +205,12 @@ public class WriterResourceIntTest {
         int databaseSizeBeforeUpdate = writerRepository.findAll().size();
 
         // Create the Writer
+        WriterDTO writerDTO = writerMapper.toDto(writer);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restWriterMockMvc.perform(put("/api/writers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(writer)))
+            .content(TestUtil.convertObjectToJsonBytes(writerDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Writer in the database
@@ -254,5 +267,28 @@ public class WriterResourceIntTest {
         assertThat(writer1).isNotEqualTo(writer2);
         writer1.setId(null);
         assertThat(writer1).isNotEqualTo(writer2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(WriterDTO.class);
+        WriterDTO writerDTO1 = new WriterDTO();
+        writerDTO1.setId(1L);
+        WriterDTO writerDTO2 = new WriterDTO();
+        assertThat(writerDTO1).isNotEqualTo(writerDTO2);
+        writerDTO2.setId(writerDTO1.getId());
+        assertThat(writerDTO1).isEqualTo(writerDTO2);
+        writerDTO2.setId(2L);
+        assertThat(writerDTO1).isNotEqualTo(writerDTO2);
+        writerDTO1.setId(null);
+        assertThat(writerDTO1).isNotEqualTo(writerDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(writerMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(writerMapper.fromId(null)).isNull();
     }
 }

@@ -9,8 +9,7 @@ import { EventManager, AlertService } from 'ng-jhipster';
 import { Reader } from './reader.model';
 import { ReaderPopupService } from './reader-popup.service';
 import { ReaderService } from './reader.service';
-import { Board, BoardService } from '../board';
-import { User, UserService } from '../../shared';
+import { BoardUser, BoardUserService } from '../board-user';
 import { ResponseWrapper } from '../../shared';
 
 @Component({
@@ -23,16 +22,13 @@ export class ReaderDialogComponent implements OnInit {
     authorities: any[];
     isSaving: boolean;
 
-    boards: Board[];
-
-    users: User[];
+    boardusers: BoardUser[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private alertService: AlertService,
         private readerService: ReaderService,
-        private boardService: BoardService,
-        private userService: UserService,
+        private boardUserService: BoardUserService,
         private eventManager: EventManager
     ) {
     }
@@ -40,10 +36,19 @@ export class ReaderDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        this.boardService.query()
-            .subscribe((res: ResponseWrapper) => { this.boards = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
-        this.userService.query()
-            .subscribe((res: ResponseWrapper) => { this.users = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.boardUserService
+            .query({filter: 'reader-is-null'})
+            .subscribe((res: ResponseWrapper) => {
+                if (!this.reader.boardUserId) {
+                    this.boardusers = res.json;
+                } else {
+                    this.boardUserService
+                        .find(this.reader.boardUserId)
+                        .subscribe((subRes: BoardUser) => {
+                            this.boardusers = [subRes].concat(res.json);
+                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
+                }
+            }, (res: ResponseWrapper) => this.onError(res.json));
     }
     clear() {
         this.activeModal.dismiss('cancel');
@@ -85,11 +90,7 @@ export class ReaderDialogComponent implements OnInit {
         this.alertService.error(error.message, null, null);
     }
 
-    trackBoardById(index: number, item: Board) {
-        return item.id;
-    }
-
-    trackUserById(index: number, item: User) {
+    trackBoardUserById(index: number, item: BoardUser) {
         return item.id;
     }
 }

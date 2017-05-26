@@ -4,16 +4,10 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="wBoardApp.admin.board">Board</span></dt>
-        <dd>
-            <div *ngIf="admin.board">
-                <a [routerLink]="['/board', admin.board?.id]">{{admin.board?.name}}</a>
-            </div>
-        </dd>
         <dt><span jhiTranslate="wBoardApp.admin.writer">Writer</span></dt>
         <dd>
-            <div *ngIf="admin.writer">
-                <a [routerLink]="['/writer', admin.writer?.id]">{{admin.writer?.id}}</a>
+            <div *ngIf="admin.writerId">
+                <a [routerLink]="['/writer', admin.writerId]">{{admin.writerId}}</a>
             </div>
         </dd>
     </dl>

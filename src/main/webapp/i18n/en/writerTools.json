@@ -1,0 +1,22 @@
+{
+    "wBoardApp": {
+        "writerTools" : {
+            "home": {
+                "title": "Writer Tools",
+                "createLabel": "Create a new Writer Tools",
+                "createOrEditLabel": "Create or edit a Writer Tools",
+                "search": "Search for Writer Tools"
+            },
+            "created": "A new Writer Tools is created with identifier {{ param }}",
+            "updated": "A Writer Tools is updated with identifier {{ param }}",
+            "deleted": "A Writer Tools is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Writer Tools {{ id }}?"
+            },
+            "detail": {
+                "title": "Writer Tools"
+            },
+            "writer": "Writer"
+        }
+    }
+}

@@ -2,24 +2,18 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipName": "board",
-            "otherEntityName": "board",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "name"
-        },
-        {
-            "relationshipName": "user",
-            "otherEntityName": "user",
+            "relationshipName": "boardUser",
+            "otherEntityName": "boardUser",
             "relationshipType": "one-to-one",
-            "otherEntityField": "login",
+            "otherEntityField": "id",
             "ownerSide": true,
             "otherEntityRelationshipName": "reader"
         }
     ],
     "fields": [],
-    "changelogDate": "20170524101511",
-    "dto": "no",
-    "service": "no",
+    "changelogDate": "20170526080528",
+    "dto": "mapstruct",
+    "service": "serviceClass",
     "entityTableName": "reader",
     "pagination": "no"
 }

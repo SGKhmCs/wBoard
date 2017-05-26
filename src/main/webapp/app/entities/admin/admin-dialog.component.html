@@ -14,17 +14,10 @@
         </div>
 
         <div class="form-group">
-            <label jhiTranslate="wBoardApp.admin.board" for="field_board">Board</label>
-            <select class="form-control" id="field_board" name="board" [(ngModel)]="admin.board" >
-                <option [ngValue]="null"></option>
-                <option [ngValue]="boardOption.id === admin.board?.id ? admin.board : boardOption" *ngFor="let boardOption of boards; trackBy: trackBoardById">{{boardOption.name}}</option>
-            </select>
-        </div>
-        <div class="form-group">
             <label jhiTranslate="wBoardApp.admin.writer" for="field_writer">Writer</label>
-            <select class="form-control" id="field_writer" name="writer" [(ngModel)]="admin.writer">
+            <select class="form-control" id="field_writer" name="writer" [(ngModel)]="admin.writerId">
                 <option [ngValue]="null"></option>
-                <option [ngValue]="writerOption.id === admin.writer?.id ? admin.writer : writerOption" *ngFor="let writerOption of writers; trackBy: trackWriterById">{{writerOption.id}}</option>
+                <option [ngValue]="writerOption.id" *ngFor="let writerOption of writers; trackBy: trackWriterById">{{writerOption.id}}</option>
             </select>
         </div>
     </div>

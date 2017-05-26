@@ -1,0 +1,22 @@
+{
+    "wBoardApp": {
+        "adminTools" : {
+            "home": {
+                "title": "Admin Tools",
+                "createLabel": "Create a new Admin Tools",
+                "createOrEditLabel": "Create or edit a Admin Tools",
+                "search": "Search for Admin Tools"
+            },
+            "created": "A new Admin Tools is created with identifier {{ param }}",
+            "updated": "A Admin Tools is updated with identifier {{ param }}",
+            "deleted": "A Admin Tools is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Admin Tools {{ id }}?"
+            },
+            "detail": {
+                "title": "Admin Tools"
+            },
+            "admin": "Admin"
+        }
+    }
+}

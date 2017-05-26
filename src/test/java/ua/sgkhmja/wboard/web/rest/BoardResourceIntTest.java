@@ -3,8 +3,12 @@ package ua.sgkhmja.wboard.web.rest;
 import ua.sgkhmja.wboard.WBoardApp;
 
 import ua.sgkhmja.wboard.domain.Board;
+import ua.sgkhmja.wboard.domain.User;
 import ua.sgkhmja.wboard.repository.BoardRepository;
+import ua.sgkhmja.wboard.service.BoardService;
 import ua.sgkhmja.wboard.repository.search.BoardSearchRepository;
+import ua.sgkhmja.wboard.service.dto.BoardDTO;
+import ua.sgkhmja.wboard.service.mapper.BoardMapper;
 import ua.sgkhmja.wboard.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -48,6 +52,12 @@ public class BoardResourceIntTest {
     private BoardRepository boardRepository;
 
     @Autowired
+    private BoardMapper boardMapper;
+
+    @Autowired
+    private BoardService boardService;
+
+    @Autowired
     private BoardSearchRepository boardSearchRepository;
 
     @Autowired
@@ -69,7 +79,7 @@ public class BoardResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        BoardResource boardResource = new BoardResource(boardRepository, boardSearchRepository);
+        BoardResource boardResource = new BoardResource(boardService);
         this.restBoardMockMvc = MockMvcBuilders.standaloneSetup(boardResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -86,6 +96,11 @@ public class BoardResourceIntTest {
         Board board = new Board()
             .name(DEFAULT_NAME)
             .pub(DEFAULT_PUB);
+        // Add required entity
+        User owner = UserResourceIntTest.createEntity(em);
+        em.persist(owner);
+        em.flush();
+        board.setOwner(owner);
         return board;
     }
 
@@ -101,9 +116,10 @@ public class BoardResourceIntTest {
         int databaseSizeBeforeCreate = boardRepository.findAll().size();
 
         // Create the Board
+        BoardDTO boardDTO = boardMapper.toDto(board);
         restBoardMockMvc.perform(post("/api/boards")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(board)))
+            .content(TestUtil.convertObjectToJsonBytes(boardDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Board in the database
@@ -125,11 +141,12 @@ public class BoardResourceIntTest {
 
         // Create the Board with an existing ID
         board.setId(1L);
+        BoardDTO boardDTO = boardMapper.toDto(board);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restBoardMockMvc.perform(post("/api/boards")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(board)))
+            .content(TestUtil.convertObjectToJsonBytes(boardDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
@@ -145,28 +162,11 @@ public class BoardResourceIntTest {
         board.setName(null);
 
         // Create the Board, which fails.
+        BoardDTO boardDTO = boardMapper.toDto(board);
 
         restBoardMockMvc.perform(post("/api/boards")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(board)))
-            .andExpect(status().isBadRequest());
-
-        List<Board> boardList = boardRepository.findAll();
-        assertThat(boardList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkPubIsRequired() throws Exception {
-        int databaseSizeBeforeTest = boardRepository.findAll().size();
-        // set the field null
-        board.setPub(null);
-
-        // Create the Board, which fails.
-
-        restBoardMockMvc.perform(post("/api/boards")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(board)))
+            .content(TestUtil.convertObjectToJsonBytes(boardDTO)))
             .andExpect(status().isBadRequest());
 
         List<Board> boardList = boardRepository.findAll();
@@ -224,10 +224,11 @@ public class BoardResourceIntTest {
         updatedBoard
             .name(UPDATED_NAME)
             .pub(UPDATED_PUB);
+        BoardDTO boardDTO = boardMapper.toDto(updatedBoard);
 
         restBoardMockMvc.perform(put("/api/boards")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedBoard)))
+            .content(TestUtil.convertObjectToJsonBytes(boardDTO)))
             .andExpect(status().isOk());
 
         // Validate the Board in the database
@@ -248,11 +249,12 @@ public class BoardResourceIntTest {
         int databaseSizeBeforeUpdate = boardRepository.findAll().size();
 
         // Create the Board
+        BoardDTO boardDTO = boardMapper.toDto(board);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restBoardMockMvc.perform(put("/api/boards")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(board)))
+            .content(TestUtil.convertObjectToJsonBytes(boardDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Board in the database
@@ -311,5 +313,28 @@ public class BoardResourceIntTest {
         assertThat(board1).isNotEqualTo(board2);
         board1.setId(null);
         assertThat(board1).isNotEqualTo(board2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(BoardDTO.class);
+        BoardDTO boardDTO1 = new BoardDTO();
+        boardDTO1.setId(1L);
+        BoardDTO boardDTO2 = new BoardDTO();
+        assertThat(boardDTO1).isNotEqualTo(boardDTO2);
+        boardDTO2.setId(boardDTO1.getId());
+        assertThat(boardDTO1).isEqualTo(boardDTO2);
+        boardDTO2.setId(2L);
+        assertThat(boardDTO1).isNotEqualTo(boardDTO2);
+        boardDTO1.setId(null);
+        assertThat(boardDTO1).isNotEqualTo(boardDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(boardMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(boardMapper.fromId(null)).isNull();
     }
 }

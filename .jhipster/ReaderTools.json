@@ -1,0 +1,19 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "reader",
+            "otherEntityName": "reader",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "readerTools"
+        }
+    ],
+    "fields": [],
+    "changelogDate": "20170526081126",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "reader_tools",
+    "pagination": "no"
+}

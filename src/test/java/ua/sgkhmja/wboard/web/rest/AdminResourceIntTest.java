@@ -4,7 +4,10 @@ import ua.sgkhmja.wboard.WBoardApp;
 
 import ua.sgkhmja.wboard.domain.Admin;
 import ua.sgkhmja.wboard.repository.AdminRepository;
+import ua.sgkhmja.wboard.service.AdminService;
 import ua.sgkhmja.wboard.repository.search.AdminSearchRepository;
+import ua.sgkhmja.wboard.service.dto.AdminDTO;
+import ua.sgkhmja.wboard.service.mapper.AdminMapper;
 import ua.sgkhmja.wboard.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -42,6 +45,12 @@ public class AdminResourceIntTest {
     private AdminRepository adminRepository;
 
     @Autowired
+    private AdminMapper adminMapper;
+
+    @Autowired
+    private AdminService adminService;
+
+    @Autowired
     private AdminSearchRepository adminSearchRepository;
 
     @Autowired
@@ -63,7 +72,7 @@ public class AdminResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        AdminResource adminResource = new AdminResource(adminRepository, adminSearchRepository);
+        AdminResource adminResource = new AdminResource(adminService);
         this.restAdminMockMvc = MockMvcBuilders.standaloneSetup(adminResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -93,9 +102,10 @@ public class AdminResourceIntTest {
         int databaseSizeBeforeCreate = adminRepository.findAll().size();
 
         // Create the Admin
+        AdminDTO adminDTO = adminMapper.toDto(admin);
         restAdminMockMvc.perform(post("/api/admins")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(admin)))
+            .content(TestUtil.convertObjectToJsonBytes(adminDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Admin in the database
@@ -115,11 +125,12 @@ public class AdminResourceIntTest {
 
         // Create the Admin with an existing ID
         admin.setId(1L);
+        AdminDTO adminDTO = adminMapper.toDto(admin);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restAdminMockMvc.perform(post("/api/admins")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(admin)))
+            .content(TestUtil.convertObjectToJsonBytes(adminDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
@@ -171,10 +182,11 @@ public class AdminResourceIntTest {
 
         // Update the admin
         Admin updatedAdmin = adminRepository.findOne(admin.getId());
+        AdminDTO adminDTO = adminMapper.toDto(updatedAdmin);
 
         restAdminMockMvc.perform(put("/api/admins")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedAdmin)))
+            .content(TestUtil.convertObjectToJsonBytes(adminDTO)))
             .andExpect(status().isOk());
 
         // Validate the Admin in the database
@@ -193,11 +205,12 @@ public class AdminResourceIntTest {
         int databaseSizeBeforeUpdate = adminRepository.findAll().size();
 
         // Create the Admin
+        AdminDTO adminDTO = adminMapper.toDto(admin);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restAdminMockMvc.perform(put("/api/admins")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(admin)))
+            .content(TestUtil.convertObjectToJsonBytes(adminDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Admin in the database
@@ -254,5 +267,28 @@ public class AdminResourceIntTest {
         assertThat(admin1).isNotEqualTo(admin2);
         admin1.setId(null);
         assertThat(admin1).isNotEqualTo(admin2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(AdminDTO.class);
+        AdminDTO adminDTO1 = new AdminDTO();
+        adminDTO1.setId(1L);
+        AdminDTO adminDTO2 = new AdminDTO();
+        assertThat(adminDTO1).isNotEqualTo(adminDTO2);
+        adminDTO2.setId(adminDTO1.getId());
+        assertThat(adminDTO1).isEqualTo(adminDTO2);
+        adminDTO2.setId(2L);
+        assertThat(adminDTO1).isNotEqualTo(adminDTO2);
+        adminDTO1.setId(null);
+        assertThat(adminDTO1).isNotEqualTo(adminDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(adminMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(adminMapper.fromId(null)).isNull();
     }
 }

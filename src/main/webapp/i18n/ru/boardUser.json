@@ -1,0 +1,23 @@
+{
+    "wBoardApp": {
+        "boardUser" : {
+            "home": {
+                "title": "Board Users",
+                "createLabel": "Создать новый Board User",
+                "createOrEditLabel": "Создать или отредактировать Board User",
+                "search": "Найти Board User"
+            },
+            "created": "Новый Board User создан с идентификатором {{ param }}",
+            "updated": "Board User обновлен с идентификатором {{ param }}",
+            "deleted": "Board User удален с идентификатором {{ param }}",
+            "delete": {
+                "question": "Вы уверены что хотите удалить Board User {{ id }}?"
+            },
+            "detail": {
+                "title": "Board User"
+            },
+            "user": "User",
+            "board": "Board"
+        }
+    }
+}

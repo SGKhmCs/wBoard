@@ -2,12 +2,6 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipName": "board",
-            "otherEntityName": "board",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "name"
-        },
-        {
             "relationshipName": "reader",
             "otherEntityName": "reader",
             "relationshipType": "one-to-one",
@@ -17,9 +11,9 @@
         }
     ],
     "fields": [],
-    "changelogDate": "20170524101743",
-    "dto": "no",
-    "service": "no",
+    "changelogDate": "20170526080654",
+    "dto": "mapstruct",
+    "service": "serviceClass",
     "entityTableName": "writer",
     "pagination": "no"
 }

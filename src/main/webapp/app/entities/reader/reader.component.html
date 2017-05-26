@@ -30,8 +30,7 @@
             <thead>
             <tr>
             <th><span jhiTranslate="global.field.id">ID</span></th>
-            <th><span jhiTranslate="wBoardApp.reader.board">Board</span></th>
-            <th><span jhiTranslate="wBoardApp.reader.user">User</span></th>
+            <th><span jhiTranslate="wBoardApp.reader.boardUser">Board User</span></th>
             <th></th>
             </tr>
             </thead>
@@ -39,12 +38,9 @@
             <tr *ngFor="let reader of readers ;trackBy: trackId">
                 <td><a [routerLink]="['../reader', reader.id ]">{{reader.id}}</a></td>
                 <td>
-                    <div *ngIf="reader.board">
-                        <a [routerLink]="['../board', reader.board?.id ]" >{{reader.board?.name}}</a>
+                    <div *ngIf="reader.boardUserId">
+                        <a [routerLink]="['../board-user', reader.boardUserId  ]" >{{reader.boardUserId}}</a>
                     </div>
-                </td>
-                <td>
-                    {{reader.user?.login}}
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

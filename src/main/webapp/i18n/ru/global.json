@@ -7,10 +7,14 @@
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Сущности",
-                "admin": "Admin",
                 "board": "Board",
+                "boardUser": "Board User",
                 "reader": "Reader",
                 "writer": "Writer",
+                "admin": "Admin",
+                "adminTools": "Admin Tools",
+                "writerTools": "Writer Tools",
+                "readerTools": "Reader Tools",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

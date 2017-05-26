@@ -4,7 +4,10 @@ import ua.sgkhmja.wboard.WBoardApp;
 
 import ua.sgkhmja.wboard.domain.Reader;
 import ua.sgkhmja.wboard.repository.ReaderRepository;
+import ua.sgkhmja.wboard.service.ReaderService;
 import ua.sgkhmja.wboard.repository.search.ReaderSearchRepository;
+import ua.sgkhmja.wboard.service.dto.ReaderDTO;
+import ua.sgkhmja.wboard.service.mapper.ReaderMapper;
 import ua.sgkhmja.wboard.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -42,6 +45,12 @@ public class ReaderResourceIntTest {
     private ReaderRepository readerRepository;
 
     @Autowired
+    private ReaderMapper readerMapper;
+
+    @Autowired
+    private ReaderService readerService;
+
+    @Autowired
     private ReaderSearchRepository readerSearchRepository;
 
     @Autowired
@@ -63,7 +72,7 @@ public class ReaderResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ReaderResource readerResource = new ReaderResource(readerRepository, readerSearchRepository);
+        ReaderResource readerResource = new ReaderResource(readerService);
         this.restReaderMockMvc = MockMvcBuilders.standaloneSetup(readerResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -93,9 +102,10 @@ public class ReaderResourceIntTest {
         int databaseSizeBeforeCreate = readerRepository.findAll().size();
 
         // Create the Reader
+        ReaderDTO readerDTO = readerMapper.toDto(reader);
         restReaderMockMvc.perform(post("/api/readers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(reader)))
+            .content(TestUtil.convertObjectToJsonBytes(readerDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Reader in the database
@@ -115,11 +125,12 @@ public class ReaderResourceIntTest {
 
         // Create the Reader with an existing ID
         reader.setId(1L);
+        ReaderDTO readerDTO = readerMapper.toDto(reader);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restReaderMockMvc.perform(post("/api/readers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(reader)))
+            .content(TestUtil.convertObjectToJsonBytes(readerDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
@@ -171,10 +182,11 @@ public class ReaderResourceIntTest {
 
         // Update the reader
         Reader updatedReader = readerRepository.findOne(reader.getId());
+        ReaderDTO readerDTO = readerMapper.toDto(updatedReader);
 
         restReaderMockMvc.perform(put("/api/readers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedReader)))
+            .content(TestUtil.convertObjectToJsonBytes(readerDTO)))
             .andExpect(status().isOk());
 
         // Validate the Reader in the database
@@ -193,11 +205,12 @@ public class ReaderResourceIntTest {
         int databaseSizeBeforeUpdate = readerRepository.findAll().size();
 
         // Create the Reader
+        ReaderDTO readerDTO = readerMapper.toDto(reader);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restReaderMockMvc.perform(put("/api/readers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(reader)))
+            .content(TestUtil.convertObjectToJsonBytes(readerDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Reader in the database
@@ -254,5 +267,28 @@ public class ReaderResourceIntTest {
         assertThat(reader1).isNotEqualTo(reader2);
         reader1.setId(null);
         assertThat(reader1).isNotEqualTo(reader2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(ReaderDTO.class);
+        ReaderDTO readerDTO1 = new ReaderDTO();
+        readerDTO1.setId(1L);
+        ReaderDTO readerDTO2 = new ReaderDTO();
+        assertThat(readerDTO1).isNotEqualTo(readerDTO2);
+        readerDTO2.setId(readerDTO1.getId());
+        assertThat(readerDTO1).isEqualTo(readerDTO2);
+        readerDTO2.setId(2L);
+        assertThat(readerDTO1).isNotEqualTo(readerDTO2);
+        readerDTO1.setId(null);
+        assertThat(readerDTO1).isNotEqualTo(readerDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(readerMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(readerMapper.fromId(null)).isNull();
     }
 }

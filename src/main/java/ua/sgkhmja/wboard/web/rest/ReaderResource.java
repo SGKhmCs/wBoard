@@ -1,11 +1,9 @@
 package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import ua.sgkhmja.wboard.domain.Reader;
-
-import ua.sgkhmja.wboard.repository.ReaderRepository;
-import ua.sgkhmja.wboard.repository.search.ReaderSearchRepository;
+import ua.sgkhmja.wboard.service.ReaderService;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
+import ua.sgkhmja.wboard.service.dto.ReaderDTO;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -33,31 +30,27 @@ public class ReaderResource {
 
     private static final String ENTITY_NAME = "reader";
         
-    private final ReaderRepository readerRepository;
+    private final ReaderService readerService;
 
-    private final ReaderSearchRepository readerSearchRepository;
-
-    public ReaderResource(ReaderRepository readerRepository, ReaderSearchRepository readerSearchRepository) {
-        this.readerRepository = readerRepository;
-        this.readerSearchRepository = readerSearchRepository;
+    public ReaderResource(ReaderService readerService) {
+        this.readerService = readerService;
     }
 
     /**
      * POST  /readers : Create a new reader.
      *
-     * @param reader the reader to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new reader, or with status 400 (Bad Request) if the reader has already an ID
+     * @param readerDTO the readerDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new readerDTO, or with status 400 (Bad Request) if the reader has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/readers")
     @Timed
-    public ResponseEntity<Reader> createReader(@RequestBody Reader reader) throws URISyntaxException {
-        log.debug("REST request to save Reader : {}", reader);
-        if (reader.getId() != null) {
+    public ResponseEntity<ReaderDTO> createReader(@RequestBody ReaderDTO readerDTO) throws URISyntaxException {
+        log.debug("REST request to save Reader : {}", readerDTO);
+        if (readerDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new reader cannot already have an ID")).body(null);
         }
-        Reader result = readerRepository.save(reader);
-        readerSearchRepository.save(result);
+        ReaderDTO result = readerService.save(readerDTO);
         return ResponseEntity.created(new URI("/api/readers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -66,23 +59,22 @@ public class ReaderResource {
     /**
      * PUT  /readers : Updates an existing reader.
      *
-     * @param reader the reader to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated reader,
-     * or with status 400 (Bad Request) if the reader is not valid,
-     * or with status 500 (Internal Server Error) if the reader couldnt be updated
+     * @param readerDTO the readerDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated readerDTO,
+     * or with status 400 (Bad Request) if the readerDTO is not valid,
+     * or with status 500 (Internal Server Error) if the readerDTO couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/readers")
     @Timed
-    public ResponseEntity<Reader> updateReader(@RequestBody Reader reader) throws URISyntaxException {
-        log.debug("REST request to update Reader : {}", reader);
-        if (reader.getId() == null) {
-            return createReader(reader);
+    public ResponseEntity<ReaderDTO> updateReader(@RequestBody ReaderDTO readerDTO) throws URISyntaxException {
+        log.debug("REST request to update Reader : {}", readerDTO);
+        if (readerDTO.getId() == null) {
+            return createReader(readerDTO);
         }
-        Reader result = readerRepository.save(reader);
-        readerSearchRepository.save(result);
+        ReaderDTO result = readerService.save(readerDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, reader.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, readerDTO.getId().toString()))
             .body(result);
     }
 
@@ -93,38 +85,36 @@ public class ReaderResource {
      */
     @GetMapping("/readers")
     @Timed
-    public List<Reader> getAllReaders() {
+    public List<ReaderDTO> getAllReaders() {
         log.debug("REST request to get all Readers");
-        List<Reader> readers = readerRepository.findAll();
-        return readers;
+        return readerService.findAll();
     }
 
     /**
      * GET  /readers/:id : get the "id" reader.
      *
-     * @param id the id of the reader to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the reader, or with status 404 (Not Found)
+     * @param id the id of the readerDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the readerDTO, or with status 404 (Not Found)
      */
     @GetMapping("/readers/{id}")
     @Timed
-    public ResponseEntity<Reader> getReader(@PathVariable Long id) {
+    public ResponseEntity<ReaderDTO> getReader(@PathVariable Long id) {
         log.debug("REST request to get Reader : {}", id);
-        Reader reader = readerRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(reader));
+        ReaderDTO readerDTO = readerService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(readerDTO));
     }
 
     /**
      * DELETE  /readers/:id : delete the "id" reader.
      *
-     * @param id the id of the reader to delete
+     * @param id the id of the readerDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/readers/{id}")
     @Timed
     public ResponseEntity<Void> deleteReader(@PathVariable Long id) {
         log.debug("REST request to delete Reader : {}", id);
-        readerRepository.delete(id);
-        readerSearchRepository.delete(id);
+        readerService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -137,11 +127,9 @@ public class ReaderResource {
      */
     @GetMapping("/_search/readers")
     @Timed
-    public List<Reader> searchReaders(@RequestParam String query) {
+    public List<ReaderDTO> searchReaders(@RequestParam String query) {
         log.debug("REST request to search Readers for query {}", query);
-        return StreamSupport
-            .stream(readerSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+        return readerService.search(query);
     }
 
 

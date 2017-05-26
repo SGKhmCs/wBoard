@@ -1,11 +1,9 @@
 package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import ua.sgkhmja.wboard.domain.Admin;
-
-import ua.sgkhmja.wboard.repository.AdminRepository;
-import ua.sgkhmja.wboard.repository.search.AdminSearchRepository;
+import ua.sgkhmja.wboard.service.AdminService;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
+import ua.sgkhmja.wboard.service.dto.AdminDTO;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -33,31 +30,27 @@ public class AdminResource {
 
     private static final String ENTITY_NAME = "admin";
         
-    private final AdminRepository adminRepository;
+    private final AdminService adminService;
 
-    private final AdminSearchRepository adminSearchRepository;
-
-    public AdminResource(AdminRepository adminRepository, AdminSearchRepository adminSearchRepository) {
-        this.adminRepository = adminRepository;
-        this.adminSearchRepository = adminSearchRepository;
+    public AdminResource(AdminService adminService) {
+        this.adminService = adminService;
     }
 
     /**
      * POST  /admins : Create a new admin.
      *
-     * @param admin the admin to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new admin, or with status 400 (Bad Request) if the admin has already an ID
+     * @param adminDTO the adminDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new adminDTO, or with status 400 (Bad Request) if the admin has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/admins")
     @Timed
-    public ResponseEntity<Admin> createAdmin(@RequestBody Admin admin) throws URISyntaxException {
-        log.debug("REST request to save Admin : {}", admin);
-        if (admin.getId() != null) {
+    public ResponseEntity<AdminDTO> createAdmin(@RequestBody AdminDTO adminDTO) throws URISyntaxException {
+        log.debug("REST request to save Admin : {}", adminDTO);
+        if (adminDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new admin cannot already have an ID")).body(null);
         }
-        Admin result = adminRepository.save(admin);
-        adminSearchRepository.save(result);
+        AdminDTO result = adminService.save(adminDTO);
         return ResponseEntity.created(new URI("/api/admins/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -66,23 +59,22 @@ public class AdminResource {
     /**
      * PUT  /admins : Updates an existing admin.
      *
-     * @param admin the admin to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated admin,
-     * or with status 400 (Bad Request) if the admin is not valid,
-     * or with status 500 (Internal Server Error) if the admin couldnt be updated
+     * @param adminDTO the adminDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated adminDTO,
+     * or with status 400 (Bad Request) if the adminDTO is not valid,
+     * or with status 500 (Internal Server Error) if the adminDTO couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/admins")
     @Timed
-    public ResponseEntity<Admin> updateAdmin(@RequestBody Admin admin) throws URISyntaxException {
-        log.debug("REST request to update Admin : {}", admin);
-        if (admin.getId() == null) {
-            return createAdmin(admin);
+    public ResponseEntity<AdminDTO> updateAdmin(@RequestBody AdminDTO adminDTO) throws URISyntaxException {
+        log.debug("REST request to update Admin : {}", adminDTO);
+        if (adminDTO.getId() == null) {
+            return createAdmin(adminDTO);
         }
-        Admin result = adminRepository.save(admin);
-        adminSearchRepository.save(result);
+        AdminDTO result = adminService.save(adminDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, admin.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, adminDTO.getId().toString()))
             .body(result);
     }
 
@@ -93,38 +85,36 @@ public class AdminResource {
      */
     @GetMapping("/admins")
     @Timed
-    public List<Admin> getAllAdmins() {
+    public List<AdminDTO> getAllAdmins() {
         log.debug("REST request to get all Admins");
-        List<Admin> admins = adminRepository.findAll();
-        return admins;
+        return adminService.findAll();
     }
 
     /**
      * GET  /admins/:id : get the "id" admin.
      *
-     * @param id the id of the admin to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the admin, or with status 404 (Not Found)
+     * @param id the id of the adminDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the adminDTO, or with status 404 (Not Found)
      */
     @GetMapping("/admins/{id}")
     @Timed
-    public ResponseEntity<Admin> getAdmin(@PathVariable Long id) {
+    public ResponseEntity<AdminDTO> getAdmin(@PathVariable Long id) {
         log.debug("REST request to get Admin : {}", id);
-        Admin admin = adminRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(admin));
+        AdminDTO adminDTO = adminService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(adminDTO));
     }
 
     /**
      * DELETE  /admins/:id : delete the "id" admin.
      *
-     * @param id the id of the admin to delete
+     * @param id the id of the adminDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/admins/{id}")
     @Timed
     public ResponseEntity<Void> deleteAdmin(@PathVariable Long id) {
         log.debug("REST request to delete Admin : {}", id);
-        adminRepository.delete(id);
-        adminSearchRepository.delete(id);
+        adminService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -137,11 +127,9 @@ public class AdminResource {
      */
     @GetMapping("/_search/admins")
     @Timed
-    public List<Admin> searchAdmins(@RequestParam String query) {
+    public List<AdminDTO> searchAdmins(@RequestParam String query) {
         log.debug("REST request to search Admins for query {}", query);
-        return StreamSupport
-            .stream(adminSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+        return adminService.search(query);
     }
 
 

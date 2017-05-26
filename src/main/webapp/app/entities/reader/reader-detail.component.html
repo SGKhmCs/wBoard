@@ -4,15 +4,11 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="wBoardApp.reader.board">Board</span></dt>
+        <dt><span jhiTranslate="wBoardApp.reader.boardUser">Board User</span></dt>
         <dd>
-            <div *ngIf="reader.board">
-                <a [routerLink]="['/board', reader.board?.id]">{{reader.board?.name}}</a>
+            <div *ngIf="reader.boardUserId">
+                <a [routerLink]="['/board-user', reader.boardUserId]">{{reader.boardUserId}}</a>
             </div>
-        </dd>
-        <dt><span jhiTranslate="wBoardApp.reader.user">User</span></dt>
-        <dd>
-            {{reader.user?.login}}
         </dd>
     </dl>
 

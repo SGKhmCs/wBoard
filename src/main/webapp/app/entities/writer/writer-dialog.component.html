@@ -14,17 +14,10 @@
         </div>
 
         <div class="form-group">
-            <label jhiTranslate="wBoardApp.writer.board" for="field_board">Board</label>
-            <select class="form-control" id="field_board" name="board" [(ngModel)]="writer.board" >
-                <option [ngValue]="null"></option>
-                <option [ngValue]="boardOption.id === writer.board?.id ? writer.board : boardOption" *ngFor="let boardOption of boards; trackBy: trackBoardById">{{boardOption.name}}</option>
-            </select>
-        </div>
-        <div class="form-group">
             <label jhiTranslate="wBoardApp.writer.reader" for="field_reader">Reader</label>
-            <select class="form-control" id="field_reader" name="reader" [(ngModel)]="writer.reader">
+            <select class="form-control" id="field_reader" name="reader" [(ngModel)]="writer.readerId">
                 <option [ngValue]="null"></option>
-                <option [ngValue]="readerOption.id === writer.reader?.id ? writer.reader : readerOption" *ngFor="let readerOption of readers; trackBy: trackReaderById">{{readerOption.id}}</option>
+                <option [ngValue]="readerOption.id" *ngFor="let readerOption of readers; trackBy: trackReaderById">{{readerOption.id}}</option>
             </select>
         </div>
     </div>

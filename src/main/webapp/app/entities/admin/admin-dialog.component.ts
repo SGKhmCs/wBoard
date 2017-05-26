@@ -9,7 +9,6 @@ import { EventManager, AlertService } from 'ng-jhipster';
 import { Admin } from './admin.model';
 import { AdminPopupService } from './admin-popup.service';
 import { AdminService } from './admin.service';
-import { Board, BoardService } from '../board';
 import { Writer, WriterService } from '../writer';
 import { ResponseWrapper } from '../../shared';
 
@@ -23,15 +22,12 @@ export class AdminDialogComponent implements OnInit {
     authorities: any[];
     isSaving: boolean;
 
-    boards: Board[];
-
     writers: Writer[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private alertService: AlertService,
         private adminService: AdminService,
-        private boardService: BoardService,
         private writerService: WriterService,
         private eventManager: EventManager
     ) {
@@ -40,16 +36,14 @@ export class AdminDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        this.boardService.query()
-            .subscribe((res: ResponseWrapper) => { this.boards = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
         this.writerService
             .query({filter: 'admin-is-null'})
             .subscribe((res: ResponseWrapper) => {
-                if (!this.admin.writer || !this.admin.writer.id) {
+                if (!this.admin.writerId) {
                     this.writers = res.json;
                 } else {
                     this.writerService
-                        .find(this.admin.writer.id)
+                        .find(this.admin.writerId)
                         .subscribe((subRes: Writer) => {
                             this.writers = [subRes].concat(res.json);
                         }, (subRes: ResponseWrapper) => this.onError(subRes.json));
@@ -94,10 +88,6 @@ export class AdminDialogComponent implements OnInit {
 
     private onError(error) {
         this.alertService.error(error.message, null, null);
-    }
-
-    trackBoardById(index: number, item: Board) {
-        return item.id;
     }
 
     trackWriterById(index: number, item: Writer) {

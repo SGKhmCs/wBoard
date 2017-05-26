@@ -9,7 +9,6 @@ import { EventManager, AlertService } from 'ng-jhipster';
 import { Writer } from './writer.model';
 import { WriterPopupService } from './writer-popup.service';
 import { WriterService } from './writer.service';
-import { Board, BoardService } from '../board';
 import { Reader, ReaderService } from '../reader';
 import { ResponseWrapper } from '../../shared';
 
@@ -23,15 +22,12 @@ export class WriterDialogComponent implements OnInit {
     authorities: any[];
     isSaving: boolean;
 
-    boards: Board[];
-
     readers: Reader[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private alertService: AlertService,
         private writerService: WriterService,
-        private boardService: BoardService,
         private readerService: ReaderService,
         private eventManager: EventManager
     ) {
@@ -40,16 +36,14 @@ export class WriterDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        this.boardService.query()
-            .subscribe((res: ResponseWrapper) => { this.boards = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
         this.readerService
             .query({filter: 'writer-is-null'})
             .subscribe((res: ResponseWrapper) => {
-                if (!this.writer.reader || !this.writer.reader.id) {
+                if (!this.writer.readerId) {
                     this.readers = res.json;
                 } else {
                     this.readerService
-                        .find(this.writer.reader.id)
+                        .find(this.writer.readerId)
                         .subscribe((subRes: Reader) => {
                             this.readers = [subRes].concat(res.json);
                         }, (subRes: ResponseWrapper) => this.onError(subRes.json));
@@ -94,10 +88,6 @@ export class WriterDialogComponent implements OnInit {
 
     private onError(error) {
         this.alertService.error(error.message, null, null);
-    }
-
-    trackBoardById(index: number, item: Board) {
-        return item.id;
     }
 
     trackReaderById(index: number, item: Reader) {

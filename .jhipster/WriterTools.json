@@ -1,0 +1,19 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "writer",
+            "otherEntityName": "writer",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "writerTools"
+        }
+    ],
+    "fields": [],
+    "changelogDate": "20170526080958",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "writer_tools",
+    "pagination": "no"
+}

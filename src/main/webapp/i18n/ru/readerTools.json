@@ -1,0 +1,22 @@
+{
+    "wBoardApp": {
+        "readerTools" : {
+            "home": {
+                "title": "Reader Tools",
+                "createLabel": "Создать новый Reader Tools",
+                "createOrEditLabel": "Создать или отредактировать Reader Tools",
+                "search": "Найти Reader Tools"
+            },
+            "created": "Новый Reader Tools создан с идентификатором {{ param }}",
+            "updated": "Reader Tools обновлен с идентификатором {{ param }}",
+            "deleted": "Reader Tools удален с идентификатором {{ param }}",
+            "delete": {
+                "question": "Вы уверены что хотите удалить Reader Tools {{ id }}?"
+            },
+            "detail": {
+                "title": "Reader Tools"
+            },
+            "reader": "Reader"
+        }
+    }
+}

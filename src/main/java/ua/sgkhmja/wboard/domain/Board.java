@@ -1,6 +1,5 @@
 package ua.sgkhmja.wboard.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -8,8 +7,6 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -33,27 +30,12 @@ public class Board implements Serializable {
     @Column(name = "name", length = 48, nullable = false)
     private String name;
 
-    @NotNull
-    @Column(name = "pub", nullable = false)
+    @Column(name = "pub")
     private Boolean pub;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     private User owner;
-
-    @OneToMany(mappedBy = "board")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Reader> readers = new HashSet<>();
-
-    @OneToMany(mappedBy = "board")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Writer> writers = new HashSet<>();
-
-    @OneToMany(mappedBy = "board")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Admin> admins = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -100,81 +82,6 @@ public class Board implements Serializable {
 
     public void setOwner(User user) {
         this.owner = user;
-    }
-
-    public Set<Reader> getReaders() {
-        return readers;
-    }
-
-    public Board readers(Set<Reader> readers) {
-        this.readers = readers;
-        return this;
-    }
-
-    public Board addReader(Reader reader) {
-        this.readers.add(reader);
-        reader.setBoard(this);
-        return this;
-    }
-
-    public Board removeReader(Reader reader) {
-        this.readers.remove(reader);
-        reader.setBoard(null);
-        return this;
-    }
-
-    public void setReaders(Set<Reader> readers) {
-        this.readers = readers;
-    }
-
-    public Set<Writer> getWriters() {
-        return writers;
-    }
-
-    public Board writers(Set<Writer> writers) {
-        this.writers = writers;
-        return this;
-    }
-
-    public Board addWriter(Writer writer) {
-        this.writers.add(writer);
-        writer.setBoard(this);
-        return this;
-    }
-
-    public Board removeWriter(Writer writer) {
-        this.writers.remove(writer);
-        writer.setBoard(null);
-        return this;
-    }
-
-    public void setWriters(Set<Writer> writers) {
-        this.writers = writers;
-    }
-
-    public Set<Admin> getAdmins() {
-        return admins;
-    }
-
-    public Board admins(Set<Admin> admins) {
-        this.admins = admins;
-        return this;
-    }
-
-    public Board addAdmin(Admin admin) {
-        this.admins.add(admin);
-        admin.setBoard(this);
-        return this;
-    }
-
-    public Board removeAdmin(Admin admin) {
-        this.admins.remove(admin);
-        admin.setBoard(null);
-        return this;
-    }
-
-    public void setAdmins(Set<Admin> admins) {
-        this.admins = admins;
     }
 
     @Override

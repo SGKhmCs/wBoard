@@ -24,9 +24,6 @@ public class Admin implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @ManyToOne
-    private Board board;
-
     @OneToOne
     @JoinColumn(unique = true)
     private Writer writer;
@@ -37,19 +34,6 @@ public class Admin implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public Admin board(Board board) {
-        this.board = board;
-        return this;
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
     }
 
     public Writer getWriter() {

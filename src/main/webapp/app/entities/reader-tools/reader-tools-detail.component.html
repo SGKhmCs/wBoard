@@ -1,0 +1,27 @@
+
+<div *ngIf="readerTools">
+    <h2><span jhiTranslate="wBoardApp.readerTools.detail.title">Reader Tools</span> {{readerTools.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="wBoardApp.readerTools.reader">Reader</span></dt>
+        <dd>
+            <div *ngIf="readerTools.readerId">
+                <a [routerLink]="['/reader', readerTools.readerId]">{{readerTools.readerId}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'reader-tools/'+ readerTools.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

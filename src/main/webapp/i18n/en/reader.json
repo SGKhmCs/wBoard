@@ -16,8 +16,7 @@
             "detail": {
                 "title": "Reader"
             },
-            "board": "Board",
-            "user": "User"
+            "boardUser": "Board User"
         }
     }
 }

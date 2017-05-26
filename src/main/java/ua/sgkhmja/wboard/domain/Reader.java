@@ -24,12 +24,9 @@ public class Reader implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @ManyToOne
-    private Board board;
-
     @OneToOne
     @JoinColumn(unique = true)
-    private User user;
+    private BoardUser boardUser;
 
     public Long getId() {
         return id;
@@ -39,30 +36,17 @@ public class Reader implements Serializable {
         this.id = id;
     }
 
-    public Board getBoard() {
-        return board;
+    public BoardUser getBoardUser() {
+        return boardUser;
     }
 
-    public Reader board(Board board) {
-        this.board = board;
+    public Reader boardUser(BoardUser boardUser) {
+        this.boardUser = boardUser;
         return this;
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Reader user(User user) {
-        this.user = user;
-        return this;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setBoardUser(BoardUser boardUser) {
+        this.boardUser = boardUser;
     }
 
     @Override

@@ -5,26 +5,11 @@
             "relationshipName": "owner",
             "otherEntityName": "user",
             "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
             "otherEntityField": "login",
             "ownerSide": true,
-            "otherEntityRelationshipName": "board"
-        },
-        {
-            "relationshipName": "reader",
-            "otherEntityName": "reader",
-            "relationshipType": "one-to-many",
-            "otherEntityRelationshipName": "board"
-        },
-        {
-            "relationshipName": "writer",
-            "otherEntityName": "writer",
-            "relationshipType": "one-to-many",
-            "otherEntityRelationshipName": "board"
-        },
-        {
-            "relationshipName": "admin",
-            "otherEntityName": "admin",
-            "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "board"
         }
     ],
@@ -42,15 +27,12 @@
         },
         {
             "fieldName": "pub",
-            "fieldType": "Boolean",
-            "fieldValidateRules": [
-                "required"
-            ]
+            "fieldType": "Boolean"
         }
     ],
-    "changelogDate": "20170504133113",
-    "dto": "no",
-    "service": "no",
+    "changelogDate": "20170526075345",
+    "dto": "mapstruct",
+    "service": "serviceClass",
     "entityTableName": "board",
     "pagination": "no"
 }

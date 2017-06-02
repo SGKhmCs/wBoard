@@ -1,6 +1,8 @@
 package ua.sgkhmja.wboard.service;
 
 import ua.sgkhmja.wboard.domain.Admin;
+import ua.sgkhmja.wboard.domain.Reader;
+import ua.sgkhmja.wboard.domain.Writer;
 import ua.sgkhmja.wboard.repository.AdminRepository;
 import ua.sgkhmja.wboard.repository.search.AdminSearchRepository;
 import ua.sgkhmja.wboard.service.dto.AdminDTO;
@@ -25,7 +27,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class AdminService {
 
     private final Logger log = LoggerFactory.getLogger(AdminService.class);
-    
+
     private final AdminRepository adminRepository;
 
     private final AdminMapper adminMapper;
@@ -55,7 +57,7 @@ public class AdminService {
 
     /**
      *  Get all the admins.
-     *  
+     *
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
@@ -106,5 +108,13 @@ public class AdminService {
             .stream(adminSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .map(adminMapper::toDto)
             .collect(Collectors.toList());
+    }
+
+    public Admin createAdmin(Writer writer){
+        Admin admin = new Admin();
+
+        admin.setWriter(writer);
+
+        return admin;
     }
 }

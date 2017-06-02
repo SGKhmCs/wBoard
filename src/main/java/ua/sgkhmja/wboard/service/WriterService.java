@@ -1,5 +1,6 @@
 package ua.sgkhmja.wboard.service;
 
+import ua.sgkhmja.wboard.domain.Reader;
 import ua.sgkhmja.wboard.domain.Writer;
 import ua.sgkhmja.wboard.repository.WriterRepository;
 import ua.sgkhmja.wboard.repository.search.WriterSearchRepository;
@@ -25,7 +26,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class WriterService {
 
     private final Logger log = LoggerFactory.getLogger(WriterService.class);
-    
+
     private final WriterRepository writerRepository;
 
     private final WriterMapper writerMapper;
@@ -55,7 +56,7 @@ public class WriterService {
 
     /**
      *  Get all the writers.
-     *  
+     *
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
@@ -106,5 +107,13 @@ public class WriterService {
             .stream(writerSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .map(writerMapper::toDto)
             .collect(Collectors.toList());
+    }
+
+    public Writer createWriter(Reader reader){
+        Writer writer = new Writer();
+
+        writer.setReader(reader);
+
+        return writer;
     }
 }

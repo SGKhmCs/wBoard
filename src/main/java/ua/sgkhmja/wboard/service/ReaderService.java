@@ -1,5 +1,6 @@
 package ua.sgkhmja.wboard.service;
 
+import ua.sgkhmja.wboard.domain.BoardUser;
 import ua.sgkhmja.wboard.domain.Reader;
 import ua.sgkhmja.wboard.repository.ReaderRepository;
 import ua.sgkhmja.wboard.repository.search.ReaderSearchRepository;
@@ -25,7 +26,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class ReaderService {
 
     private final Logger log = LoggerFactory.getLogger(ReaderService.class);
-    
+
     private final ReaderRepository readerRepository;
 
     private final ReaderMapper readerMapper;
@@ -55,7 +56,7 @@ public class ReaderService {
 
     /**
      *  Get all the readers.
-     *  
+     *
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
@@ -106,5 +107,13 @@ public class ReaderService {
             .stream(readerSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .map(readerMapper::toDto)
             .collect(Collectors.toList());
+    }
+
+    public Reader createReader(BoardUser boardUser){
+        Reader newReader = new Reader();
+
+        newReader.setBoardUser(boardUser);
+
+        return newReader;
     }
 }

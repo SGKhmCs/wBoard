@@ -1,6 +1,8 @@
 package ua.sgkhmja.wboard.service;
 
+import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.domain.BoardUser;
+import ua.sgkhmja.wboard.domain.User;
 import ua.sgkhmja.wboard.repository.BoardUserRepository;
 import ua.sgkhmja.wboard.repository.search.BoardUserSearchRepository;
 import ua.sgkhmja.wboard.service.dto.BoardUserDTO;
@@ -25,7 +27,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class BoardUserService {
 
     private final Logger log = LoggerFactory.getLogger(BoardUserService.class);
-    
+
     private final BoardUserRepository boardUserRepository;
 
     private final BoardUserMapper boardUserMapper;
@@ -55,7 +57,7 @@ public class BoardUserService {
 
     /**
      *  Get all the boardUsers.
-     *  
+     *
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
@@ -107,4 +109,15 @@ public class BoardUserService {
             .map(boardUserMapper::toDto)
             .collect(Collectors.toList());
     }
+
+    public BoardUser createBoardUser(User user, Board board){
+        BoardUser boardUser = new BoardUser();
+
+        boardUser.setUser(user);
+        boardUser.setBoard(board);
+
+        return boardUser;
+    }
+
+
 }

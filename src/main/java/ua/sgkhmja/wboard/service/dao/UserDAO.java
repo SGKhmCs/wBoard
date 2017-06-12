@@ -17,7 +17,11 @@ public class UserDAO {
     }
 
     public long getUserIdByCurrentLogin(){
-        String sql = "select id from jhi_user where login ='" + SecurityUtils.getCurrentUserLogin() + "'";
+        String sql = "select id from jhi_user where login ='" + getCurrentUserLogin() + "'";
         return this.jdbcTemplate.queryForObject(sql, long.class);
+    }
+
+    public String getCurrentUserLogin(){
+        return SecurityUtils.getCurrentUserLogin();
     }
 }

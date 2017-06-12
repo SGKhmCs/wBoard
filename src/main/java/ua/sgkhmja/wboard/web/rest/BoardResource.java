@@ -1,7 +1,9 @@
 package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.service.BoardService;
+import ua.sgkhmja.wboard.service.dao.UserDAO;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
 import ua.sgkhmja.wboard.service.dto.BoardDTO;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -30,11 +32,15 @@ public class BoardResource {
     private final Logger log = LoggerFactory.getLogger(BoardResource.class);
 
     private static final String ENTITY_NAME = "board";
-        
+
     private final BoardService boardService;
 
-    public BoardResource(BoardService boardService) {
+    private final UserDAO userDAO;
+
+    public BoardResource(BoardService boardService, UserDAO userDAO) {
+
         this.boardService = boardService;
+        this.userDAO = userDAO;
     }
 
     /**
@@ -48,9 +54,15 @@ public class BoardResource {
     @Timed
     public ResponseEntity<BoardDTO> createBoard(@Valid @RequestBody BoardDTO boardDTO) throws URISyntaxException {
         log.debug("REST request to save Board : {}", boardDTO);
+
+
         if (boardDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new board cannot already have an ID")).body(null);
         }
+
+        boardDTO.setOwnerId(userDAO.getUserIdByCurrentLogin());
+        boardDTO.setOwnerLogin(userDAO.getCurrentUserLogin());
+
         BoardDTO result = boardService.save(boardDTO);
         return ResponseEntity.created(new URI("/api/boards/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -123,7 +135,7 @@ public class BoardResource {
      * SEARCH  /_search/boards?query=:query : search for the board corresponding
      * to the query.
      *
-     * @param query the query of the board search 
+     * @param query the query of the board search
      * @return the result of the search
      */
     @GetMapping("/_search/boards")

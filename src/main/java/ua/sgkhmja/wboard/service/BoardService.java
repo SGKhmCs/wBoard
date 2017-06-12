@@ -3,7 +3,9 @@ package ua.sgkhmja.wboard.service;
 import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.domain.User;
 import ua.sgkhmja.wboard.repository.BoardRepository;
+import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.repository.search.BoardSearchRepository;
+import ua.sgkhmja.wboard.service.dao.UserDAO;
 import ua.sgkhmja.wboard.service.dto.BoardDTO;
 import ua.sgkhmja.wboard.service.mapper.BoardMapper;
 import org.slf4j.Logger;
@@ -33,7 +35,8 @@ public class BoardService {
 
     private final BoardSearchRepository boardSearchRepository;
 
-    public BoardService(BoardRepository boardRepository, BoardMapper boardMapper, BoardSearchRepository boardSearchRepository) {
+    public BoardService(BoardRepository boardRepository, BoardMapper boardMapper,
+                        BoardSearchRepository boardSearchRepository) {
         this.boardRepository = boardRepository;
         this.boardMapper = boardMapper;
         this.boardSearchRepository = boardSearchRepository;

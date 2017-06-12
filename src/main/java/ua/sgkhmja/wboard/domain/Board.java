@@ -34,7 +34,6 @@ public class Board implements Serializable {
     private Boolean pub;
 
     @ManyToOne(optional = false)
-    @NotNull
     private User owner;
 
     public Long getId() {

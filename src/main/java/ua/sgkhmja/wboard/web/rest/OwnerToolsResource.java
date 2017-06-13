@@ -2,6 +2,7 @@ package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import ua.sgkhmja.wboard.service.OwnerToolsService;
+import ua.sgkhmja.wboard.service.RoleService;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
 import ua.sgkhmja.wboard.web.rest.util.PaginationUtil;
 import ua.sgkhmja.wboard.service.dto.OwnerToolsDTO;
@@ -39,8 +40,11 @@ public class OwnerToolsResource {
 
     private final OwnerToolsService ownerToolsService;
 
-    public OwnerToolsResource(OwnerToolsService ownerToolsService) {
+    private final RoleService roleService;
+
+    public OwnerToolsResource(OwnerToolsService ownerToolsService, RoleService roleService) {
         this.ownerToolsService = ownerToolsService;
+        this.roleService = roleService;
     }
 
     /**
@@ -58,7 +62,7 @@ public class OwnerToolsResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new ownerTools cannot already have an ID")).body(null);
         }
 
-        OwnerToolsDTO wOwner = ownerToolsService.setOwnerByCurrentLogin(ownerToolsDTO);
+        OwnerToolsDTO wOwner = roleService.setOwner(ownerToolsDTO);
 
         OwnerToolsDTO result = ownerToolsService.save(wOwner);
         return ResponseEntity.created(new URI("/api/owner-tools/" + result.getId()))

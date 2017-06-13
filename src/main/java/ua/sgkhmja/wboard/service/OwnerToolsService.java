@@ -105,13 +105,4 @@ public class OwnerToolsService {
         Page<OwnerTools> result = ownerToolsSearchRepository.search(queryStringQuery(query), pageable);
         return result.map(ownerToolsMapper::toDto);
     }
-
-    public OwnerToolsDTO setOwnerByCurrentLogin(OwnerToolsDTO ownerToolsDTO){
-        log.debug("set owner by current login: {}", ownerToolsDTO);
-
-        ownerToolsDTO.setOwnerId(userDAO.getUserIdByCurrentLogin());
-        ownerToolsDTO.setOwnerLogin(userDAO.getCurrentUserLogin());
-
-        return ownerToolsDTO;
-    }
 }

@@ -3,6 +3,8 @@ package ua.sgkhmja.wboard.web.rest;
 import ua.sgkhmja.wboard.WBoardApp;
 
 import ua.sgkhmja.wboard.domain.WriterTools;
+import ua.sgkhmja.wboard.domain.User;
+import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.repository.WriterToolsRepository;
 import ua.sgkhmja.wboard.service.WriterToolsService;
 import ua.sgkhmja.wboard.repository.search.WriterToolsSearchRepository;
@@ -87,6 +89,16 @@ public class WriterToolsResourceIntTest {
      */
     public static WriterTools createEntity(EntityManager em) {
         WriterTools writerTools = new WriterTools();
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        writerTools.setUser(user);
+        // Add required entity
+        Board board = BoardResourceIntTest.createEntity(em);
+        em.persist(board);
+        em.flush();
+        writerTools.setBoard(board);
         return writerTools;
     }
 

@@ -8,20 +8,20 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity WriterTools and its DTO WriterToolsDTO.
  */
-@Mapper(componentModel = "spring", uses = {WriterMapper.class, })
+@Mapper(componentModel = "spring", uses = {UserMapper.class, BoardMapper.class, })
 public interface WriterToolsMapper extends EntityMapper <WriterToolsDTO, WriterTools> {
-    @Mapping(source = "writer.id", target = "writerId")
+
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.login", target = "userLogin")
+
+    @Mapping(source = "board.id", target = "boardId")
+    @Mapping(source = "board.name", target = "boardName")
     WriterToolsDTO toDto(WriterTools writerTools); 
-    @Mapping(source = "writerId", target = "writer")
+
+    @Mapping(source = "userId", target = "user")
+
+    @Mapping(source = "boardId", target = "board")
     WriterTools toEntity(WriterToolsDTO writerToolsDTO); 
-    /**
-     * generating the fromId for all mappers if the databaseType is sql, as the class has relationship to it might need it, instead of
-     * creating a new attribute to know if the entity has any relationship from some other entity
-     *
-     * @param id id of the entity
-     * @return the entity instance
-     */
-     
     default WriterTools fromId(Long id) {
         if (id == null) {
             return null;

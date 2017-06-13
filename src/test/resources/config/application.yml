@@ -13,12 +13,6 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
-eureka:
-    client:
-        enabled: true
-    instance:
-        appname: wBoard
-        instanceId: wBoard:${spring.application.instance-id:${random.value}}
 
 spring:
     application:
@@ -55,8 +49,8 @@ spring:
             cluster-nodes:
             properties:
                 path:
-                    logs: target/elasticsearch/log
-                    data: target/elasticsearch/data
+                    logs: build/elasticsearch/log
+                    data: build/elasticsearch/data
     mail:
         host: localhost
     messages:
@@ -91,18 +85,18 @@ jhipster:
         queue-capacity: 10000
     # To test logstash appender
     logging:
-            logstash:
-                enabled: true
-                host: localhost
-                port: 5000
-                queue-size: 512
+        logstash:
+            enabled: true
+            host: localhost
+            port: 5000
+            queue-size: 512
     mail:
         from: test@localhost
         base-url: http://127.0.0.1:8080
     security:
         authentication:
             jwt:
-                secret: 22609ece8ce60d0fd6b392b91ff651848e5640b5
+                secret: 688de092de0a56a843536fd152941230b93b426b
                 # Token is valid 24 hours
                 token-validity-in-seconds: 86400
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration

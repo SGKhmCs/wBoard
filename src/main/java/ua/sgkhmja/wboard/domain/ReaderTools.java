@@ -5,6 +5,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -24,9 +25,13 @@ public class ReaderTools implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @OneToOne
-    @JoinColumn(unique = true)
-    private Reader reader;
+    @ManyToOne(optional = false)
+    @NotNull
+    private User user;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private Board board;
 
     public Long getId() {
         return id;
@@ -36,17 +41,30 @@ public class ReaderTools implements Serializable {
         this.id = id;
     }
 
-    public Reader getReader() {
-        return reader;
+    public User getUser() {
+        return user;
     }
 
-    public ReaderTools reader(Reader reader) {
-        this.reader = reader;
+    public ReaderTools user(User user) {
+        this.user = user;
         return this;
     }
 
-    public void setReader(Reader reader) {
-        this.reader = reader;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public ReaderTools board(Board board) {
+        this.board = board;
+        return this;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     @Override

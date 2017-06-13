@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EventManager } from 'ng-jhipster';
+import { AlertService, EventManager } from 'ng-jhipster';
 
 import { Board } from './board.model';
 import { BoardPopupService } from './board-popup.service';
@@ -19,6 +19,7 @@ export class BoardDeleteDialogComponent {
     constructor(
         private boardService: BoardService,
         public activeModal: NgbActiveModal,
+        private alertService: AlertService,
         private eventManager: EventManager
     ) {
     }
@@ -35,6 +36,7 @@ export class BoardDeleteDialogComponent {
             });
             this.activeModal.dismiss(true);
         });
+        this.alertService.success('wBoardApp.board.deleted', { param : id }, null);
     }
 }
 

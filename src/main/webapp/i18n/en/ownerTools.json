@@ -1,0 +1,23 @@
+{
+    "wBoardApp": {
+        "ownerTools" : {
+            "home": {
+                "title": "Owner Tools",
+                "createLabel": "Create a new Owner Tools",
+                "createOrEditLabel": "Create or edit a Owner Tools",
+                "search": "Search for Owner Tools"
+            },
+            "created": "A new Owner Tools is created with identifier {{ param }}",
+            "updated": "A Owner Tools is updated with identifier {{ param }}",
+            "deleted": "A Owner Tools is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Owner Tools {{ id }}?"
+            },
+            "detail": {
+                "title": "Owner Tools"
+            },
+            "owner": "Owner",
+            "board": "Board"
+        }
+    }
+}

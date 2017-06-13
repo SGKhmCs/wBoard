@@ -3,11 +3,9 @@ package ua.sgkhmja.wboard.web.rest;
 import ua.sgkhmja.wboard.WBoardApp;
 
 import ua.sgkhmja.wboard.domain.Board;
-import ua.sgkhmja.wboard.domain.User;
 import ua.sgkhmja.wboard.repository.BoardRepository;
 import ua.sgkhmja.wboard.service.BoardService;
 import ua.sgkhmja.wboard.repository.search.BoardSearchRepository;
-import ua.sgkhmja.wboard.service.dao.UserDAO;
 import ua.sgkhmja.wboard.service.dto.BoardDTO;
 import ua.sgkhmja.wboard.service.mapper.BoardMapper;
 import ua.sgkhmja.wboard.web.rest.errors.ExceptionTranslator;
@@ -73,9 +71,6 @@ public class BoardResourceIntTest {
     @Autowired
     private EntityManager em;
 
-    @Autowired
-    private UserDAO userDAO;
-
     private MockMvc restBoardMockMvc;
 
     private Board board;
@@ -83,7 +78,7 @@ public class BoardResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        BoardResource boardResource = new BoardResource(boardService, userDAO);
+        BoardResource boardResource = new BoardResource(boardService);
         this.restBoardMockMvc = MockMvcBuilders.standaloneSetup(boardResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -100,11 +95,6 @@ public class BoardResourceIntTest {
         Board board = new Board()
             .name(DEFAULT_NAME)
             .pub(DEFAULT_PUB);
-        // Add required entity
-        User owner = UserResourceIntTest.createEntity(em);
-        em.persist(owner);
-        em.flush();
-        board.setOwner(owner);
         return board;
     }
 

@@ -33,9 +33,6 @@ public class Board implements Serializable {
     @Column(name = "pub")
     private Boolean pub;
 
-    @ManyToOne(optional = false)
-    private User owner;
-
     public Long getId() {
         return id;
     }
@@ -68,19 +65,6 @@ public class Board implements Serializable {
 
     public void setPub(Boolean pub) {
         this.pub = pub;
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public Board owner(User user) {
-        this.owner = user;
-        return this;
-    }
-
-    public void setOwner(User user) {
-        this.owner = user;
     }
 
     @Override

@@ -3,13 +3,20 @@ package ua.sgkhmja.wboard.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import ua.sgkhmja.wboard.service.ReaderToolsService;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
+import ua.sgkhmja.wboard.web.rest.util.PaginationUtil;
 import ua.sgkhmja.wboard.service.dto.ReaderToolsDTO;
+import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -29,7 +36,7 @@ public class ReaderToolsResource {
     private final Logger log = LoggerFactory.getLogger(ReaderToolsResource.class);
 
     private static final String ENTITY_NAME = "readerTools";
-        
+
     private final ReaderToolsService readerToolsService;
 
     public ReaderToolsResource(ReaderToolsService readerToolsService) {
@@ -45,7 +52,7 @@ public class ReaderToolsResource {
      */
     @PostMapping("/reader-tools")
     @Timed
-    public ResponseEntity<ReaderToolsDTO> createReaderTools(@RequestBody ReaderToolsDTO readerToolsDTO) throws URISyntaxException {
+    public ResponseEntity<ReaderToolsDTO> createReaderTools(@Valid @RequestBody ReaderToolsDTO readerToolsDTO) throws URISyntaxException {
         log.debug("REST request to save ReaderTools : {}", readerToolsDTO);
         if (readerToolsDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new readerTools cannot already have an ID")).body(null);
@@ -62,12 +69,12 @@ public class ReaderToolsResource {
      * @param readerToolsDTO the readerToolsDTO to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated readerToolsDTO,
      * or with status 400 (Bad Request) if the readerToolsDTO is not valid,
-     * or with status 500 (Internal Server Error) if the readerToolsDTO couldnt be updated
+     * or with status 500 (Internal Server Error) if the readerToolsDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/reader-tools")
     @Timed
-    public ResponseEntity<ReaderToolsDTO> updateReaderTools(@RequestBody ReaderToolsDTO readerToolsDTO) throws URISyntaxException {
+    public ResponseEntity<ReaderToolsDTO> updateReaderTools(@Valid @RequestBody ReaderToolsDTO readerToolsDTO) throws URISyntaxException {
         log.debug("REST request to update ReaderTools : {}", readerToolsDTO);
         if (readerToolsDTO.getId() == null) {
             return createReaderTools(readerToolsDTO);
@@ -81,13 +88,16 @@ public class ReaderToolsResource {
     /**
      * GET  /reader-tools : get all the readerTools.
      *
+     * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of readerTools in body
      */
     @GetMapping("/reader-tools")
     @Timed
-    public List<ReaderToolsDTO> getAllReaderTools() {
-        log.debug("REST request to get all ReaderTools");
-        return readerToolsService.findAll();
+    public ResponseEntity<List<ReaderToolsDTO>> getAllReaderTools(@ApiParam Pageable pageable) {
+        log.debug("REST request to get a page of ReaderTools");
+        Page<ReaderToolsDTO> page = readerToolsService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/reader-tools");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -122,15 +132,17 @@ public class ReaderToolsResource {
      * SEARCH  /_search/reader-tools?query=:query : search for the readerTools corresponding
      * to the query.
      *
-     * @param query the query of the readerTools search 
+     * @param query the query of the readerTools search
+     * @param pageable the pagination information
      * @return the result of the search
      */
     @GetMapping("/_search/reader-tools")
     @Timed
-    public List<ReaderToolsDTO> searchReaderTools(@RequestParam String query) {
-        log.debug("REST request to search ReaderTools for query {}", query);
-        return readerToolsService.search(query);
+    public ResponseEntity<List<ReaderToolsDTO>> searchReaderTools(@RequestParam String query, @ApiParam Pageable pageable) {
+        log.debug("REST request to search for a page of ReaderTools for query {}", query);
+        Page<ReaderToolsDTO> page = readerToolsService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/reader-tools");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
 
 }

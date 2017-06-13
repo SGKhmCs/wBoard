@@ -2,6 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { WBoardSharedModule } from '../../shared';
+import { WBoardAdminModule } from '../../admin/admin.module';
 import {
     WriterToolsService,
     WriterToolsPopupService,
@@ -23,6 +24,7 @@ const ENTITY_STATES = [
 @NgModule({
     imports: [
         WBoardSharedModule,
+        WBoardAdminModule,
         RouterModule.forRoot(ENTITY_STATES, { useHash: true })
     ],
     declarations: [

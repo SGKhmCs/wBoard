@@ -32,11 +32,8 @@ describe('Component Tests', () => {
                     BoardService,
                     EventManager
                 ]
-            }).overrideComponent(BoardDetailComponent, {
-                set: {
-                    template: ''
-                }
-            }).compileComponents();
+            }).overrideTemplate(BoardDetailComponent, '')
+            .compileComponents();
         }));
 
         beforeEach(() => {

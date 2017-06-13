@@ -1,7 +1,8 @@
 export class WriterTools {
     constructor(
         public id?: number,
-        public writerId?: number,
+        public userId?: number,
+        public boardId?: number,
     ) {
     }
 }

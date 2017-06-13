@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EventManager } from 'ng-jhipster';
+import { AlertService, EventManager } from 'ng-jhipster';
 
 import { WriterTools } from './writer-tools.model';
 import { WriterToolsPopupService } from './writer-tools-popup.service';
@@ -19,6 +19,7 @@ export class WriterToolsDeleteDialogComponent {
     constructor(
         private writerToolsService: WriterToolsService,
         public activeModal: NgbActiveModal,
+        private alertService: AlertService,
         private eventManager: EventManager
     ) {
     }
@@ -35,6 +36,7 @@ export class WriterToolsDeleteDialogComponent {
             });
             this.activeModal.dismiss(true);
         });
+        this.alertService.success('wBoardApp.writerTools.deleted', { param : id }, null);
     }
 }
 

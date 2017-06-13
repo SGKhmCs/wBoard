@@ -1,14 +1,18 @@
 package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.service.BoardService;
-import ua.sgkhmja.wboard.service.dao.UserDAO;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
+import ua.sgkhmja.wboard.web.rest.util.PaginationUtil;
 import ua.sgkhmja.wboard.service.dto.BoardDTO;
+import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,12 +39,8 @@ public class BoardResource {
 
     private final BoardService boardService;
 
-    private final UserDAO userDAO;
-
-    public BoardResource(BoardService boardService, UserDAO userDAO) {
-
+    public BoardResource(BoardService boardService) {
         this.boardService = boardService;
-        this.userDAO = userDAO;
     }
 
     /**
@@ -54,15 +54,9 @@ public class BoardResource {
     @Timed
     public ResponseEntity<BoardDTO> createBoard(@Valid @RequestBody BoardDTO boardDTO) throws URISyntaxException {
         log.debug("REST request to save Board : {}", boardDTO);
-
-
         if (boardDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new board cannot already have an ID")).body(null);
         }
-
-        boardDTO.setOwnerId(userDAO.getUserIdByCurrentLogin());
-        boardDTO.setOwnerLogin(userDAO.getCurrentUserLogin());
-
         BoardDTO result = boardService.save(boardDTO);
         return ResponseEntity.created(new URI("/api/boards/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -75,7 +69,7 @@ public class BoardResource {
      * @param boardDTO the boardDTO to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated boardDTO,
      * or with status 400 (Bad Request) if the boardDTO is not valid,
-     * or with status 500 (Internal Server Error) if the boardDTO couldnt be updated
+     * or with status 500 (Internal Server Error) if the boardDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/boards")
@@ -94,13 +88,16 @@ public class BoardResource {
     /**
      * GET  /boards : get all the boards.
      *
+     * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of boards in body
      */
     @GetMapping("/boards")
     @Timed
-    public List<BoardDTO> getAllBoards() {
-        log.debug("REST request to get all Boards");
-        return boardService.findAll();
+    public ResponseEntity<List<BoardDTO>> getAllBoards(@ApiParam Pageable pageable) {
+        log.debug("REST request to get a page of Boards");
+        Page<BoardDTO> page = boardService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/boards");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -136,14 +133,16 @@ public class BoardResource {
      * to the query.
      *
      * @param query the query of the board search
+     * @param pageable the pagination information
      * @return the result of the search
      */
     @GetMapping("/_search/boards")
     @Timed
-    public List<BoardDTO> searchBoards(@RequestParam String query) {
-        log.debug("REST request to search Boards for query {}", query);
-        return boardService.search(query);
+    public ResponseEntity<List<BoardDTO>> searchBoards(@RequestParam String query, @ApiParam Pageable pageable) {
+        log.debug("REST request to search for a page of Boards for query {}", query);
+        Page<BoardDTO> page = boardService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/boards");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
 
 }

@@ -8,20 +8,20 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity AdminTools and its DTO AdminToolsDTO.
  */
-@Mapper(componentModel = "spring", uses = {AdminMapper.class, })
+@Mapper(componentModel = "spring", uses = {UserMapper.class, BoardMapper.class, })
 public interface AdminToolsMapper extends EntityMapper <AdminToolsDTO, AdminTools> {
-    @Mapping(source = "admin.id", target = "adminId")
+
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.login", target = "userLogin")
+
+    @Mapping(source = "board.id", target = "boardId")
+    @Mapping(source = "board.name", target = "boardName")
     AdminToolsDTO toDto(AdminTools adminTools); 
-    @Mapping(source = "adminId", target = "admin")
+
+    @Mapping(source = "userId", target = "user")
+
+    @Mapping(source = "boardId", target = "board")
     AdminTools toEntity(AdminToolsDTO adminToolsDTO); 
-    /**
-     * generating the fromId for all mappers if the databaseType is sql, as the class has relationship to it might need it, instead of
-     * creating a new attribute to know if the entity has any relationship from some other entity
-     *
-     * @param id id of the entity
-     * @return the entity instance
-     */
-     
     default AdminTools fromId(Long id) {
         if (id == null) {
             return null;

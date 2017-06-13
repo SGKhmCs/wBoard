@@ -5,6 +5,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -24,9 +25,13 @@ public class AdminTools implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @OneToOne
-    @JoinColumn(unique = true)
-    private Admin admin;
+    @ManyToOne(optional = false)
+    @NotNull
+    private User user;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    private Board board;
 
     public Long getId() {
         return id;
@@ -36,17 +41,30 @@ public class AdminTools implements Serializable {
         this.id = id;
     }
 
-    public Admin getAdmin() {
-        return admin;
+    public User getUser() {
+        return user;
     }
 
-    public AdminTools admin(Admin admin) {
-        this.admin = admin;
+    public AdminTools user(User user) {
+        this.user = user;
         return this;
     }
 
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public AdminTools board(Board board) {
+        this.board = board;
+        return this;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     @Override

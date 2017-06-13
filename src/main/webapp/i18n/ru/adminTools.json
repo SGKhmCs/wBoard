@@ -16,7 +16,8 @@
             "detail": {
                 "title": "Admin Tools"
             },
-            "admin": "Admin"
+            "user": "User",
+            "board": "Board"
         }
     }
 }

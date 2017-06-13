@@ -1,0 +1,30 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "owner",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "ownerTools"
+        },
+        {
+            "relationshipName": "board",
+            "otherEntityName": "board",
+            "relationshipType": "one-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "ownerTools"
+        }
+    ],
+    "fields": [],
+    "changelogDate": "20170612162321",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "owner_tools",
+    "pagination": "infinite-scroll"
+}

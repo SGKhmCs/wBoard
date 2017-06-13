@@ -9,8 +9,6 @@ import { EventManager, AlertService } from 'ng-jhipster';
 import { Board } from './board.model';
 import { BoardPopupService } from './board-popup.service';
 import { BoardService } from './board.service';
-import { User, UserService } from '../../shared';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-board-dialog',
@@ -22,13 +20,10 @@ export class BoardDialogComponent implements OnInit {
     authorities: any[];
     isSaving: boolean;
 
-    users: User[];
-
     constructor(
         public activeModal: NgbActiveModal,
         private alertService: AlertService,
         private boardService: BoardService,
-        private userService: UserService,
         private eventManager: EventManager
     ) {
     }
@@ -36,9 +31,8 @@ export class BoardDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        this.userService.query()
-            .subscribe((res: ResponseWrapper) => { this.users = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
+
     clear() {
         this.activeModal.dismiss('cancel');
     }
@@ -47,19 +41,24 @@ export class BoardDialogComponent implements OnInit {
         this.isSaving = true;
         if (this.board.id !== undefined) {
             this.subscribeToSaveResponse(
-                this.boardService.update(this.board));
+                this.boardService.update(this.board), false);
         } else {
             this.subscribeToSaveResponse(
-                this.boardService.create(this.board));
+                this.boardService.create(this.board), true);
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<Board>) {
+    private subscribeToSaveResponse(result: Observable<Board>, isCreated: boolean) {
         result.subscribe((res: Board) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError(res));
+            this.onSaveSuccess(res, isCreated), (res: Response) => this.onSaveError(res));
     }
 
-    private onSaveSuccess(result: Board) {
+    private onSaveSuccess(result: Board, isCreated: boolean) {
+        this.alertService.success(
+            isCreated ? 'wBoardApp.board.created'
+            : 'wBoardApp.board.updated',
+            { param : result.id }, null);
+
         this.eventManager.broadcast({ name: 'boardListModification', content: 'OK'});
         this.isSaving = false;
         this.activeModal.dismiss(result);
@@ -77,10 +76,6 @@ export class BoardDialogComponent implements OnInit {
 
     private onError(error) {
         this.alertService.error(error.message, null, null);
-    }
-
-    trackUserById(index: number, item: User) {
-        return item.id;
     }
 }
 

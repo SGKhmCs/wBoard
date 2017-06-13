@@ -9,7 +9,8 @@ import { EventManager, AlertService } from 'ng-jhipster';
 import { ReaderTools } from './reader-tools.model';
 import { ReaderToolsPopupService } from './reader-tools-popup.service';
 import { ReaderToolsService } from './reader-tools.service';
-import { Reader, ReaderService } from '../reader';
+import { User, UserService } from '../../shared';
+import { Board, BoardService } from '../board';
 import { ResponseWrapper } from '../../shared';
 
 @Component({
@@ -22,13 +23,16 @@ export class ReaderToolsDialogComponent implements OnInit {
     authorities: any[];
     isSaving: boolean;
 
-    readers: Reader[];
+    users: User[];
+
+    boards: Board[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private alertService: AlertService,
         private readerToolsService: ReaderToolsService,
-        private readerService: ReaderService,
+        private userService: UserService,
+        private boardService: BoardService,
         private eventManager: EventManager
     ) {
     }
@@ -36,20 +40,12 @@ export class ReaderToolsDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        this.readerService
-            .query({filter: 'readertools-is-null'})
-            .subscribe((res: ResponseWrapper) => {
-                if (!this.readerTools.readerId) {
-                    this.readers = res.json;
-                } else {
-                    this.readerService
-                        .find(this.readerTools.readerId)
-                        .subscribe((subRes: Reader) => {
-                            this.readers = [subRes].concat(res.json);
-                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
-                }
-            }, (res: ResponseWrapper) => this.onError(res.json));
+        this.userService.query()
+            .subscribe((res: ResponseWrapper) => { this.users = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.boardService.query()
+            .subscribe((res: ResponseWrapper) => { this.boards = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
+
     clear() {
         this.activeModal.dismiss('cancel');
     }
@@ -58,19 +54,24 @@ export class ReaderToolsDialogComponent implements OnInit {
         this.isSaving = true;
         if (this.readerTools.id !== undefined) {
             this.subscribeToSaveResponse(
-                this.readerToolsService.update(this.readerTools));
+                this.readerToolsService.update(this.readerTools), false);
         } else {
             this.subscribeToSaveResponse(
-                this.readerToolsService.create(this.readerTools));
+                this.readerToolsService.create(this.readerTools), true);
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<ReaderTools>) {
+    private subscribeToSaveResponse(result: Observable<ReaderTools>, isCreated: boolean) {
         result.subscribe((res: ReaderTools) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError(res));
+            this.onSaveSuccess(res, isCreated), (res: Response) => this.onSaveError(res));
     }
 
-    private onSaveSuccess(result: ReaderTools) {
+    private onSaveSuccess(result: ReaderTools, isCreated: boolean) {
+        this.alertService.success(
+            isCreated ? 'wBoardApp.readerTools.created'
+            : 'wBoardApp.readerTools.updated',
+            { param : result.id }, null);
+
         this.eventManager.broadcast({ name: 'readerToolsListModification', content: 'OK'});
         this.isSaving = false;
         this.activeModal.dismiss(result);
@@ -90,7 +91,11 @@ export class ReaderToolsDialogComponent implements OnInit {
         this.alertService.error(error.message, null, null);
     }
 
-    trackReaderById(index: number, item: Reader) {
+    trackUserById(index: number, item: User) {
+        return item.id;
+    }
+
+    trackBoardById(index: number, item: Board) {
         return item.id;
     }
 }

@@ -3,13 +3,20 @@ package ua.sgkhmja.wboard.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import ua.sgkhmja.wboard.service.AdminToolsService;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
+import ua.sgkhmja.wboard.web.rest.util.PaginationUtil;
 import ua.sgkhmja.wboard.service.dto.AdminToolsDTO;
+import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -29,7 +36,7 @@ public class AdminToolsResource {
     private final Logger log = LoggerFactory.getLogger(AdminToolsResource.class);
 
     private static final String ENTITY_NAME = "adminTools";
-        
+
     private final AdminToolsService adminToolsService;
 
     public AdminToolsResource(AdminToolsService adminToolsService) {
@@ -45,7 +52,7 @@ public class AdminToolsResource {
      */
     @PostMapping("/admin-tools")
     @Timed
-    public ResponseEntity<AdminToolsDTO> createAdminTools(@RequestBody AdminToolsDTO adminToolsDTO) throws URISyntaxException {
+    public ResponseEntity<AdminToolsDTO> createAdminTools(@Valid @RequestBody AdminToolsDTO adminToolsDTO) throws URISyntaxException {
         log.debug("REST request to save AdminTools : {}", adminToolsDTO);
         if (adminToolsDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new adminTools cannot already have an ID")).body(null);
@@ -62,12 +69,12 @@ public class AdminToolsResource {
      * @param adminToolsDTO the adminToolsDTO to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated adminToolsDTO,
      * or with status 400 (Bad Request) if the adminToolsDTO is not valid,
-     * or with status 500 (Internal Server Error) if the adminToolsDTO couldnt be updated
+     * or with status 500 (Internal Server Error) if the adminToolsDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/admin-tools")
     @Timed
-    public ResponseEntity<AdminToolsDTO> updateAdminTools(@RequestBody AdminToolsDTO adminToolsDTO) throws URISyntaxException {
+    public ResponseEntity<AdminToolsDTO> updateAdminTools(@Valid @RequestBody AdminToolsDTO adminToolsDTO) throws URISyntaxException {
         log.debug("REST request to update AdminTools : {}", adminToolsDTO);
         if (adminToolsDTO.getId() == null) {
             return createAdminTools(adminToolsDTO);
@@ -81,13 +88,16 @@ public class AdminToolsResource {
     /**
      * GET  /admin-tools : get all the adminTools.
      *
+     * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of adminTools in body
      */
     @GetMapping("/admin-tools")
     @Timed
-    public List<AdminToolsDTO> getAllAdminTools() {
-        log.debug("REST request to get all AdminTools");
-        return adminToolsService.findAll();
+    public ResponseEntity<List<AdminToolsDTO>> getAllAdminTools(@ApiParam Pageable pageable) {
+        log.debug("REST request to get a page of AdminTools");
+        Page<AdminToolsDTO> page = adminToolsService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/admin-tools");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -122,15 +132,17 @@ public class AdminToolsResource {
      * SEARCH  /_search/admin-tools?query=:query : search for the adminTools corresponding
      * to the query.
      *
-     * @param query the query of the adminTools search 
+     * @param query the query of the adminTools search
+     * @param pageable the pagination information
      * @return the result of the search
      */
     @GetMapping("/_search/admin-tools")
     @Timed
-    public List<AdminToolsDTO> searchAdminTools(@RequestParam String query) {
-        log.debug("REST request to search AdminTools for query {}", query);
-        return adminToolsService.search(query);
+    public ResponseEntity<List<AdminToolsDTO>> searchAdminTools(@RequestParam String query, @ApiParam Pageable pageable) {
+        log.debug("REST request to search for a page of AdminTools for query {}", query);
+        Page<AdminToolsDTO> page = adminToolsService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/admin-tools");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
 
 }

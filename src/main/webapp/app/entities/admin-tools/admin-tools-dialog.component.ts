@@ -9,7 +9,8 @@ import { EventManager, AlertService } from 'ng-jhipster';
 import { AdminTools } from './admin-tools.model';
 import { AdminToolsPopupService } from './admin-tools-popup.service';
 import { AdminToolsService } from './admin-tools.service';
-import { Admin, AdminService } from '../admin';
+import { User, UserService } from '../../shared';
+import { Board, BoardService } from '../board';
 import { ResponseWrapper } from '../../shared';
 
 @Component({
@@ -22,13 +23,16 @@ export class AdminToolsDialogComponent implements OnInit {
     authorities: any[];
     isSaving: boolean;
 
-    admins: Admin[];
+    users: User[];
+
+    boards: Board[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private alertService: AlertService,
         private adminToolsService: AdminToolsService,
-        private adminService: AdminService,
+        private userService: UserService,
+        private boardService: BoardService,
         private eventManager: EventManager
     ) {
     }
@@ -36,20 +40,12 @@ export class AdminToolsDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        this.adminService
-            .query({filter: 'admintools-is-null'})
-            .subscribe((res: ResponseWrapper) => {
-                if (!this.adminTools.adminId) {
-                    this.admins = res.json;
-                } else {
-                    this.adminService
-                        .find(this.adminTools.adminId)
-                        .subscribe((subRes: Admin) => {
-                            this.admins = [subRes].concat(res.json);
-                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
-                }
-            }, (res: ResponseWrapper) => this.onError(res.json));
+        this.userService.query()
+            .subscribe((res: ResponseWrapper) => { this.users = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.boardService.query()
+            .subscribe((res: ResponseWrapper) => { this.boards = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
+
     clear() {
         this.activeModal.dismiss('cancel');
     }
@@ -58,19 +54,24 @@ export class AdminToolsDialogComponent implements OnInit {
         this.isSaving = true;
         if (this.adminTools.id !== undefined) {
             this.subscribeToSaveResponse(
-                this.adminToolsService.update(this.adminTools));
+                this.adminToolsService.update(this.adminTools), false);
         } else {
             this.subscribeToSaveResponse(
-                this.adminToolsService.create(this.adminTools));
+                this.adminToolsService.create(this.adminTools), true);
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<AdminTools>) {
+    private subscribeToSaveResponse(result: Observable<AdminTools>, isCreated: boolean) {
         result.subscribe((res: AdminTools) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError(res));
+            this.onSaveSuccess(res, isCreated), (res: Response) => this.onSaveError(res));
     }
 
-    private onSaveSuccess(result: AdminTools) {
+    private onSaveSuccess(result: AdminTools, isCreated: boolean) {
+        this.alertService.success(
+            isCreated ? 'wBoardApp.adminTools.created'
+            : 'wBoardApp.adminTools.updated',
+            { param : result.id }, null);
+
         this.eventManager.broadcast({ name: 'adminToolsListModification', content: 'OK'});
         this.isSaving = false;
         this.activeModal.dismiss(result);
@@ -90,7 +91,11 @@ export class AdminToolsDialogComponent implements OnInit {
         this.alertService.error(error.message, null, null);
     }
 
-    trackAdminById(index: number, item: Admin) {
+    trackUserById(index: number, item: User) {
+        return item.id;
+    }
+
+    trackBoardById(index: number, item: Board) {
         return item.id;
     }
 }

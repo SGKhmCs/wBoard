@@ -1,0 +1,31 @@
+
+<div *ngIf="ownerTools">
+    <h2><span jhiTranslate="wBoardApp.ownerTools.detail.title">Owner Tools</span> {{ownerTools.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="wBoardApp.ownerTools.owner">Owner</span></dt>
+        <dd>
+            {{ownerTools.ownerLogin}}
+        </dd>
+        <dt><span jhiTranslate="wBoardApp.ownerTools.board">Board</span></dt>
+        <dd>
+            <div *ngIf="ownerTools.boardId">
+                <a [routerLink]="['/board', ownerTools.boardId]">{{ownerTools.boardName}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'owner-tools/'+ ownerTools.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

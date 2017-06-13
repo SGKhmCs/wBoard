@@ -1,0 +1,23 @@
+{
+    "wBoardApp": {
+        "ownerTools" : {
+            "home": {
+                "title": "Owner Tools",
+                "createLabel": "Создать новый Owner Tools",
+                "createOrEditLabel": "Создать или отредактировать Owner Tools",
+                "search": "Найти Owner Tools"
+            },
+            "created": "Новый Owner Tools создан с идентификатором {{ param }}",
+            "updated": "Owner Tools обновлен с идентификатором {{ param }}",
+            "deleted": "Owner Tools удален с идентификатором {{ param }}",
+            "delete": {
+                "question": "Вы уверены что хотите удалить Owner Tools {{ id }}?"
+            },
+            "detail": {
+                "title": "Owner Tools"
+            },
+            "owner": "Owner",
+            "board": "Board"
+        }
+    }
+}

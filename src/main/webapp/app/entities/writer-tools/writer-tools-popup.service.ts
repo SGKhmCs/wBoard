@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { WriterTools } from './writer-tools.model';
 import { WriterToolsService } from './writer-tools.service';
+
 @Injectable()
 export class WriterToolsPopupService {
     private isOpen = false;

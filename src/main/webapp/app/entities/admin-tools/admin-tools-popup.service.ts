@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AdminTools } from './admin-tools.model';
 import { AdminToolsService } from './admin-tools.service';
+
 @Injectable()
 export class AdminToolsPopupService {
     private isOpen = false;

@@ -28,18 +28,22 @@
     <div class="table-responsive" *ngIf="adminTools">
         <table class="table table-striped">
             <thead>
-            <tr>
-            <th><span jhiTranslate="global.field.id">ID</span></th>
-            <th><span jhiTranslate="wBoardApp.adminTools.admin">Admin</span></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="userLogin"><span jhiTranslate="wBoardApp.adminTools.user">User</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="boardName"><span jhiTranslate="wBoardApp.adminTools.board">Board</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
             <tr *ngFor="let adminTools of adminTools ;trackBy: trackId">
                 <td><a [routerLink]="['../admin-tools', adminTools.id ]">{{adminTools.id}}</a></td>
                 <td>
-                    <div *ngIf="adminTools.adminId">
-                        <a [routerLink]="['../admin', adminTools.adminId  ]" >{{adminTools.adminId}}</a>
+                    {{adminTools.userLogin}}
+                </td>
+                <td>
+                    <div *ngIf="adminTools.boardId">
+                        <a [routerLink]="['../board', adminTools.boardId  ]" >{{adminTools.boardName}}</a>
                     </div>
                 </td>
                 <td class="text-right">

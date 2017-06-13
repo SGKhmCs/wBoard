@@ -1,46 +1,13 @@
 package ua.sgkhmja.wboard.service;
 
-import ua.sgkhmja.wboard.domain.Board;
-import ua.sgkhmja.wboard.domain.User;
-import ua.sgkhmja.wboard.repository.BoardRepository;
-import ua.sgkhmja.wboard.repository.UserRepository;
-import ua.sgkhmja.wboard.repository.search.BoardSearchRepository;
-import ua.sgkhmja.wboard.service.dao.UserDAO;
 import ua.sgkhmja.wboard.service.dto.BoardDTO;
-import ua.sgkhmja.wboard.service.mapper.BoardMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
- * Service Implementation for managing Board.
+ * Service Interface for managing Board.
  */
-@Service
-@Transactional
-public class BoardService {
-
-    private final Logger log = LoggerFactory.getLogger(BoardService.class);
-
-    private final BoardRepository boardRepository;
-
-    private final BoardMapper boardMapper;
-
-    private final BoardSearchRepository boardSearchRepository;
-
-    public BoardService(BoardRepository boardRepository, BoardMapper boardMapper,
-                        BoardSearchRepository boardSearchRepository) {
-        this.boardRepository = boardRepository;
-        this.boardMapper = boardMapper;
-        this.boardSearchRepository = boardSearchRepository;
-    }
+public interface BoardService {
 
     /**
      * Save a board.
@@ -48,77 +15,38 @@ public class BoardService {
      * @param boardDTO the entity to save
      * @return the persisted entity
      */
-    public BoardDTO save(BoardDTO boardDTO) {
-        log.debug("Request to save Board : {}", boardDTO);
-        Board board = boardMapper.toEntity(boardDTO);
-        board = boardRepository.save(board);
-        BoardDTO result = boardMapper.toDto(board);
-        boardSearchRepository.save(board);
-        return result;
-    }
+    BoardDTO save(BoardDTO boardDTO);
 
     /**
      *  Get all the boards.
      *
+     *  @param pageable the pagination information
      *  @return the list of entities
      */
-    @Transactional(readOnly = true)
-    public List<BoardDTO> findAll() {
-        log.debug("Request to get all Boards");
-        List<BoardDTO> result = boardRepository.findAll().stream()
-            .map(boardMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
-
-        return result;
-    }
+    Page<BoardDTO> findAll(Pageable pageable);
 
     /**
-     *  Get one board by id.
+     *  Get the "id" board.
      *
      *  @param id the id of the entity
      *  @return the entity
      */
-    @Transactional(readOnly = true)
-    public BoardDTO findOne(Long id) {
-        log.debug("Request to get Board : {}", id);
-        Board board = boardRepository.findOne(id);
-        BoardDTO boardDTO = boardMapper.toDto(board);
-        return boardDTO;
-    }
+    BoardDTO findOne(Long id);
 
     /**
-     *  Delete the  board by id.
+     *  Delete the "id" board.
      *
      *  @param id the id of the entity
      */
-    public void delete(Long id) {
-        log.debug("Request to delete Board : {}", id);
-        boardRepository.delete(id);
-        boardSearchRepository.delete(id);
-    }
+    void delete(Long id);
 
     /**
      * Search for the board corresponding to the query.
      *
      *  @param query the query of the search
+     *  
+     *  @param pageable the pagination information
      *  @return the list of entities
      */
-    @Transactional(readOnly = true)
-    public List<BoardDTO> search(String query) {
-        log.debug("Request to search Boards for query {}", query);
-        return StreamSupport
-            .stream(boardSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .map(boardMapper::toDto)
-            .collect(Collectors.toList());
-    }
-
-    public Board createBoard(String name, boolean pub, User owner){
-        Board board = new Board();
-
-        board.setName(name);
-        board.setPub(pub);
-        board.setOwner(owner);
-
-        return board;
-    }
+    Page<BoardDTO> search(String query, Pageable pageable);
 }

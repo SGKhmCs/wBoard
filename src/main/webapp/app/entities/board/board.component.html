@@ -28,22 +28,18 @@
     <div class="table-responsive" *ngIf="boards">
         <table class="table table-striped">
             <thead>
-            <tr>
-            <th><span jhiTranslate="global.field.id">ID</span></th>
-            <th><span jhiTranslate="wBoardApp.board.name">Name</span></th>
-            <th><span jhiTranslate="wBoardApp.board.pub">Pub</span></th>
-            <th><span jhiTranslate="wBoardApp.board.owner">Owner</span></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="name"><span jhiTranslate="wBoardApp.board.name">Name</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="pub"><span jhiTranslate="wBoardApp.board.pub">Pub</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
             <tr *ngFor="let board of boards ;trackBy: trackId">
                 <td><a [routerLink]="['../board', board.id ]">{{board.id}}</a></td>
                 <td>{{board.name}}</td>
                 <td>{{board.pub}}</td>
-                <td>
-                    {{board.ownerLogin}}
-                </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

@@ -16,7 +16,8 @@
             "detail": {
                 "title": "Reader Tools"
             },
-            "reader": "Reader"
+            "user": "User",
+            "board": "Board"
         }
     }
 }

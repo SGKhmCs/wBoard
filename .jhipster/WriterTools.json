@@ -2,18 +2,30 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipName": "writer",
-            "otherEntityName": "writer",
-            "relationshipType": "one-to-one",
-            "otherEntityField": "id",
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "login",
             "ownerSide": true,
             "otherEntityRelationshipName": "writerTools"
+        },
+        {
+            "relationshipName": "board",
+            "otherEntityName": "board",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name"
         }
     ],
     "fields": [],
-    "changelogDate": "20170526080958",
+    "changelogDate": "20170612164104",
     "dto": "mapstruct",
-    "service": "serviceClass",
+    "service": "serviceImpl",
     "entityTableName": "writer_tools",
-    "pagination": "no"
+    "pagination": "infinite-scroll"
 }

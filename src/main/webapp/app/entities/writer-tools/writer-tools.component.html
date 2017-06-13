@@ -28,18 +28,22 @@
     <div class="table-responsive" *ngIf="writerTools">
         <table class="table table-striped">
             <thead>
-            <tr>
-            <th><span jhiTranslate="global.field.id">ID</span></th>
-            <th><span jhiTranslate="wBoardApp.writerTools.writer">Writer</span></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="userLogin"><span jhiTranslate="wBoardApp.writerTools.user">User</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="boardName"><span jhiTranslate="wBoardApp.writerTools.board">Board</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
             <tr *ngFor="let writerTools of writerTools ;trackBy: trackId">
                 <td><a [routerLink]="['../writer-tools', writerTools.id ]">{{writerTools.id}}</a></td>
                 <td>
-                    <div *ngIf="writerTools.writerId">
-                        <a [routerLink]="['../writer', writerTools.writerId  ]" >{{writerTools.writerId}}</a>
+                    {{writerTools.userLogin}}
+                </td>
+                <td>
+                    <div *ngIf="writerTools.boardId">
+                        <a [routerLink]="['../board', writerTools.boardId  ]" >{{writerTools.boardName}}</a>
                     </div>
                 </td>
                 <td class="text-right">

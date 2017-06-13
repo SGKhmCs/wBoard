@@ -24,15 +24,13 @@
 
     <logger name="ua.sgkhmja.wboard" level="#logback.loglevel#"/>
 
-    <logger name="io.github.jhipster" level="DEBUG"/>
+    <logger name="io.github.jhipster" level="#logback.loglevel#"/>
 
     <logger name="javax.activation" level="WARN"/>
     <logger name="javax.mail" level="WARN"/>
     <logger name="javax.xml.bind" level="WARN"/>
     <logger name="ch.qos.logback" level="WARN"/>
     <logger name="com.codahale.metrics" level="WARN"/>
-    <logger name="com.netflix" level="WARN"/>
-    <logger name="com.netflix.discovery" level="INFO"/>
     <logger name="com.ryantenney" level="WARN"/>
     <logger name="com.sun" level="WARN"/>
     <logger name="com.zaxxer" level="WARN"/>
@@ -64,6 +62,9 @@
 
     <root level="#logback.loglevel#">
         <appender-ref ref="CONSOLE"/>
+<!--
+        <appender-ref ref="FILE"/>
+-->
     </root>
 
 </configuration>

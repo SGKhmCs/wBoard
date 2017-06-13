@@ -32,11 +32,8 @@ describe('Component Tests', () => {
                     AdminToolsService,
                     EventManager
                 ]
-            }).overrideComponent(AdminToolsDetailComponent, {
-                set: {
-                    template: ''
-                }
-            }).compileComponents();
+            }).overrideTemplate(AdminToolsDetailComponent, '')
+            .compileComponents();
         }));
 
         beforeEach(() => {

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ReaderTools } from './reader-tools.model';
 import { ReaderToolsService } from './reader-tools.service';
+
 @Injectable()
 export class ReaderToolsPopupService {
     private isOpen = false;

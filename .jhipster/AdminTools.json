@@ -2,18 +2,30 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipName": "admin",
-            "otherEntityName": "admin",
-            "relationshipType": "one-to-one",
-            "otherEntityField": "id",
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "login",
             "ownerSide": true,
             "otherEntityRelationshipName": "adminTools"
+        },
+        {
+            "relationshipName": "board",
+            "otherEntityName": "board",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "name"
         }
     ],
     "fields": [],
-    "changelogDate": "20170526080853",
+    "changelogDate": "20170612164229",
     "dto": "mapstruct",
-    "service": "serviceClass",
+    "service": "serviceImpl",
     "entityTableName": "admin_tools",
-    "pagination": "no"
+    "pagination": "infinite-scroll"
 }

@@ -1,42 +1,13 @@
 package ua.sgkhmja.wboard.service;
 
-import ua.sgkhmja.wboard.domain.WriterTools;
-import ua.sgkhmja.wboard.repository.WriterToolsRepository;
-import ua.sgkhmja.wboard.repository.search.WriterToolsSearchRepository;
 import ua.sgkhmja.wboard.service.dto.WriterToolsDTO;
-import ua.sgkhmja.wboard.service.mapper.WriterToolsMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
- * Service Implementation for managing WriterTools.
+ * Service Interface for managing WriterTools.
  */
-@Service
-@Transactional
-public class WriterToolsService {
-
-    private final Logger log = LoggerFactory.getLogger(WriterToolsService.class);
-    
-    private final WriterToolsRepository writerToolsRepository;
-
-    private final WriterToolsMapper writerToolsMapper;
-
-    private final WriterToolsSearchRepository writerToolsSearchRepository;
-
-    public WriterToolsService(WriterToolsRepository writerToolsRepository, WriterToolsMapper writerToolsMapper, WriterToolsSearchRepository writerToolsSearchRepository) {
-        this.writerToolsRepository = writerToolsRepository;
-        this.writerToolsMapper = writerToolsMapper;
-        this.writerToolsSearchRepository = writerToolsSearchRepository;
-    }
+public interface WriterToolsService {
 
     /**
      * Save a writerTools.
@@ -44,67 +15,38 @@ public class WriterToolsService {
      * @param writerToolsDTO the entity to save
      * @return the persisted entity
      */
-    public WriterToolsDTO save(WriterToolsDTO writerToolsDTO) {
-        log.debug("Request to save WriterTools : {}", writerToolsDTO);
-        WriterTools writerTools = writerToolsMapper.toEntity(writerToolsDTO);
-        writerTools = writerToolsRepository.save(writerTools);
-        WriterToolsDTO result = writerToolsMapper.toDto(writerTools);
-        writerToolsSearchRepository.save(writerTools);
-        return result;
-    }
+    WriterToolsDTO save(WriterToolsDTO writerToolsDTO);
 
     /**
      *  Get all the writerTools.
-     *  
+     *
+     *  @param pageable the pagination information
      *  @return the list of entities
      */
-    @Transactional(readOnly = true)
-    public List<WriterToolsDTO> findAll() {
-        log.debug("Request to get all WriterTools");
-        List<WriterToolsDTO> result = writerToolsRepository.findAll().stream()
-            .map(writerToolsMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
-
-        return result;
-    }
+    Page<WriterToolsDTO> findAll(Pageable pageable);
 
     /**
-     *  Get one writerTools by id.
+     *  Get the "id" writerTools.
      *
      *  @param id the id of the entity
      *  @return the entity
      */
-    @Transactional(readOnly = true)
-    public WriterToolsDTO findOne(Long id) {
-        log.debug("Request to get WriterTools : {}", id);
-        WriterTools writerTools = writerToolsRepository.findOne(id);
-        WriterToolsDTO writerToolsDTO = writerToolsMapper.toDto(writerTools);
-        return writerToolsDTO;
-    }
+    WriterToolsDTO findOne(Long id);
 
     /**
-     *  Delete the  writerTools by id.
+     *  Delete the "id" writerTools.
      *
      *  @param id the id of the entity
      */
-    public void delete(Long id) {
-        log.debug("Request to delete WriterTools : {}", id);
-        writerToolsRepository.delete(id);
-        writerToolsSearchRepository.delete(id);
-    }
+    void delete(Long id);
 
     /**
      * Search for the writerTools corresponding to the query.
      *
      *  @param query the query of the search
+     *  
+     *  @param pageable the pagination information
      *  @return the list of entities
      */
-    @Transactional(readOnly = true)
-    public List<WriterToolsDTO> search(String query) {
-        log.debug("Request to search WriterTools for query {}", query);
-        return StreamSupport
-            .stream(writerToolsSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .map(writerToolsMapper::toDto)
-            .collect(Collectors.toList());
-    }
+    Page<WriterToolsDTO> search(String query, Pageable pageable);
 }

@@ -32,11 +32,8 @@ describe('Component Tests', () => {
                     WriterToolsService,
                     EventManager
                 ]
-            }).overrideComponent(WriterToolsDetailComponent, {
-                set: {
-                    template: ''
-                }
-            }).compileComponents();
+            }).overrideTemplate(WriterToolsDetailComponent, '')
+            .compileComponents();
         }));
 
         beforeEach(() => {

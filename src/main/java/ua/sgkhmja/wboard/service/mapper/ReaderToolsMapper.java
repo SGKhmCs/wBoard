@@ -8,20 +8,20 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity ReaderTools and its DTO ReaderToolsDTO.
  */
-@Mapper(componentModel = "spring", uses = {ReaderMapper.class, })
+@Mapper(componentModel = "spring", uses = {UserMapper.class, BoardMapper.class, })
 public interface ReaderToolsMapper extends EntityMapper <ReaderToolsDTO, ReaderTools> {
-    @Mapping(source = "reader.id", target = "readerId")
+
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.login", target = "userLogin")
+
+    @Mapping(source = "board.id", target = "boardId")
+    @Mapping(source = "board.name", target = "boardName")
     ReaderToolsDTO toDto(ReaderTools readerTools); 
-    @Mapping(source = "readerId", target = "reader")
+
+    @Mapping(source = "userId", target = "user")
+
+    @Mapping(source = "boardId", target = "board")
     ReaderTools toEntity(ReaderToolsDTO readerToolsDTO); 
-    /**
-     * generating the fromId for all mappers if the databaseType is sql, as the class has relationship to it might need it, instead of
-     * creating a new attribute to know if the entity has any relationship from some other entity
-     *
-     * @param id id of the entity
-     * @return the entity instance
-     */
-     
     default ReaderTools fromId(Long id) {
         if (id == null) {
             return null;

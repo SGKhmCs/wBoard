@@ -28,18 +28,22 @@
     <div class="table-responsive" *ngIf="readerTools">
         <table class="table table-striped">
             <thead>
-            <tr>
-            <th><span jhiTranslate="global.field.id">ID</span></th>
-            <th><span jhiTranslate="wBoardApp.readerTools.reader">Reader</span></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="userLogin"><span jhiTranslate="wBoardApp.readerTools.user">User</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="boardName"><span jhiTranslate="wBoardApp.readerTools.board">Board</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
             <tr *ngFor="let readerTools of readerTools ;trackBy: trackId">
                 <td><a [routerLink]="['../reader-tools', readerTools.id ]">{{readerTools.id}}</a></td>
                 <td>
-                    <div *ngIf="readerTools.readerId">
-                        <a [routerLink]="['../reader', readerTools.readerId  ]" >{{readerTools.readerId}}</a>
+                    {{readerTools.userLogin}}
+                </td>
+                <td>
+                    <div *ngIf="readerTools.boardId">
+                        <a [routerLink]="['../board', readerTools.boardId  ]" >{{readerTools.boardName}}</a>
                     </div>
                 </td>
                 <td class="text-right">

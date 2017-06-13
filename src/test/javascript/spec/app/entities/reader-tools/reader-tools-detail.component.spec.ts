@@ -32,11 +32,8 @@ describe('Component Tests', () => {
                     ReaderToolsService,
                     EventManager
                 ]
-            }).overrideComponent(ReaderToolsDetailComponent, {
-                set: {
-                    template: ''
-                }
-            }).compileComponents();
+            }).overrideTemplate(ReaderToolsDetailComponent, '')
+            .compileComponents();
         }));
 
         beforeEach(() => {

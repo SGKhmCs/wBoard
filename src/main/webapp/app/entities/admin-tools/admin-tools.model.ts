@@ -1,7 +1,8 @@
 export class AdminTools {
     constructor(
         public id?: number,
-        public adminId?: number,
+        public userId?: number,
+        public boardId?: number,
     ) {
     }
 }

@@ -13,18 +13,35 @@ import { PaginationConfig } from '../../blocks/config/uib-pagination.config';
     templateUrl: './board.component.html'
 })
 export class BoardComponent implements OnInit, OnDestroy {
-boards: Board[];
+
+    boards: Board[];
     currentAccount: any;
     eventSubscriber: Subscription;
+    itemsPerPage: number;
+    links: any;
+    page: any;
+    predicate: any;
+    queryCount: any;
+    reverse: any;
+    totalItems: number;
     currentSearch: string;
 
     constructor(
         private boardService: BoardService,
         private alertService: AlertService,
         private eventManager: EventManager,
+        private parseLinks: ParseLinks,
         private activatedRoute: ActivatedRoute,
         private principal: Principal
     ) {
+        this.boards = [];
+        this.itemsPerPage = ITEMS_PER_PAGE;
+        this.page = 0;
+        this.links = {
+            last: 0
+        };
+        this.predicate = 'id';
+        this.reverse = true;
         this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
     }
 
@@ -32,31 +49,60 @@ boards: Board[];
         if (this.currentSearch) {
             this.boardService.search({
                 query: this.currentSearch,
-                }).subscribe(
-                    (res: ResponseWrapper) => this.boards = res.json,
-                    (res: ResponseWrapper) => this.onError(res.json)
-                );
+                page: this.page,
+                size: this.itemsPerPage,
+                sort: this.sort()
+            }).subscribe(
+                (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
+                (res: ResponseWrapper) => this.onError(res.json)
+            );
             return;
-       }
-        this.boardService.query().subscribe(
-            (res: ResponseWrapper) => {
-                this.boards = res.json;
-                this.currentSearch = '';
-            },
+        }
+        this.boardService.query({
+            page: this.page,
+            size: this.itemsPerPage,
+            sort: this.sort()
+        }).subscribe(
+            (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
             (res: ResponseWrapper) => this.onError(res.json)
         );
+    }
+
+    reset() {
+        this.page = 0;
+        this.boards = [];
+        this.loadAll();
+    }
+
+    loadPage(page) {
+        this.page = page;
+        this.loadAll();
+    }
+
+    clear() {
+        this.boards = [];
+        this.links = {
+            last: 0
+        };
+        this.page = 0;
+        this.predicate = 'id';
+        this.reverse = true;
+        this.currentSearch = '';
+        this.loadAll();
     }
 
     search(query) {
         if (!query) {
             return this.clear();
         }
+        this.boards = [];
+        this.links = {
+            last: 0
+        };
+        this.page = 0;
+        this.predicate = '_score';
+        this.reverse = false;
         this.currentSearch = query;
-        this.loadAll();
-    }
-
-    clear() {
-        this.currentSearch = '';
         this.loadAll();
     }
     ngOnInit() {
@@ -75,7 +121,23 @@ boards: Board[];
         return item.id;
     }
     registerChangeInBoards() {
-        this.eventSubscriber = this.eventManager.subscribe('boardListModification', (response) => this.loadAll());
+        this.eventSubscriber = this.eventManager.subscribe('boardListModification', (response) => this.reset());
+    }
+
+    sort() {
+        const result = [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
+        if (this.predicate !== 'id') {
+            result.push('id');
+        }
+        return result;
+    }
+
+    private onSuccess(data, headers) {
+        this.links = this.parseLinks.parse(headers.get('link'));
+        this.totalItems = headers.get('X-Total-Count');
+        for (let i = 0; i < data.length; i++) {
+            this.boards.push(data[i]);
+        }
     }
 
     private onError(error) {

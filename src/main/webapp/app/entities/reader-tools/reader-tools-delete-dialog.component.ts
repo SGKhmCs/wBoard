@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EventManager } from 'ng-jhipster';
+import { AlertService, EventManager } from 'ng-jhipster';
 
 import { ReaderTools } from './reader-tools.model';
 import { ReaderToolsPopupService } from './reader-tools-popup.service';
@@ -19,6 +19,7 @@ export class ReaderToolsDeleteDialogComponent {
     constructor(
         private readerToolsService: ReaderToolsService,
         public activeModal: NgbActiveModal,
+        private alertService: AlertService,
         private eventManager: EventManager
     ) {
     }
@@ -35,6 +36,7 @@ export class ReaderToolsDeleteDialogComponent {
             });
             this.activeModal.dismiss(true);
         });
+        this.alertService.success('wBoardApp.readerTools.deleted', { param : id }, null);
     }
 }
 

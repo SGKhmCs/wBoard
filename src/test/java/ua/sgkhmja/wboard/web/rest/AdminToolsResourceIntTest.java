@@ -3,6 +3,8 @@ package ua.sgkhmja.wboard.web.rest;
 import ua.sgkhmja.wboard.WBoardApp;
 
 import ua.sgkhmja.wboard.domain.AdminTools;
+import ua.sgkhmja.wboard.domain.User;
+import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.repository.AdminToolsRepository;
 import ua.sgkhmja.wboard.service.AdminToolsService;
 import ua.sgkhmja.wboard.repository.search.AdminToolsSearchRepository;
@@ -87,6 +89,16 @@ public class AdminToolsResourceIntTest {
      */
     public static AdminTools createEntity(EntityManager em) {
         AdminTools adminTools = new AdminTools();
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        adminTools.setUser(user);
+        // Add required entity
+        Board board = BoardResourceIntTest.createEntity(em);
+        em.persist(board);
+        em.flush();
+        adminTools.setBoard(board);
         return adminTools;
     }
 

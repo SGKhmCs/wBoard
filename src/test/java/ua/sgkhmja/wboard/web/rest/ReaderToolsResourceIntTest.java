@@ -3,6 +3,8 @@ package ua.sgkhmja.wboard.web.rest;
 import ua.sgkhmja.wboard.WBoardApp;
 
 import ua.sgkhmja.wboard.domain.ReaderTools;
+import ua.sgkhmja.wboard.domain.User;
+import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.repository.ReaderToolsRepository;
 import ua.sgkhmja.wboard.service.ReaderToolsService;
 import ua.sgkhmja.wboard.repository.search.ReaderToolsSearchRepository;
@@ -87,6 +89,16 @@ public class ReaderToolsResourceIntTest {
      */
     public static ReaderTools createEntity(EntityManager em) {
         ReaderTools readerTools = new ReaderTools();
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        readerTools.setUser(user);
+        // Add required entity
+        Board board = BoardResourceIntTest.createEntity(em);
+        em.persist(board);
+        em.flush();
+        readerTools.setBoard(board);
         return readerTools;
     }
 

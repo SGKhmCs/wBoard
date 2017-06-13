@@ -13,9 +13,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.annotation.*;
 
 @Configuration
@@ -44,14 +41,11 @@ public class CacheConfiguration {
             cm.createCache(ua.sgkhmja.wboard.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(ua.sgkhmja.wboard.domain.User.class.getName() + ".authorities", jcacheConfiguration);
             cm.createCache(ua.sgkhmja.wboard.domain.SocialUserConnection.class.getName(), jcacheConfiguration);
+            cm.createCache(ua.sgkhmja.wboard.domain.OwnerTools.class.getName(), jcacheConfiguration);
             cm.createCache(ua.sgkhmja.wboard.domain.Board.class.getName(), jcacheConfiguration);
-            cm.createCache(ua.sgkhmja.wboard.domain.BoardUser.class.getName(), jcacheConfiguration);
-            cm.createCache(ua.sgkhmja.wboard.domain.Reader.class.getName(), jcacheConfiguration);
-            cm.createCache(ua.sgkhmja.wboard.domain.Writer.class.getName(), jcacheConfiguration);
-            cm.createCache(ua.sgkhmja.wboard.domain.Admin.class.getName(), jcacheConfiguration);
-            cm.createCache(ua.sgkhmja.wboard.domain.AdminTools.class.getName(), jcacheConfiguration);
-            cm.createCache(ua.sgkhmja.wboard.domain.WriterTools.class.getName(), jcacheConfiguration);
             cm.createCache(ua.sgkhmja.wboard.domain.ReaderTools.class.getName(), jcacheConfiguration);
+            cm.createCache(ua.sgkhmja.wboard.domain.WriterTools.class.getName(), jcacheConfiguration);
+            cm.createCache(ua.sgkhmja.wboard.domain.AdminTools.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

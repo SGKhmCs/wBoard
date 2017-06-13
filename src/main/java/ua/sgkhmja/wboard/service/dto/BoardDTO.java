@@ -3,8 +3,6 @@ package ua.sgkhmja.wboard.service.dto;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -19,10 +17,6 @@ public class BoardDTO implements Serializable {
     private String name;
 
     private Boolean pub;
-
-    private Long ownerId;
-
-    private String ownerLogin;
 
     public Long getId() {
         return id;
@@ -46,22 +40,6 @@ public class BoardDTO implements Serializable {
 
     public void setPub(Boolean pub) {
         this.pub = pub;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long userId) {
-        this.ownerId = userId;
-    }
-
-    public String getOwnerLogin() {
-        return ownerLogin;
-    }
-
-    public void setOwnerLogin(String userLogin) {
-        this.ownerLogin = userLogin;
     }
 
     @Override

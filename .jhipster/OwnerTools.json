@@ -24,7 +24,7 @@
     "fields": [],
     "changelogDate": "20170612162321",
     "dto": "mapstruct",
-    "service": "serviceImpl",
+    "service": "serviceClass",
     "entityTableName": "owner_tools",
     "pagination": "infinite-scroll"
 }

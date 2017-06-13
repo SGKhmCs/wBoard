@@ -3,7 +3,6 @@ package ua.sgkhmja.wboard.web.rest;
 import ua.sgkhmja.wboard.WBoardApp;
 
 import ua.sgkhmja.wboard.domain.OwnerTools;
-import ua.sgkhmja.wboard.domain.User;
 import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.repository.OwnerToolsRepository;
 import ua.sgkhmja.wboard.service.OwnerToolsService;
@@ -89,11 +88,6 @@ public class OwnerToolsResourceIntTest {
      */
     public static OwnerTools createEntity(EntityManager em) {
         OwnerTools ownerTools = new OwnerTools();
-        // Add required entity
-        User owner = UserResourceIntTest.createEntity(em);
-        em.persist(owner);
-        em.flush();
-        ownerTools.setOwner(owner);
         // Add required entity
         Board board = BoardResourceIntTest.createEntity(em);
         em.persist(board);

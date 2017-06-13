@@ -20,7 +20,7 @@
     ],
     "changelogDate": "20170612162627",
     "dto": "mapstruct",
-    "service": "serviceImpl",
+    "service": "serviceClass",
     "entityTableName": "board",
     "pagination": "infinite-scroll"
 }

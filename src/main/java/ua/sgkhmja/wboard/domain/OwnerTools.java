@@ -25,7 +25,7 @@ public class OwnerTools implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     private User owner;
 
     @OneToOne(optional = false)

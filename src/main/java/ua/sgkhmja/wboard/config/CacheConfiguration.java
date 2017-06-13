@@ -41,11 +41,11 @@ public class CacheConfiguration {
             cm.createCache(ua.sgkhmja.wboard.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(ua.sgkhmja.wboard.domain.User.class.getName() + ".authorities", jcacheConfiguration);
             cm.createCache(ua.sgkhmja.wboard.domain.SocialUserConnection.class.getName(), jcacheConfiguration);
-            cm.createCache(ua.sgkhmja.wboard.domain.OwnerTools.class.getName(), jcacheConfiguration);
+            cm.createCache(ua.sgkhmja.wboard.domain.AdminTools.class.getName(), jcacheConfiguration);
             cm.createCache(ua.sgkhmja.wboard.domain.Board.class.getName(), jcacheConfiguration);
+            cm.createCache(ua.sgkhmja.wboard.domain.OwnerTools.class.getName(), jcacheConfiguration);
             cm.createCache(ua.sgkhmja.wboard.domain.ReaderTools.class.getName(), jcacheConfiguration);
             cm.createCache(ua.sgkhmja.wboard.domain.WriterTools.class.getName(), jcacheConfiguration);
-            cm.createCache(ua.sgkhmja.wboard.domain.AdminTools.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

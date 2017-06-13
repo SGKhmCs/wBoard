@@ -21,7 +21,7 @@
     "serviceDiscoveryType": false,
     "buildTool": "gradle",
     "enableSocialSignIn": true,
-    "jwtSecretKey": "688de092de0a56a843536fd152941230b93b426b",
+    "jwtSecretKey": "706b505d1fe21f3fc830d9ecb3b0d75006da3c41",
     "clientFramework": "angular2",
     "useSass": true,
     "clientPackageManager": "yarn",

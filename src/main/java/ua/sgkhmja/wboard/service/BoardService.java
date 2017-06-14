@@ -2,8 +2,11 @@ package ua.sgkhmja.wboard.service;
 
 import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.repository.BoardRepository;
+import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.repository.search.BoardSearchRepository;
+import ua.sgkhmja.wboard.security.SecurityUtils;
 import ua.sgkhmja.wboard.service.dto.BoardDTO;
+import ua.sgkhmja.wboard.service.dto.OwnerToolsDTO;
 import ua.sgkhmja.wboard.service.mapper.BoardMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,26 +33,14 @@ public class BoardService {
 
     private final BoardSearchRepository boardSearchRepository;
 
-    public BoardService(BoardRepository boardRepository, BoardMapper boardMapper, BoardSearchRepository boardSearchRepository) {
+
+    public BoardService(BoardRepository boardRepository, BoardMapper boardMapper,
+                        BoardSearchRepository boardSearchRepository) {
         this.boardRepository = boardRepository;
         this.boardMapper = boardMapper;
         this.boardSearchRepository = boardSearchRepository;
     }
 
-    /**
-     * Save a board.
-     *
-     * @param boardDTO the entity to save
-     * @return the persisted entity
-     */
-    public BoardDTO save(BoardDTO boardDTO) {
-        log.debug("Request to save Board : {}", boardDTO);
-        Board board = boardMapper.toEntity(boardDTO);
-        board = boardRepository.save(board);
-        BoardDTO result = boardMapper.toDto(board);
-        boardSearchRepository.save(board);
-        return result;
-    }
 
     /**
      *  Get all the boards.
@@ -75,17 +66,6 @@ public class BoardService {
         log.debug("Request to get Board : {}", id);
         Board board = boardRepository.findOne(id);
         return boardMapper.toDto(board);
-    }
-
-    /**
-     *  Delete the  board by id.
-     *
-     *  @param id the id of the entity
-     */
-    public void delete(Long id) {
-        log.debug("Request to delete Board : {}", id);
-        boardRepository.delete(id);
-        boardSearchRepository.delete(id);
     }
 
     /**

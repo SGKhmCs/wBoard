@@ -54,21 +54,19 @@ public class OwnerToolsResource {
      * @return the ResponseEntity with status 201 (Created) and with body the new ownerToolsDTO, or with status 400 (Bad Request) if the ownerTools has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PostMapping("/owner-tools")
-    @Timed
-    public ResponseEntity<OwnerToolsDTO> createOwnerTools(@Valid @RequestBody OwnerToolsDTO ownerToolsDTO) throws URISyntaxException {
-        log.debug("REST request to save OwnerTools : {}", ownerToolsDTO);
-        if (ownerToolsDTO.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new ownerTools cannot already have an ID")).body(null);
-        }
-
-        OwnerToolsDTO wOwner = roleService.setOwner(ownerToolsDTO);
-
-        OwnerToolsDTO result = ownerToolsService.save(wOwner);
-        return ResponseEntity.created(new URI("/api/owner-tools/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
-    }
+//    @PostMapping("/owner-tools")
+//    @Timed
+//    public ResponseEntity<OwnerToolsDTO> createOwnerTools(@Valid @RequestBody OwnerToolsDTO ownerToolsDTO) throws URISyntaxException {
+//        log.debug("REST request to save OwnerTools : {}", ownerToolsDTO);
+//        if (ownerToolsDTO.getId() != null) {
+//            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new ownerTools cannot already have an ID")).body(null);
+//        }
+//
+//        OwnerToolsDTO result = ownerToolsService.save(ownerToolsDTO);
+//        return ResponseEntity.created(new URI("/api/owner-tools/" + result.getId()))
+//            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+//            .body(result);
+//    }
 
     /**
      * PUT  /owner-tools : Updates an existing ownerTools.
@@ -79,18 +77,18 @@ public class OwnerToolsResource {
      * or with status 500 (Internal Server Error) if the ownerToolsDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PutMapping("/owner-tools")
-    @Timed
-    public ResponseEntity<OwnerToolsDTO> updateOwnerTools(@Valid @RequestBody OwnerToolsDTO ownerToolsDTO) throws URISyntaxException {
-        log.debug("REST request to update OwnerTools : {}", ownerToolsDTO);
-        if (ownerToolsDTO.getId() == null) {
-            return createOwnerTools(ownerToolsDTO);
-        }
-        OwnerToolsDTO result = ownerToolsService.save(ownerToolsDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, ownerToolsDTO.getId().toString()))
-            .body(result);
-    }
+//    @PutMapping("/owner-tools")
+//    @Timed
+//    public ResponseEntity<OwnerToolsDTO> updateOwnerTools(@Valid @RequestBody OwnerToolsDTO ownerToolsDTO) throws URISyntaxException {
+//        log.debug("REST request to update OwnerTools : {}", ownerToolsDTO);
+//        if (ownerToolsDTO.getId() == null) {
+//            return createOwnerTools(ownerToolsDTO);
+//        }
+//        OwnerToolsDTO result = ownerToolsService.save(ownerToolsDTO);
+//        return ResponseEntity.ok()
+//            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, ownerToolsDTO.getId().toString()))
+//            .body(result);
+//    }
 
     /**
      * GET  /owner-tools : get all the ownerTools.

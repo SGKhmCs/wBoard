@@ -1,10 +1,16 @@
 package ua.sgkhmja.wboard.service;
 
+import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.domain.OwnerTools;
+import ua.sgkhmja.wboard.repository.BoardRepository;
 import ua.sgkhmja.wboard.repository.OwnerToolsRepository;
+import ua.sgkhmja.wboard.repository.UserRepository;
+import ua.sgkhmja.wboard.repository.search.BoardSearchRepository;
 import ua.sgkhmja.wboard.repository.search.OwnerToolsSearchRepository;
-import ua.sgkhmja.wboard.service.dao.UserDAO;
+import ua.sgkhmja.wboard.security.SecurityUtils;
+import ua.sgkhmja.wboard.service.dto.BoardDTO;
 import ua.sgkhmja.wboard.service.dto.OwnerToolsDTO;
+import ua.sgkhmja.wboard.service.mapper.BoardMapper;
 import ua.sgkhmja.wboard.service.mapper.OwnerToolsMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,14 +37,24 @@ public class OwnerToolsService {
 
     private final OwnerToolsSearchRepository ownerToolsSearchRepository;
 
-    private final UserDAO userDAO;
+    private final BoardRepository boardRepository;
+
+    private final BoardMapper boardMapper;
+
+    private final BoardSearchRepository boardSearchRepository;
+
+    private final UserRepository userRepository;
 
     public OwnerToolsService(OwnerToolsRepository ownerToolsRepository, OwnerToolsMapper ownerToolsMapper,
-                                 OwnerToolsSearchRepository ownerToolsSearchRepository, UserDAO userDAO) {
+                             OwnerToolsSearchRepository ownerToolsSearchRepository, BoardRepository boardRepository,
+                             BoardMapper boardMapper, BoardSearchRepository boardSearchRepository, UserRepository userRepository) {
         this.ownerToolsRepository = ownerToolsRepository;
         this.ownerToolsMapper = ownerToolsMapper;
         this.ownerToolsSearchRepository = ownerToolsSearchRepository;
-        this.userDAO = userDAO;
+        this.boardRepository = boardRepository;
+        this.boardMapper = boardMapper;
+        this.boardSearchRepository = boardSearchRepository;
+        this.userRepository = userRepository;
     }
     /**
      * Save a ownerTools.
@@ -88,8 +104,13 @@ public class OwnerToolsService {
      */
     public void delete(Long id) {
         log.debug("Request to delete OwnerTools : {}", id);
+
+        Long boardId = ownerToolsRepository.findOne(id).getBoard().getId();
+
         ownerToolsRepository.delete(id);
         ownerToolsSearchRepository.delete(id);
+
+        deleteBoard(boardId);
     }
 
     /**
@@ -104,5 +125,59 @@ public class OwnerToolsService {
         log.debug("Request to search for a page of OwnerTools for query {}", query);
         Page<OwnerTools> result = ownerToolsSearchRepository.search(queryStringQuery(query), pageable);
         return result.map(ownerToolsMapper::toDto);
+    }
+
+    /**
+     *  Delete the  board by id.
+     *
+     *  @param id the id of the entity
+     */
+    private void deleteBoard(Long id) {
+        log.debug("Request to delete Board : {}", id);
+        boardRepository.delete(id);
+        boardSearchRepository.delete(id);
+    }
+
+    /**
+     * Save a board.
+     *
+     * @param boardDTO the entity to save
+     * @return the persisted entity
+     */
+    public BoardDTO createBoard(BoardDTO boardDTO) {
+        log.debug("Request to save Board : {}", boardDTO);
+
+        Board board = boardMapper.toEntity(boardDTO);
+        board = boardRepository.save(board);
+        BoardDTO result = boardMapper.toDto(board);
+        boardSearchRepository.save(board);
+
+        save(createOwnerTools(result));
+
+        return result;
+    }
+
+    /**
+     * set owner by current user login
+     *
+     */
+
+    //TODO баг при оновлені борда, потрібно виключити оновлення тулзів при оновлені борда
+
+    private OwnerToolsDTO createOwnerTools(BoardDTO boardDTO) {
+
+        if(boardDTO.getId() == null)
+            return null;
+
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Long currentUserId = userRepository.findOneByLogin(currentUserLogin).get().getId();
+
+        OwnerToolsDTO ownerToolsDTO = new OwnerToolsDTO();
+        ownerToolsDTO.setBoardId(boardDTO.getId());
+        ownerToolsDTO.setBoardName(boardDTO.getName());
+        ownerToolsDTO.setOwnerId(currentUserId);
+        ownerToolsDTO.setOwnerLogin(currentUserLogin);
+
+        return ownerToolsDTO;
     }
 }

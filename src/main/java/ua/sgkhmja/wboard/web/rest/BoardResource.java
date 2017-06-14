@@ -2,6 +2,7 @@ package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import ua.sgkhmja.wboard.service.BoardService;
+import ua.sgkhmja.wboard.service.OwnerToolsService;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
 import ua.sgkhmja.wboard.web.rest.util.PaginationUtil;
 import ua.sgkhmja.wboard.service.dto.BoardDTO;
@@ -22,9 +23,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Board.
@@ -39,8 +37,11 @@ public class BoardResource {
 
     private final BoardService boardService;
 
-    public BoardResource(BoardService boardService) {
+    private final OwnerToolsService ownerToolsService;
+
+    public BoardResource(BoardService boardService, OwnerToolsService ownerToolsService) {
         this.boardService = boardService;
+        this.ownerToolsService = ownerToolsService;
     }
 
     /**
@@ -55,9 +56,10 @@ public class BoardResource {
     public ResponseEntity<BoardDTO> createBoard(@Valid @RequestBody BoardDTO boardDTO) throws URISyntaxException {
         log.debug("REST request to save Board : {}", boardDTO);
         if (boardDTO.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new board cannot already have an ID")).body(null);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(
+                ENTITY_NAME, "idexists", "A new board cannot already have an ID")).body(null);
         }
-        BoardDTO result = boardService.save(boardDTO);
+        BoardDTO result = ownerToolsService.createBoard(boardDTO);
         return ResponseEntity.created(new URI("/api/boards/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -79,7 +81,7 @@ public class BoardResource {
         if (boardDTO.getId() == null) {
             return createBoard(boardDTO);
         }
-        BoardDTO result = boardService.save(boardDTO);
+        BoardDTO result = ownerToolsService.createBoard(boardDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, boardDTO.getId().toString()))
             .body(result);
@@ -120,13 +122,13 @@ public class BoardResource {
      * @param id the id of the boardDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
-    @DeleteMapping("/boards/{id}")
-    @Timed
-    public ResponseEntity<Void> deleteBoard(@PathVariable Long id) {
-        log.debug("REST request to delete Board : {}", id);
-        boardService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
-    }
+//    @DeleteMapping("/boards/{id}")
+//    @Timed
+//    public ResponseEntity<Void> deleteBoard(@PathVariable Long id) {
+//        log.debug("REST request to delete Board : {}", id);
+//        boardService.delete(id);
+//        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+//    }
 
     /**
      * SEARCH  /_search/boards?query=:query : search for the board corresponding

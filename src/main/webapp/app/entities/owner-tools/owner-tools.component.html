@@ -1,12 +1,12 @@
 <div>
     <h2>
         <span jhiTranslate="wBoardApp.ownerTools.home.title">Owner Tools</span>
-        <button class="btn btn-primary float-right create-owner-tools" [routerLink]="['/', { outlets: { popup: ['owner-tools-new'] } }]">
-            <span class="fa fa-plus"></span>
-            <span class="hidden-sm-down"  jhiTranslate="wBoardApp.ownerTools.home.createLabel">
-            Create new Owner Tools
-            </span>
-        </button>
+        <!--<button class="btn btn-primary float-right create-owner-tools" [routerLink]="['/', { outlets: { popup: ['owner-tools-new'] } }]">-->
+            <!--<span class="fa fa-plus"></span>-->
+            <!--<span class="hidden-sm-down"  jhiTranslate="wBoardApp.ownerTools.home.createLabel">-->
+            <!--Create new Owner Tools-->
+            <!--</span>-->
+        <!--</button>-->
     </h2>
     <jhi-alert></jhi-alert>
     <div class="row">
@@ -54,13 +54,13 @@
                             <span class="fa fa-eye"></span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.view">View</span>
                         </button>
-                        <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'owner-tools/'+ ownerTools.id + '/edit'} }]"
-                                replaceUrl="true"
-                                class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
-                            <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
-                        </button>
+                        <!--<button type="submit"-->
+                                <!--[routerLink]="['/', { outlets: { popup: 'owner-tools/'+ ownerTools.id + '/edit'} }]"-->
+                                <!--replaceUrl="true"-->
+                                <!--class="btn btn-primary btn-sm">-->
+                            <!--<span class="fa fa-pencil"></span>-->
+                            <!--<span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>-->
+                        <!--</button>-->
                         <button type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'owner-tools/'+ ownerTools.id + '/delete'} }]"
                                 replaceUrl="true"

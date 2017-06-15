@@ -152,8 +152,9 @@ public class OwnerToolsService {
         BoardDTO result = boardMapper.toDto(board);
         boardSearchRepository.save(board);
 
-        save(createOwnerTools(result));
-
+        if(boardDTO.getId() == null) {
+            save(createOwnerTools(result));
+        }
         return result;
     }
 
@@ -161,8 +162,6 @@ public class OwnerToolsService {
      * set owner by current user login
      *
      */
-
-    //TODO баг при оновлені борда, потрібно виключити оновлення тулзів при оновлені борда
 
     private OwnerToolsDTO createOwnerTools(BoardDTO boardDTO) {
 

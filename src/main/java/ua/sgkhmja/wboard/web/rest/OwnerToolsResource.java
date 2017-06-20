@@ -1,8 +1,8 @@
 package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import ua.sgkhmja.wboard.service.BussinesLogicService;
 import ua.sgkhmja.wboard.service.OwnerToolsService;
-import ua.sgkhmja.wboard.service.RoleService;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
 import ua.sgkhmja.wboard.web.rest.util.PaginationUtil;
 import ua.sgkhmja.wboard.service.dto.OwnerToolsDTO;
@@ -17,15 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing OwnerTools.
@@ -39,12 +34,13 @@ public class OwnerToolsResource {
     private static final String ENTITY_NAME = "ownerTools";
 
     private final OwnerToolsService ownerToolsService;
+//    private final BoardService boardService;
 
-    private final RoleService roleService;
+    private final BussinesLogicService bussinesLogicService;
 
-    public OwnerToolsResource(OwnerToolsService ownerToolsService, RoleService roleService) {
+    public OwnerToolsResource(BussinesLogicService bussinesLogicService, OwnerToolsService ownerToolsService) {
+        this.bussinesLogicService = bussinesLogicService;
         this.ownerToolsService = ownerToolsService;
-        this.roleService = roleService;
     }
 
     /**

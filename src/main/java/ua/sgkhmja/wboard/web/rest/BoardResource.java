@@ -2,6 +2,7 @@ package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import ua.sgkhmja.wboard.service.BoardService;
+import ua.sgkhmja.wboard.service.BussinesLogicService;
 import ua.sgkhmja.wboard.service.OwnerToolsService;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
 import ua.sgkhmja.wboard.web.rest.util.PaginationUtil;
@@ -36,12 +37,13 @@ public class BoardResource {
     private static final String ENTITY_NAME = "board";
 
     private final BoardService boardService;
+    private final BussinesLogicService bussinesLogicService;
 
-    private final OwnerToolsService ownerToolsService;
+//    private final OwnerToolsService ownerToolsService;
 
-    public BoardResource(BoardService boardService, OwnerToolsService ownerToolsService) {
+    public BoardResource(BoardService boardService, BussinesLogicService bussinesLogicService) {
         this.boardService = boardService;
-        this.ownerToolsService = ownerToolsService;
+        this.bussinesLogicService = bussinesLogicService;
     }
 
     /**
@@ -59,7 +61,8 @@ public class BoardResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(
                 ENTITY_NAME, "idexists", "A new board cannot already have an ID")).body(null);
         }
-        BoardDTO result = ownerToolsService.createBoard(boardDTO);
+//        BoardDTO result = boardService.createBoard(boardDTO);
+        BoardDTO result = bussinesLogicService.createBoardAndOwnerTools(boardDTO);
         return ResponseEntity.created(new URI("/api/boards/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -81,7 +84,7 @@ public class BoardResource {
         if (boardDTO.getId() == null) {
             return createBoard(boardDTO);
         }
-        BoardDTO result = ownerToolsService.createBoard(boardDTO);
+        BoardDTO result = boardService.createBoard(boardDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, boardDTO.getId().toString()))
             .body(result);

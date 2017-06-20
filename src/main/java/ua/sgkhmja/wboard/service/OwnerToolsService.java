@@ -138,32 +138,14 @@ public class OwnerToolsService {
         boardSearchRepository.delete(id);
     }
 
-    /**
-     * Save a board.
-     *
-     * @param boardDTO the entity to save
-     * @return the persisted entity
-     */
-    public BoardDTO createBoard(BoardDTO boardDTO) {
-        log.debug("Request to save Board : {}", boardDTO);
 
-        Board board = boardMapper.toEntity(boardDTO);
-        board = boardRepository.save(board);
-        BoardDTO result = boardMapper.toDto(board);
-        boardSearchRepository.save(board);
-
-        if(boardDTO.getId() == null) {
-            save(createOwnerTools(result));
-        }
-        return result;
-    }
 
     /**
      * set owner by current user login
      *
      */
 
-    private OwnerToolsDTO createOwnerTools(BoardDTO boardDTO) {
+    public OwnerToolsDTO createOwnerTools(BoardDTO boardDTO) {
 
         if(boardDTO.getId() == null)
             return null;

@@ -82,4 +82,24 @@ public class BoardService {
         return result.map(boardMapper::toDto);
     }
 
+    /**
+     * Save a board.
+     *
+     * @param boardDTO the entity to save
+     * @return the persisted entity
+     */
+    public BoardDTO createBoard(BoardDTO boardDTO) {
+        log.debug("Request to save Board : {}", boardDTO);
+
+        Board board = boardMapper.toEntity(boardDTO);
+        board = boardRepository.save(board);
+        BoardDTO result = boardMapper.toDto(board);
+        boardSearchRepository.save(board);
+
+//        if(boardDTO.getId() == null) {
+//            save(createOwnerTools(result));
+//        }
+        return result;
+    }
+
 }

@@ -15,5 +15,8 @@ public interface OwnerToolsRepository extends JpaRepository<OwnerTools,Long> {
 
     @Query("select owner_tools from OwnerTools owner_tools where owner_tools.owner.login = ?#{principal.username}")
     List<OwnerTools> findByOwnerIsCurrentUser();
-    
+
+    @Query("select owner_tools from OwnerTools owner_tools where owner_tools.board = ?#{boardId}")
+    OwnerTools findOwnerToolsByBoardId(Long boardId);
+
 }

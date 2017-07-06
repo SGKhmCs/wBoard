@@ -97,6 +97,7 @@ public class OwnerToolsService {
         return ownerToolsMapper.toDto(ownerTools);
     }
 
+
     /**
      *  Delete the  ownerTools by id.
      *
@@ -160,5 +161,11 @@ public class OwnerToolsService {
         ownerToolsDTO.setOwnerLogin(currentUserLogin);
 
         return ownerToolsDTO;
+    }
+
+    public OwnerToolsDTO findOwnerToolsByBoard(BoardDTO boardDTO){
+        OwnerTools ownerTools = ownerToolsRepository.findOwnerToolsByBoardId(boardDTO.getId());
+        OwnerToolsDTO ownerToolsDTO = new OwnerToolsDTO();
+        return null;
     }
 }

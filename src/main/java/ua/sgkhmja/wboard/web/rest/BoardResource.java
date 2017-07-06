@@ -100,7 +100,8 @@ public class BoardResource {
     @Timed
     public ResponseEntity<List<BoardDTO>> getAllBoards(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Boards");
-        Page<BoardDTO> page = boardService.findAll(pageable);
+//        Page<BoardDTO> page = boardService.findAll(pageable);
+        Page<BoardDTO> page = bussinesLogicService.findAllBoardsByUser(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/boards");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

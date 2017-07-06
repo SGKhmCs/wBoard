@@ -86,7 +86,9 @@ public class OwnerToolsDTO implements Serializable {
     @Override
     public String toString() {
         return "OwnerToolsDTO{" +
-            "id=" + getId() +
+            "id=" + getId() + ", " +
+            "ownerId=" + getOwnerId() + ", " +
+            "boardId=" + getBoardId() + ", " +
             "}";
     }
 }

@@ -12,6 +12,7 @@
                 "ownerTools": "Owner Tools",
                 "readerTools": "Reader Tools",
                 "writerTools": "Writer Tools",
+                "boardsBody": "Boards Body",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

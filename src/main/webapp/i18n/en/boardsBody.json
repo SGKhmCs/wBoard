@@ -1,0 +1,22 @@
+{
+    "wBoardApp": {
+        "boardsBody" : {
+            "home": {
+                "title": "Boards Bodies",
+                "createLabel": "Create a new Boards Body",
+                "createOrEditLabel": "Create or edit a Boards Body",
+                "search": "Search for Boards Body"
+            },
+            "created": "A new Boards Body is created with identifier {{ param }}",
+            "updated": "A Boards Body is updated with identifier {{ param }}",
+            "deleted": "A Boards Body is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Boards Body {{ id }}?"
+            },
+            "detail": {
+                "title": "Boards Body"
+            },
+            "backgroundColor": "Background Color"
+        }
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "wBoardApp": {
+        "boardsBody" : {
+            "home": {
+                "title": "Boards Bodies",
+                "createLabel": "Создать новый Boards Body",
+                "createOrEditLabel": "Создать или отредактировать Boards Body",
+                "search": "Найти Boards Body"
+            },
+            "created": "Новый Boards Body создан с идентификатором {{ param }}",
+            "updated": "Boards Body обновлен с идентификатором {{ param }}",
+            "deleted": "Boards Body удален с идентификатором {{ param }}",
+            "delete": {
+                "question": "Вы уверены что хотите удалить Boards Body {{ id }}?"
+            },
+            "detail": {
+                "title": "Boards Body"
+            },
+            "backgroundColor": "Background Color"
+        }
+    }
+}

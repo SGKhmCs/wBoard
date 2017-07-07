@@ -1,0 +1,15 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "backgroundColor",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20170707163728",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "boards_body",
+    "pagination": "pagination"
+}

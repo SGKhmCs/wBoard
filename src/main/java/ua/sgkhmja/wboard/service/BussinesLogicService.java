@@ -150,6 +150,7 @@ public class BussinesLogicService {
 
         List<BoardDTO> fullDTOListWithoutDuplicates = fullDTOList.stream()
             .distinct()
+            .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
             .collect(Collectors.toList());
 
         Page<BoardDTO> boardDTOPage = new PageImpl<BoardDTO>(fullDTOListWithoutDuplicates);

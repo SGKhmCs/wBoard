@@ -6,6 +6,7 @@ import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.repository.BoardRepository;
 import ua.sgkhmja.wboard.service.BoardService;
 import ua.sgkhmja.wboard.repository.search.BoardSearchRepository;
+import ua.sgkhmja.wboard.service.BussinesLogicService;
 import ua.sgkhmja.wboard.service.dto.BoardDTO;
 import ua.sgkhmja.wboard.service.mapper.BoardMapper;
 import ua.sgkhmja.wboard.web.rest.errors.ExceptionTranslator;
@@ -57,6 +58,9 @@ public class BoardResourceIntTest {
     private BoardService boardService;
 
     @Autowired
+    private BussinesLogicService bussinesLogicService;
+
+    @Autowired
     private BoardSearchRepository boardSearchRepository;
 
     @Autowired
@@ -78,7 +82,7 @@ public class BoardResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        BoardResource boardResource = new BoardResource(boardService, roleService);
+        BoardResource boardResource = new BoardResource(boardService, bussinesLogicService);
         this.restBoardMockMvc = MockMvcBuilders.standaloneSetup(boardResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

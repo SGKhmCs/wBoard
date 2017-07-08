@@ -1,5 +1,6 @@
 package ua.sgkhmja.wboard.service;
 
+import ua.sgkhmja.wboard.domain.AdminTools;
 import ua.sgkhmja.wboard.domain.WriterTools;
 import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.repository.WriterToolsRepository;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -125,5 +128,10 @@ public class WriterToolsService {
         writerToolsDTO.setUserId(currentUserId);
         writerToolsDTO.setUserLogin(currentUserLogin);
         return writerToolsDTO;
+    }
+
+
+    public List<WriterTools> findByBoardId(Long boardId){
+        return writerToolsRepository.findAllByBoardId(boardId);
     }
 }

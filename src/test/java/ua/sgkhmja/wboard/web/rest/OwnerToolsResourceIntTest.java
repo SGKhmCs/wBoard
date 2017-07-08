@@ -5,7 +5,7 @@ import ua.sgkhmja.wboard.WBoardApp;
 import ua.sgkhmja.wboard.domain.OwnerTools;
 import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.repository.OwnerToolsRepository;
-import ua.sgkhmja.wboard.service.BussinesLogicService;
+import ua.sgkhmja.wboard.service.BusinessLogicService;
 import ua.sgkhmja.wboard.service.OwnerToolsService;
 import ua.sgkhmja.wboard.repository.search.OwnerToolsSearchRepository;
 import ua.sgkhmja.wboard.service.dto.OwnerToolsDTO;
@@ -53,7 +53,7 @@ public class OwnerToolsResourceIntTest {
     private OwnerToolsService ownerToolsService;
 
     @Autowired
-    private BussinesLogicService bussinesLogicService;
+    private BusinessLogicService businessLogicService;
 
     @Autowired
     private OwnerToolsSearchRepository ownerToolsSearchRepository;
@@ -77,7 +77,7 @@ public class OwnerToolsResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        OwnerToolsResource ownerToolsResource = new OwnerToolsResource(bussinesLogicService, ownerToolsService);
+        OwnerToolsResource ownerToolsResource = new OwnerToolsResource(businessLogicService, ownerToolsService);
         this.restOwnerToolsMockMvc = MockMvcBuilders.standaloneSetup(ownerToolsResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

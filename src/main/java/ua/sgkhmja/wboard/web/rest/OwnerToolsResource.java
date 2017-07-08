@@ -1,7 +1,7 @@
 package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import ua.sgkhmja.wboard.service.BussinesLogicService;
+import ua.sgkhmja.wboard.service.BusinessLogicService;
 import ua.sgkhmja.wboard.service.OwnerToolsService;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
 import ua.sgkhmja.wboard.web.rest.util.PaginationUtil;
@@ -36,10 +36,10 @@ public class OwnerToolsResource {
     private final OwnerToolsService ownerToolsService;
 //    private final BoardService boardService;
 
-    private final BussinesLogicService bussinesLogicService;
+    private final BusinessLogicService businessLogicService;
 
-    public OwnerToolsResource(BussinesLogicService bussinesLogicService, OwnerToolsService ownerToolsService) {
-        this.bussinesLogicService = bussinesLogicService;
+    public OwnerToolsResource(BusinessLogicService businessLogicService, OwnerToolsService ownerToolsService) {
+        this.businessLogicService = businessLogicService;
         this.ownerToolsService = ownerToolsService;
     }
 
@@ -125,7 +125,7 @@ public class OwnerToolsResource {
     @Timed
     public ResponseEntity<Void> deleteOwnerTools(@PathVariable Long id) {
         log.debug("REST request to delete OwnerTools : {}", id);
-        ownerToolsService.delete(id);
+        businessLogicService.deleteOwnerTools(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 

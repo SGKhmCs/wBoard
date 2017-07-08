@@ -2,23 +2,20 @@ package ua.sgkhmja.wboard.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ua.sgkhmja.wboard.domain.AdminTools;
-import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.domain.ReaderTools;
+import ua.sgkhmja.wboard.domain.WriterTools;
+import ua.sgkhmja.wboard.repository.AdminToolsRepository;
+import ua.sgkhmja.wboard.repository.OwnerToolsRepository;
 import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.security.SecurityUtils;
 import ua.sgkhmja.wboard.service.dto.*;
-import ua.sgkhmja.wboard.service.mapper.BoardMapper;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +24,7 @@ import java.util.stream.Collectors;
  */
 @Service
 //@Transactional
-public class BussinesLogicService {
+public class BusinessLogicService {
     private final Logger log = LoggerFactory.getLogger(BoardService.class);
 
     private final OwnerToolsService ownerToolsService;
@@ -37,7 +34,7 @@ public class BussinesLogicService {
     private final ReaderToolsService readerToolsService;
     private final UserRepository userRepository;
 
-    public BussinesLogicService(OwnerToolsService ownerToolsService,
+    public BusinessLogicService(OwnerToolsService ownerToolsService,
                                 BoardService boardService,
                                 AdminToolsService adminToolsService,
                                 WriterToolsService writerToolsService,
@@ -157,5 +154,26 @@ public class BussinesLogicService {
         return boardDTOPage;
     }
 
-//    private boolean is
+    public void deleteOwnerTools(Long id){
+        Long boardId = ownerToolsService.findOne(id).getBoardId();
+        List<AdminTools> adminToolsList = adminToolsService.findByBoardId(boardId);
+        List<WriterTools> writerToolsList = writerToolsService.findByBoardId(boardId);
+        List<ReaderTools> readerToolsList = readerToolsService.findByBoardId(boardId);
+
+        for(AdminTools adminTools : adminToolsList){
+            adminToolsService.delete(adminTools.getId());
+        }
+
+        for(WriterTools writerTools : writerToolsList){
+            writerToolsService.delete(writerTools.getId());
+        }
+
+        for(ReaderTools readerTools : readerToolsList){
+            readerToolsService.delete(readerTools.getId());
+        }
+
+        ownerToolsService.delete(id);
+        boardService.delete(boardId);
+
+    }
 }

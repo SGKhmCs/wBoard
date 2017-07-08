@@ -1,5 +1,6 @@
 package ua.sgkhmja.wboard.repository;
 
+import ua.sgkhmja.wboard.domain.AdminTools;
 import ua.sgkhmja.wboard.domain.WriterTools;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +16,7 @@ public interface WriterToolsRepository extends JpaRepository<WriterTools,Long> {
 
     @Query("select writer_tools from WriterTools writer_tools where writer_tools.user.login = ?#{principal.username}")
     List<WriterTools> findByUserIsCurrentUser();
-    
+
+    List<WriterTools> findAllByBoardId(Long boardId);
+
 }

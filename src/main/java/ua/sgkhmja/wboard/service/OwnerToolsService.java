@@ -106,12 +106,8 @@ public class OwnerToolsService {
     public void delete(Long id) {
         log.debug("Request to delete OwnerTools : {}", id);
 
-        Long boardId = ownerToolsRepository.findOne(id).getBoard().getId();
-
         ownerToolsRepository.delete(id);
         ownerToolsSearchRepository.delete(id);
-
-        deleteBoard(boardId);
     }
 
     /**
@@ -127,18 +123,6 @@ public class OwnerToolsService {
         Page<OwnerTools> result = ownerToolsSearchRepository.search(queryStringQuery(query), pageable);
         return result.map(ownerToolsMapper::toDto);
     }
-
-    /**
-     *  Delete the  board by id.
-     *
-     *  @param id the id of the entity
-     */
-    private void deleteBoard(Long id) {
-        log.debug("Request to delete Board : {}", id);
-        boardRepository.delete(id);
-        boardSearchRepository.delete(id);
-    }
-
 
 
     /**

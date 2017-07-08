@@ -1,5 +1,6 @@
 package ua.sgkhmja.wboard.service;
 
+import ua.sgkhmja.wboard.domain.AdminTools;
 import ua.sgkhmja.wboard.domain.ReaderTools;
 import ua.sgkhmja.wboard.repository.ReaderToolsRepository;
 import ua.sgkhmja.wboard.repository.UserRepository;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -125,5 +128,10 @@ public class ReaderToolsService {
         readerToolsDTO.setUserId(currentUserId);
         readerToolsDTO.setUserLogin(currentUserLogin);
         return readerToolsDTO;
+    }
+
+
+    public List<ReaderTools> findByBoardId(Long boardId){
+        return readerToolsRepository.findAllByBoardId(boardId);
     }
 }

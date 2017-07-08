@@ -2,8 +2,7 @@ package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import ua.sgkhmja.wboard.service.BoardService;
-import ua.sgkhmja.wboard.service.BussinesLogicService;
-import ua.sgkhmja.wboard.service.OwnerToolsService;
+import ua.sgkhmja.wboard.service.BusinessLogicService;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
 import ua.sgkhmja.wboard.web.rest.util.PaginationUtil;
 import ua.sgkhmja.wboard.service.dto.BoardDTO;
@@ -37,13 +36,13 @@ public class BoardResource {
     private static final String ENTITY_NAME = "board";
 
     private final BoardService boardService;
-    private final BussinesLogicService bussinesLogicService;
+    private final BusinessLogicService businessLogicService;
 
 //    private final OwnerToolsService ownerToolsService;
 
-    public BoardResource(BoardService boardService, BussinesLogicService bussinesLogicService) {
+    public BoardResource(BoardService boardService, BusinessLogicService businessLogicService) {
         this.boardService = boardService;
-        this.bussinesLogicService = bussinesLogicService;
+        this.businessLogicService = businessLogicService;
     }
 
     /**
@@ -62,7 +61,7 @@ public class BoardResource {
                 ENTITY_NAME, "idexists", "A new board cannot already have an ID")).body(null);
         }
 //        BoardDTO result = boardService.createBoard(boardDTO);
-        BoardDTO result = bussinesLogicService.createBoardAndOwnerTools(boardDTO);
+        BoardDTO result = businessLogicService.createBoardAndOwnerTools(boardDTO);
         return ResponseEntity.created(new URI("/api/boards/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -101,7 +100,7 @@ public class BoardResource {
     public ResponseEntity<List<BoardDTO>> getAllBoards(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Boards");
 //        Page<BoardDTO> page = boardService.findAll(pageable);
-        Page<BoardDTO> page = bussinesLogicService.findAllBoardsByUser(pageable);
+        Page<BoardDTO> page = businessLogicService.findAllBoardsByUser(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/boards");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

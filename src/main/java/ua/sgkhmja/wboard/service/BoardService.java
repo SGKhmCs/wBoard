@@ -102,4 +102,15 @@ public class BoardService {
         return result;
     }
 
+    /**
+     *  Delete the  board by id.
+     *
+     *  @param id the id of the entity
+     */
+    public void delete(Long id) {
+        log.debug("Request to delete Board : {}", id);
+
+        boardRepository.delete(id);
+        boardSearchRepository.delete(id);
+    }
 }

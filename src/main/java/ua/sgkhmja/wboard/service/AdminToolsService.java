@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.List;
+
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
@@ -126,5 +128,9 @@ public class AdminToolsService {
         adminToolsDTO.setUserId(currentUserId);
         adminToolsDTO.setUserLogin(currentUserLogin);
         return adminToolsDTO;
+    }
+
+    public List<AdminTools> findByBoardId(Long boardId){
+        return adminToolsRepository.findAllByBoardId(boardId);
     }
 }

@@ -1,6 +1,8 @@
 package ua.sgkhmja.wboard.service;
 
+import org.springframework.data.domain.PageImpl;
 import ua.sgkhmja.wboard.domain.AdminTools;
+import ua.sgkhmja.wboard.domain.OwnerTools;
 import ua.sgkhmja.wboard.repository.AdminToolsRepository;
 import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.repository.search.AdminToolsSearchRepository;
@@ -130,7 +132,16 @@ public class AdminToolsService {
         return adminToolsDTO;
     }
 
-    public List<AdminTools> findByBoardId(Long boardId){
+    public List<AdminTools> findAllByBoardId(Long boardId){
         return adminToolsRepository.findAllByBoardId(boardId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AdminToolsDTO> getAllByBoardId(Long id, Pageable pageable){
+        List<AdminTools> list = findAllByBoardId(id);
+        int start = pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > list.size() ? list.size() : (start + pageable.getPageSize());
+
+        return new PageImpl<>(list.subList(start, end), pageable, list.size()).map(adminToolsMapper::toDto);
     }
 }

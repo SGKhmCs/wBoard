@@ -2,6 +2,7 @@ package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import ua.sgkhmja.wboard.service.ReaderToolsService;
+import ua.sgkhmja.wboard.service.dto.WriterToolsDTO;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
 import ua.sgkhmja.wboard.web.rest.util.PaginationUtil;
 import ua.sgkhmja.wboard.service.dto.ReaderToolsDTO;
@@ -145,4 +146,11 @@ public class ReaderToolsResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    @GetMapping("/_by-board/reader-tools")
+    @Timed
+    public ResponseEntity<List<ReaderToolsDTO>> getAllReaderToolsByBoardId (@RequestParam Long boardId, @ApiParam Pageable pageable) {
+        Page<ReaderToolsDTO> page = readerToolsService.getAllByBoardId(boardId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/_by-board/reader-tools");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
 }

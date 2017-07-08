@@ -146,4 +146,13 @@ public class OwnerToolsResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+
+    @GetMapping("/_by-board/owner-tools")
+    @Timed
+    public ResponseEntity<List<OwnerToolsDTO>> getAllOwnerToolsByBoardId (@RequestParam Long boardId, @ApiParam Pageable pageable) {
+        Page<OwnerToolsDTO> page = ownerToolsService.getAllByBoardId(boardId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/_by-board/owner-tools");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
 }

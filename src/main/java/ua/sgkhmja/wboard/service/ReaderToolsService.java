@@ -1,12 +1,15 @@
 package ua.sgkhmja.wboard.service;
 
+import org.springframework.data.domain.PageImpl;
 import ua.sgkhmja.wboard.domain.AdminTools;
+import ua.sgkhmja.wboard.domain.OwnerTools;
 import ua.sgkhmja.wboard.domain.ReaderTools;
 import ua.sgkhmja.wboard.repository.ReaderToolsRepository;
 import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.repository.search.ReaderToolsSearchRepository;
 import ua.sgkhmja.wboard.security.SecurityUtils;
 import ua.sgkhmja.wboard.service.dto.BoardDTO;
+import ua.sgkhmja.wboard.service.dto.OwnerToolsDTO;
 import ua.sgkhmja.wboard.service.dto.ReaderToolsDTO;
 import ua.sgkhmja.wboard.service.dto.WriterToolsDTO;
 import ua.sgkhmja.wboard.service.mapper.ReaderToolsMapper;
@@ -131,7 +134,16 @@ public class ReaderToolsService {
     }
 
 
-    public List<ReaderTools> findByBoardId(Long boardId){
+    public List<ReaderTools> findAllByBoardId(Long boardId){
         return readerToolsRepository.findAllByBoardId(boardId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ReaderToolsDTO> getAllByBoardId(Long id, Pageable pageable){
+        List<ReaderTools> list = findAllByBoardId(id);
+        int start = pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > list.size() ? list.size() : (start + pageable.getPageSize());
+
+        return new PageImpl<>(list.subList(start, end), pageable, list.size()).map(readerToolsMapper::toDto);
     }
 }

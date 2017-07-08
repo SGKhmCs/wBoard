@@ -156,9 +156,9 @@ public class BusinessLogicService {
 
     public void deleteOwnerTools(Long id){
         Long boardId = ownerToolsService.findOne(id).getBoardId();
-        List<AdminTools> adminToolsList = adminToolsService.findByBoardId(boardId);
-        List<WriterTools> writerToolsList = writerToolsService.findByBoardId(boardId);
-        List<ReaderTools> readerToolsList = readerToolsService.findByBoardId(boardId);
+        List<AdminTools> adminToolsList = adminToolsService.findAllByBoardId(boardId);
+        List<WriterTools> writerToolsList = writerToolsService.findAllByBoardId(boardId);
+        List<ReaderTools> readerToolsList = readerToolsService.findAllByBoardId(boardId);
 
         for(AdminTools adminTools : adminToolsList){
             adminToolsService.delete(adminTools.getId());

@@ -1,6 +1,8 @@
 package ua.sgkhmja.wboard.service;
 
+import org.springframework.data.domain.PageImpl;
 import ua.sgkhmja.wboard.domain.AdminTools;
+import ua.sgkhmja.wboard.domain.OwnerTools;
 import ua.sgkhmja.wboard.domain.WriterTools;
 import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.repository.WriterToolsRepository;
@@ -8,6 +10,7 @@ import ua.sgkhmja.wboard.repository.search.WriterToolsSearchRepository;
 import ua.sgkhmja.wboard.security.SecurityUtils;
 import ua.sgkhmja.wboard.service.dto.AdminToolsDTO;
 import ua.sgkhmja.wboard.service.dto.BoardDTO;
+import ua.sgkhmja.wboard.service.dto.OwnerToolsDTO;
 import ua.sgkhmja.wboard.service.dto.WriterToolsDTO;
 import ua.sgkhmja.wboard.service.mapper.WriterToolsMapper;
 import org.slf4j.Logger;
@@ -131,7 +134,16 @@ public class WriterToolsService {
     }
 
 
-    public List<WriterTools> findByBoardId(Long boardId){
+    public List<WriterTools> findAllByBoardId(Long boardId){
         return writerToolsRepository.findAllByBoardId(boardId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<WriterToolsDTO> getAllByBoardId(Long id, Pageable pageable){
+        List<WriterTools> list = findAllByBoardId(id);
+        int start = pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > list.size() ? list.size() : (start + pageable.getPageSize());
+
+        return new PageImpl<>(list.subList(start, end), pageable, list.size()).map(writerToolsMapper::toDto);
     }
 }

@@ -1,5 +1,6 @@
 package ua.sgkhmja.wboard.repository;
 
+import org.springframework.data.domain.Page;
 import ua.sgkhmja.wboard.domain.AdminTools;
 import org.springframework.stereotype.Repository;
 
@@ -20,5 +21,4 @@ public interface AdminToolsRepository extends JpaRepository<AdminTools,Long> {
     List<AdminTools> findByUserIsCurrentUser();
 
     List<AdminTools> findAllByBoardId(Long boardId);
-
 }

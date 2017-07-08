@@ -1,5 +1,6 @@
 package ua.sgkhmja.wboard.service;
 
+import org.springframework.data.domain.PageImpl;
 import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.domain.OwnerTools;
 import ua.sgkhmja.wboard.repository.BoardRepository;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -147,9 +150,13 @@ public class OwnerToolsService {
         return ownerToolsDTO;
     }
 
-    public OwnerToolsDTO findOwnerToolsByBoard(BoardDTO boardDTO){
-        OwnerTools ownerTools = ownerToolsRepository.findOwnerToolsByBoardId(boardDTO.getId());
-        OwnerToolsDTO ownerToolsDTO = new OwnerToolsDTO();
-        return null;
+    @Transactional(readOnly = true)
+    public Page<OwnerToolsDTO> getAllByBoardId(Long id, Pageable pageable){
+        List<OwnerTools> list = ownerToolsRepository.findAllByBoardId(id);
+        int start = pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > list.size() ? list.size() : (start + pageable.getPageSize());
+
+        return new PageImpl<>(list.subList(start, end), pageable, list.size()).map(ownerToolsMapper::toDto);
     }
+
 }

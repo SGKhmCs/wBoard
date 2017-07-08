@@ -2,6 +2,7 @@ package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import ua.sgkhmja.wboard.service.AdminToolsService;
+import ua.sgkhmja.wboard.service.dto.WriterToolsDTO;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
 import ua.sgkhmja.wboard.web.rest.util.PaginationUtil;
 import ua.sgkhmja.wboard.service.dto.AdminToolsDTO;
@@ -142,6 +143,14 @@ public class AdminToolsResource {
         log.debug("REST request to search for a page of AdminTools for query {}", query);
         Page<AdminToolsDTO> page = adminToolsService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/admin-tools");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/_by-board/admin-tools")
+    @Timed
+    public ResponseEntity<List<AdminToolsDTO>> getAllAdminToolsByBoardId (@RequestParam Long boardId, @ApiParam Pageable pageable) {
+        Page<AdminToolsDTO> page = adminToolsService.getAllByBoardId(boardId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/_by-board/admin-tools");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

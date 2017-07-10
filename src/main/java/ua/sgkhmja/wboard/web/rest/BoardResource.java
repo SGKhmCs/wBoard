@@ -145,7 +145,8 @@ public class BoardResource {
     @Timed
     public ResponseEntity<List<BoardDTO>> searchBoards(@RequestParam String query, @ApiParam Pageable pageable) {
         log.debug("REST request to search for a page of Boards for query {}", query);
-        Page<BoardDTO> page = boardService.search(query, pageable);
+//        Page<BoardDTO> page = boardService.search(query, pageable);
+        Page<BoardDTO> page = businessLogicService.searchBoardsByUser(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/boards");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

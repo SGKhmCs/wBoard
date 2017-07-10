@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import ua.sgkhmja.wboard.domain.AdminTools;
 import ua.sgkhmja.wboard.domain.ReaderTools;
 import ua.sgkhmja.wboard.domain.WriterTools;
-import ua.sgkhmja.wboard.repository.AdminToolsRepository;
-import ua.sgkhmja.wboard.repository.OwnerToolsRepository;
 import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.security.SecurityUtils;
 import ua.sgkhmja.wboard.service.dto.*;
@@ -86,16 +84,28 @@ public class BusinessLogicService {
 //        ownerToolsService.
 //        ownerToolsDTO.get
 
-
         adminToolsService.delete(id);
     }
 
+    public Page<BoardDTO> searchBoardsByUser(String query, Pageable pageable){
+        List<BoardDTO> boardDTOList = boardService.search(query, pageable).getContent();
+
+        boardDTOList = filterBoardsByCurrentUser(boardDTOList, pageable);
+
+        return new PageImpl<BoardDTO>(boardDTOList);
+    }
 
     public Page<BoardDTO> findAllBoardsByUser(Pageable pageable) {
+        List<BoardDTO> boardDTOList = boardService.findAll(pageable).getContent();
+
+        boardDTOList = filterBoardsByCurrentUser(boardDTOList, pageable);
+
+        return new PageImpl<BoardDTO>(boardDTOList);
+    }
+
+    private List<BoardDTO> filterBoardsByCurrentUser(List<BoardDTO> boardDTOList, Pageable pageable) {
         String currentUserLogin = SecurityUtils.getCurrentUserLogin();
         Long currentUserId = userRepository.findOneByLogin(currentUserLogin).get().getId();
-
-        List<BoardDTO> boardDTOList = boardService.findAll(pageable).getContent();
 
         List<BoardDTO> fullDTOList = new ArrayList<>();
         fullDTOList.addAll(boardDTOList
@@ -106,15 +116,6 @@ public class BusinessLogicService {
 
         List<OwnerToolsDTO> ownerToolsDTOList = ownerToolsService.findAll(pageable).getContent();
         for (OwnerToolsDTO ownerToolsDTO : ownerToolsDTOList) {
-//            System.out.println(ownerToolsDTO);
-//            System.out.println(currentUserId);
-//            for (BoardDTO boardDTO : boardDTOList) {
-//                System.out.println(boardDTO);
-//                if(ownerToolsDTO.getBoardId().equals(boardDTO.getId())
-//                    && ownerToolsDTO.getOwnerId().equals(currentUserId)){
-//                    System.out.println(true);
-//                }
-//            }
             fullDTOList.addAll(boardDTOList.stream()
                 .filter(boardDTO -> ownerToolsDTO.getBoardId().equals(boardDTO.getId())
                     && ownerToolsDTO.getOwnerId().equals(currentUserId))
@@ -150,8 +151,7 @@ public class BusinessLogicService {
             .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
             .collect(Collectors.toList());
 
-        Page<BoardDTO> boardDTOPage = new PageImpl<BoardDTO>(fullDTOListWithoutDuplicates);
-        return boardDTOPage;
+        return fullDTOListWithoutDuplicates;
     }
 
     public void deleteOwnerTools(Long id){

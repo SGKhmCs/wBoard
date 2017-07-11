@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.sgkhmja.wboard.domain.AdminTools;
+import ua.sgkhmja.wboard.domain.BoardsBody;
 import ua.sgkhmja.wboard.domain.ReaderTools;
 import ua.sgkhmja.wboard.domain.WriterTools;
 import ua.sgkhmja.wboard.repository.UserRepository;
@@ -27,6 +28,7 @@ public class BusinessLogicService {
 
     private final OwnerToolsService ownerToolsService;
     private final BoardService boardService;
+    private final BoardsBodyService boardsBodyService;
     private final AdminToolsService adminToolsService;
     private final WriterToolsService writerToolsService;
     private final ReaderToolsService readerToolsService;
@@ -34,12 +36,14 @@ public class BusinessLogicService {
 
     public BusinessLogicService(OwnerToolsService ownerToolsService,
                                 BoardService boardService,
+                                BoardsBodyService boardsBodyService,
                                 AdminToolsService adminToolsService,
                                 WriterToolsService writerToolsService,
                                 ReaderToolsService readerToolsService,
                                 UserRepository userRepository) {
         this.ownerToolsService = ownerToolsService;
         this.boardService = boardService;
+        this.boardsBodyService = boardsBodyService;
         this.adminToolsService = adminToolsService;
         this.writerToolsService = writerToolsService;
         this.readerToolsService = readerToolsService;
@@ -54,6 +58,11 @@ public class BusinessLogicService {
      */
     public BoardDTO createBoardAndOwnerTools(BoardDTO boardDTO) {
         log.debug("Request to save Board and OwnerTools : {}", boardDTO);
+
+        BoardsBodyDTO boardsBodyDTO = boardsBodyService.save(new BoardsBodyDTO());
+
+        boardDTO.setBoardBodyId(boardsBodyDTO.getId());
+        boardDTO.setCreatedBy(SecurityUtils.getCurrentUserLogin());
 
         BoardDTO result = boardService.createBoard(boardDTO);
 

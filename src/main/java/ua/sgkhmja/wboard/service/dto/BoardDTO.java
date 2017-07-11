@@ -3,6 +3,7 @@ package ua.sgkhmja.wboard.service.dto;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -16,7 +17,13 @@ public class BoardDTO implements Serializable {
     @Size(min = 3, max = 48)
     private String name;
 
+    private Long boardBodyId;
+
     private Boolean pub;
+
+    private String createdBy;
+
+    private Instant createdDate;
 
     public Long getId() {
         return id;
@@ -34,12 +41,36 @@ public class BoardDTO implements Serializable {
         this.name = name;
     }
 
+    public Long getBoardBodyId() {
+        return boardBodyId;
+    }
+
+    public void setBoardBodyId(Long boardBodyId) {
+        this.boardBodyId = boardBodyId;
+    }
+
     public Boolean isPub() {
         return pub;
     }
 
     public void setPub(Boolean pub) {
         this.pub = pub;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdBy) {
+        this.createdDate = createdDate;
     }
 
     @Override
@@ -68,7 +99,10 @@ public class BoardDTO implements Serializable {
         return "BoardDTO{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
+            ", boardBodyId='" + getBoardBodyId() + "'" +
             ", pub='" + isPub() + "'" +
+            ", createdBy='" + getCreatedBy() + "'" +
+            ", createdDate='" + getCreatedDate() + "'" +
             "}";
     }
 }

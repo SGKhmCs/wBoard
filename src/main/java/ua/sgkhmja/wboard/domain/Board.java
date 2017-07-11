@@ -7,6 +7,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -32,6 +33,16 @@ public class Board implements Serializable {
 
     @Column(name = "pub")
     private Boolean pub;
+
+    @Column(name = "created_date")
+    private LocalDate createdDate;
+
+    @OneToOne
+    @JoinColumn(unique = true)
+    private BoardsBody body;
+
+    @ManyToOne
+    private User createdBy;
 
     public Long getId() {
         return id;
@@ -67,6 +78,45 @@ public class Board implements Serializable {
         this.pub = pub;
     }
 
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
+
+    public Board createdDate(LocalDate createdDate) {
+        this.createdDate = createdDate;
+        return this;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public BoardsBody getBody() {
+        return body;
+    }
+
+    public Board body(BoardsBody boardsBody) {
+        this.body = boardsBody;
+        return this;
+    }
+
+    public void setBody(BoardsBody boardsBody) {
+        this.body = boardsBody;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public Board createdBy(User user) {
+        this.createdBy = user;
+        return this;
+    }
+
+    public void setCreatedBy(User user) {
+        this.createdBy = user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -93,6 +143,7 @@ public class Board implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", pub='" + isPub() + "'" +
+            ", createdDate='" + getCreatedDate() + "'" +
             "}";
     }
 }

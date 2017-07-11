@@ -26,6 +26,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,6 +49,9 @@ public class BoardResourceIntTest {
 
     private static final Boolean DEFAULT_PUB = false;
     private static final Boolean UPDATED_PUB = true;
+
+    private static final LocalDate DEFAULT_CREATED_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_CREATED_DATE = LocalDate.now(ZoneId.systemDefault());
 
     @Autowired
     private BoardRepository boardRepository;
@@ -98,7 +103,8 @@ public class BoardResourceIntTest {
     public static Board createEntity(EntityManager em) {
         Board board = new Board()
             .name(DEFAULT_NAME)
-            .pub(DEFAULT_PUB);
+            .pub(DEFAULT_PUB)
+            .createdDate(DEFAULT_CREATED_DATE);
         return board;
     }
 
@@ -126,6 +132,7 @@ public class BoardResourceIntTest {
         Board testBoard = boardList.get(boardList.size() - 1);
         assertThat(testBoard.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testBoard.isPub()).isEqualTo(DEFAULT_PUB);
+        assertThat(testBoard.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
 
         // Validate the Board in Elasticsearch
         Board boardEs = boardSearchRepository.findOne(testBoard.getId());
@@ -183,7 +190,8 @@ public class BoardResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(board.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].pub").value(hasItem(DEFAULT_PUB.booleanValue())));
+            .andExpect(jsonPath("$.[*].pub").value(hasItem(DEFAULT_PUB.booleanValue())))
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(DEFAULT_CREATED_DATE.toString())));
     }
 
     @Test
@@ -198,7 +206,8 @@ public class BoardResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(board.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.pub").value(DEFAULT_PUB.booleanValue()));
+            .andExpect(jsonPath("$.pub").value(DEFAULT_PUB.booleanValue()))
+            .andExpect(jsonPath("$.createdDate").value(DEFAULT_CREATED_DATE.toString()));
     }
 
     @Test
@@ -221,7 +230,8 @@ public class BoardResourceIntTest {
         Board updatedBoard = boardRepository.findOne(board.getId());
         updatedBoard
             .name(UPDATED_NAME)
-            .pub(UPDATED_PUB);
+            .pub(UPDATED_PUB)
+            .createdDate(UPDATED_CREATED_DATE);
         BoardDTO boardDTO = boardMapper.toDto(updatedBoard);
 
         restBoardMockMvc.perform(put("/api/boards")
@@ -235,6 +245,7 @@ public class BoardResourceIntTest {
         Board testBoard = boardList.get(boardList.size() - 1);
         assertThat(testBoard.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testBoard.isPub()).isEqualTo(UPDATED_PUB);
+        assertThat(testBoard.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
 
         // Validate the Board in Elasticsearch
         Board boardEs = boardSearchRepository.findOne(testBoard.getId());
@@ -295,7 +306,8 @@ public class BoardResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(board.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].pub").value(hasItem(DEFAULT_PUB.booleanValue())));
+            .andExpect(jsonPath("$.[*].pub").value(hasItem(DEFAULT_PUB.booleanValue())))
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(DEFAULT_CREATED_DATE.toString())));
     }
 
     @Test

@@ -1,9 +1,11 @@
 package ua.sgkhmja.wboard.service.dto;
 
 
+import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -17,13 +19,15 @@ public class BoardDTO implements Serializable {
     @Size(min = 3, max = 48)
     private String name;
 
-    private Long boardBodyId;
-
     private Boolean pub;
 
-    private String createdBy;
+    private LocalDate createdDate;
 
-    private Instant createdDate;
+    private Long bodyId;
+
+    private Long createdById;
+
+    private String createdByLogin;
 
     public Long getId() {
         return id;
@@ -41,14 +45,6 @@ public class BoardDTO implements Serializable {
         this.name = name;
     }
 
-    public Long getBoardBodyId() {
-        return boardBodyId;
-    }
-
-    public void setBoardBodyId(Long boardBodyId) {
-        this.boardBodyId = boardBodyId;
-    }
-
     public Boolean isPub() {
         return pub;
     }
@@ -57,20 +53,36 @@ public class BoardDTO implements Serializable {
         this.pub = pub;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Instant getCreatedDate() {
+    public LocalDate getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Instant createdBy) {
+    public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public Long getBodyId() {
+        return bodyId;
+    }
+
+    public void setBodyId(Long boardsBodyId) {
+        this.bodyId = boardsBodyId;
+    }
+
+    public Long getCreatedById() {
+        return createdById;
+    }
+
+    public void setCreatedById(Long userId) {
+        this.createdById = userId;
+    }
+
+    public String getCreatedByLogin() {
+        return createdByLogin;
+    }
+
+    public void setCreatedByLogin(String userLogin) {
+        this.createdByLogin = userLogin;
     }
 
     @Override
@@ -99,9 +111,7 @@ public class BoardDTO implements Serializable {
         return "BoardDTO{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
-            ", boardBodyId='" + getBoardBodyId() + "'" +
             ", pub='" + isPub() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             "}";
     }

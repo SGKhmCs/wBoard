@@ -1,6 +1,23 @@
 {
     "fluentMethods": true,
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipName": "body",
+            "otherEntityName": "boardsBody",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "board"
+        },
+        {
+            "relationshipName": "createdBy",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "board"
+        }
+    ],
     "fields": [
         {
             "fieldName": "name",
@@ -16,6 +33,11 @@
         {
             "fieldName": "pub",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "createdDate",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": []
         }
     ],
     "changelogDate": "20170612162627",

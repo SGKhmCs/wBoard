@@ -22,6 +22,13 @@ export class BoardPopupService {
 
         if (id) {
             this.boardService.find(id).subscribe((board) => {
+                if (board.createdDate) {
+                    board.createdDate = {
+                        year: board.createdDate.getFullYear(),
+                        month: board.createdDate.getMonth() + 1,
+                        day: board.createdDate.getDate()
+                    };
+                }
                 this.boardModalRef(component, board);
             });
         } else {

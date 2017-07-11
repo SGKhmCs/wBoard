@@ -83,7 +83,7 @@ public class BoardResource {
         if (boardDTO.getId() == null) {
             return createBoard(boardDTO);
         }
-        BoardDTO result = boardService.createBoard(boardDTO);
+        BoardDTO result = boardService.save(boardDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, boardDTO.getId().toString()))
             .body(result);

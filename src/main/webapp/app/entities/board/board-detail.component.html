@@ -12,6 +12,14 @@
         <dd>
             <span>{{board.pub}}</span>
         </dd>
+        <dt><span jhiTranslate="wBoardApp.board.createdDate">Created Date</span></dt>
+        <dd>
+            <span>{{board.createdDate | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="wBoardApp.board.createdBy">Created By</span></dt>
+        <dd>
+            <span>{{board.createdBy}}</span>
+        </dd>
     </dl>
 
     <button type="submit"

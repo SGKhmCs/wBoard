@@ -1,5 +1,6 @@
 package ua.sgkhmja.wboard.service;
 
+import org.springframework.data.domain.PageImpl;
 import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.domain.OwnerTools;
 import ua.sgkhmja.wboard.repository.BoardRepository;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -97,6 +100,7 @@ public class OwnerToolsService {
         return ownerToolsMapper.toDto(ownerTools);
     }
 
+
     /**
      *  Delete the  ownerTools by id.
      *
@@ -105,12 +109,8 @@ public class OwnerToolsService {
     public void delete(Long id) {
         log.debug("Request to delete OwnerTools : {}", id);
 
-        Long boardId = ownerToolsRepository.findOne(id).getBoard().getId();
-
         ownerToolsRepository.delete(id);
         ownerToolsSearchRepository.delete(id);
-
-        deleteBoard(boardId);
     }
 
     /**
@@ -127,43 +127,13 @@ public class OwnerToolsService {
         return result.map(ownerToolsMapper::toDto);
     }
 
-    /**
-     *  Delete the  board by id.
-     *
-     *  @param id the id of the entity
-     */
-    private void deleteBoard(Long id) {
-        log.debug("Request to delete Board : {}", id);
-        boardRepository.delete(id);
-        boardSearchRepository.delete(id);
-    }
-
-    /**
-     * Save a board.
-     *
-     * @param boardDTO the entity to save
-     * @return the persisted entity
-     */
-    public BoardDTO createBoard(BoardDTO boardDTO) {
-        log.debug("Request to save Board : {}", boardDTO);
-
-        Board board = boardMapper.toEntity(boardDTO);
-        board = boardRepository.save(board);
-        BoardDTO result = boardMapper.toDto(board);
-        boardSearchRepository.save(board);
-
-        if(boardDTO.getId() == null) {
-            save(createOwnerTools(result));
-        }
-        return result;
-    }
 
     /**
      * set owner by current user login
      *
      */
 
-    private OwnerToolsDTO createOwnerTools(BoardDTO boardDTO) {
+    public OwnerToolsDTO createOwnerTools(BoardDTO boardDTO) {
 
         if(boardDTO.getId() == null)
             return null;
@@ -179,4 +149,14 @@ public class OwnerToolsService {
 
         return ownerToolsDTO;
     }
+
+    @Transactional(readOnly = true)
+    public Page<OwnerToolsDTO> getAllByBoardId(Long id, Pageable pageable){
+        List<OwnerTools> list = ownerToolsRepository.findAllByBoardId(id);
+        int start = pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > list.size() ? list.size() : (start + pageable.getPageSize());
+
+        return new PageImpl<>(list.subList(start, end), pageable, list.size()).map(ownerToolsMapper::toDto);
+    }
+
 }

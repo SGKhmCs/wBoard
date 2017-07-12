@@ -51,5 +51,4 @@ processResources {
     }
 }
 
-test.dependsOn webpack_test
 processResources.dependsOn webpack

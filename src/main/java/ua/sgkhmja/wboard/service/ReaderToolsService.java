@@ -1,9 +1,17 @@
 package ua.sgkhmja.wboard.service;
 
+import org.springframework.data.domain.PageImpl;
+import ua.sgkhmja.wboard.domain.AdminTools;
+import ua.sgkhmja.wboard.domain.OwnerTools;
 import ua.sgkhmja.wboard.domain.ReaderTools;
 import ua.sgkhmja.wboard.repository.ReaderToolsRepository;
+import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.repository.search.ReaderToolsSearchRepository;
+import ua.sgkhmja.wboard.security.SecurityUtils;
+import ua.sgkhmja.wboard.service.dto.BoardDTO;
+import ua.sgkhmja.wboard.service.dto.OwnerToolsDTO;
 import ua.sgkhmja.wboard.service.dto.ReaderToolsDTO;
+import ua.sgkhmja.wboard.service.dto.WriterToolsDTO;
 import ua.sgkhmja.wboard.service.mapper.ReaderToolsMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -30,10 +40,16 @@ public class ReaderToolsService {
 
     private final ReaderToolsSearchRepository readerToolsSearchRepository;
 
-    public ReaderToolsService(ReaderToolsRepository readerToolsRepository, ReaderToolsMapper readerToolsMapper, ReaderToolsSearchRepository readerToolsSearchRepository) {
+    private final UserRepository userRepository;
+
+    public ReaderToolsService(ReaderToolsRepository readerToolsRepository,
+                              ReaderToolsMapper readerToolsMapper,
+                              ReaderToolsSearchRepository readerToolsSearchRepository,
+                              UserRepository userRepository) {
         this.readerToolsRepository = readerToolsRepository;
         this.readerToolsMapper = readerToolsMapper;
         this.readerToolsSearchRepository = readerToolsSearchRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -100,5 +116,34 @@ public class ReaderToolsService {
         log.debug("Request to search for a page of ReaderTools for query {}", query);
         Page<ReaderTools> result = readerToolsSearchRepository.search(queryStringQuery(query), pageable);
         return result.map(readerToolsMapper::toDto);
+    }
+
+    public ReaderToolsDTO createReaderTools(BoardDTO boardDTO) {
+        if(boardDTO.getId() == null)
+            return null;
+
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Long currentUserId = userRepository.findOneByLogin(currentUserLogin).get().getId();
+
+        ReaderToolsDTO readerToolsDTO = new ReaderToolsDTO();
+        readerToolsDTO.setBoardId(boardDTO.getId());
+        readerToolsDTO.setBoardName(boardDTO.getName());
+        readerToolsDTO.setUserId(currentUserId);
+        readerToolsDTO.setUserLogin(currentUserLogin);
+        return readerToolsDTO;
+    }
+
+
+    public List<ReaderTools> findAllByBoardId(Long boardId){
+        return readerToolsRepository.findAllByBoardId(boardId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ReaderToolsDTO> getAllByBoardId(Long id, Pageable pageable){
+        List<ReaderTools> list = findAllByBoardId(id);
+        int start = pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > list.size() ? list.size() : (start + pageable.getPageSize());
+
+        return new PageImpl<>(list.subList(start, end), pageable, list.size()).map(readerToolsMapper::toDto);
     }
 }

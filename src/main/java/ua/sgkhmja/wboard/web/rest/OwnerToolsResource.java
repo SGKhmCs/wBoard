@@ -1,8 +1,8 @@
 package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import ua.sgkhmja.wboard.service.BusinessLogicService;
 import ua.sgkhmja.wboard.service.OwnerToolsService;
-import ua.sgkhmja.wboard.service.RoleService;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
 import ua.sgkhmja.wboard.web.rest.util.PaginationUtil;
 import ua.sgkhmja.wboard.service.dto.OwnerToolsDTO;
@@ -17,15 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing OwnerTools.
@@ -39,12 +34,13 @@ public class OwnerToolsResource {
     private static final String ENTITY_NAME = "ownerTools";
 
     private final OwnerToolsService ownerToolsService;
+//    private final BoardService boardService;
 
-    private final RoleService roleService;
+    private final BusinessLogicService businessLogicService;
 
-    public OwnerToolsResource(OwnerToolsService ownerToolsService, RoleService roleService) {
+    public OwnerToolsResource(BusinessLogicService businessLogicService, OwnerToolsService ownerToolsService) {
+        this.businessLogicService = businessLogicService;
         this.ownerToolsService = ownerToolsService;
-        this.roleService = roleService;
     }
 
     /**
@@ -129,7 +125,7 @@ public class OwnerToolsResource {
     @Timed
     public ResponseEntity<Void> deleteOwnerTools(@PathVariable Long id) {
         log.debug("REST request to delete OwnerTools : {}", id);
-        ownerToolsService.delete(id);
+        businessLogicService.deleteOwnerTools(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -147,6 +143,15 @@ public class OwnerToolsResource {
         log.debug("REST request to search for a page of OwnerTools for query {}", query);
         Page<OwnerToolsDTO> page = ownerToolsService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/owner-tools");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/_by-board/owner-tools")
+    @Timed
+    public ResponseEntity<List<OwnerToolsDTO>> getAllOwnerToolsByBoardId (@RequestParam Long boardId, @ApiParam Pageable pageable) {
+        Page<OwnerToolsDTO> page = ownerToolsService.getAllByBoardId(boardId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/_by-board/owner-tools");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

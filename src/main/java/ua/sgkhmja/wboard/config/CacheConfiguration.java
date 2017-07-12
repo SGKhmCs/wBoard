@@ -46,6 +46,7 @@ public class CacheConfiguration {
             cm.createCache(ua.sgkhmja.wboard.domain.OwnerTools.class.getName(), jcacheConfiguration);
             cm.createCache(ua.sgkhmja.wboard.domain.ReaderTools.class.getName(), jcacheConfiguration);
             cm.createCache(ua.sgkhmja.wboard.domain.WriterTools.class.getName(), jcacheConfiguration);
+            cm.createCache(ua.sgkhmja.wboard.domain.BoardsBody.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

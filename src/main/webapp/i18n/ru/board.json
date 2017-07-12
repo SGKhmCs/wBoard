@@ -17,7 +17,9 @@
                 "title": "Board"
             },
             "name": "Name",
-            "pub": "Pub"
+            "pub": "Pub",
+            "createdDate": "Created Date",
+            "createdBy": "Created By"
         }
     }
 }

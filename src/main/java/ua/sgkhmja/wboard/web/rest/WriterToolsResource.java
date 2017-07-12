@@ -2,6 +2,7 @@ package ua.sgkhmja.wboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import ua.sgkhmja.wboard.service.WriterToolsService;
+import ua.sgkhmja.wboard.service.dto.OwnerToolsDTO;
 import ua.sgkhmja.wboard.web.rest.util.HeaderUtil;
 import ua.sgkhmja.wboard.web.rest.util.PaginationUtil;
 import ua.sgkhmja.wboard.service.dto.WriterToolsDTO;
@@ -142,6 +143,14 @@ public class WriterToolsResource {
         log.debug("REST request to search for a page of WriterTools for query {}", query);
         Page<WriterToolsDTO> page = writerToolsService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/writer-tools");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/_by-board/writer-tools")
+    @Timed
+    public ResponseEntity<List<WriterToolsDTO>> getAllWriterToolsByBoardId (@RequestParam Long boardId, @ApiParam Pageable pageable) {
+        Page<WriterToolsDTO> page = writerToolsService.getAllByBoardId(boardId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/_by-board/writer-tools");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

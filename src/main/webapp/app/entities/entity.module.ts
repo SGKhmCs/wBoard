@@ -5,6 +5,7 @@ import { WBoardBoardModule } from './board/board.module';
 import { WBoardOwnerToolsModule } from './owner-tools/owner-tools.module';
 import { WBoardReaderToolsModule } from './reader-tools/reader-tools.module';
 import { WBoardWriterToolsModule } from './writer-tools/writer-tools.module';
+import { WBoardBoardsBodyModule } from './boards-body/boards-body.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -14,6 +15,7 @@ import { WBoardWriterToolsModule } from './writer-tools/writer-tools.module';
         WBoardOwnerToolsModule,
         WBoardReaderToolsModule,
         WBoardWriterToolsModule,
+        WBoardBoardsBodyModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

@@ -1,0 +1,24 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "board",
+            "otherEntityName": "board",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "name",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "boardsBody"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "backgroundColor",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20170707163728",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "boards_body",
+    "pagination": "pagination"
+}

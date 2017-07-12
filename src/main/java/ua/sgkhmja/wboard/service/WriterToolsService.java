@@ -1,8 +1,16 @@
 package ua.sgkhmja.wboard.service;
 
+import org.springframework.data.domain.PageImpl;
+import ua.sgkhmja.wboard.domain.AdminTools;
+import ua.sgkhmja.wboard.domain.OwnerTools;
 import ua.sgkhmja.wboard.domain.WriterTools;
+import ua.sgkhmja.wboard.repository.UserRepository;
 import ua.sgkhmja.wboard.repository.WriterToolsRepository;
 import ua.sgkhmja.wboard.repository.search.WriterToolsSearchRepository;
+import ua.sgkhmja.wboard.security.SecurityUtils;
+import ua.sgkhmja.wboard.service.dto.AdminToolsDTO;
+import ua.sgkhmja.wboard.service.dto.BoardDTO;
+import ua.sgkhmja.wboard.service.dto.OwnerToolsDTO;
 import ua.sgkhmja.wboard.service.dto.WriterToolsDTO;
 import ua.sgkhmja.wboard.service.mapper.WriterToolsMapper;
 import org.slf4j.Logger;
@@ -12,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -30,10 +40,16 @@ public class WriterToolsService {
 
     private final WriterToolsSearchRepository writerToolsSearchRepository;
 
-    public WriterToolsService(WriterToolsRepository writerToolsRepository, WriterToolsMapper writerToolsMapper, WriterToolsSearchRepository writerToolsSearchRepository) {
+    private final UserRepository userRepository;
+
+    public WriterToolsService(WriterToolsRepository writerToolsRepository,
+                              WriterToolsMapper writerToolsMapper,
+                              WriterToolsSearchRepository writerToolsSearchRepository,
+                              UserRepository userRepository) {
         this.writerToolsRepository = writerToolsRepository;
         this.writerToolsMapper = writerToolsMapper;
         this.writerToolsSearchRepository = writerToolsSearchRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -100,5 +116,34 @@ public class WriterToolsService {
         log.debug("Request to search for a page of WriterTools for query {}", query);
         Page<WriterTools> result = writerToolsSearchRepository.search(queryStringQuery(query), pageable);
         return result.map(writerToolsMapper::toDto);
+    }
+
+    public WriterToolsDTO createWrirerTools(BoardDTO boardDTO) {
+        if(boardDTO.getId() == null)
+            return null;
+
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Long currentUserId = userRepository.findOneByLogin(currentUserLogin).get().getId();
+
+        WriterToolsDTO writerToolsDTO = new WriterToolsDTO();
+        writerToolsDTO.setBoardId(boardDTO.getId());
+        writerToolsDTO.setBoardName(boardDTO.getName());
+        writerToolsDTO.setUserId(currentUserId);
+        writerToolsDTO.setUserLogin(currentUserLogin);
+        return writerToolsDTO;
+    }
+
+
+    public List<WriterTools> findAllByBoardId(Long boardId){
+        return writerToolsRepository.findAllByBoardId(boardId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<WriterToolsDTO> getAllByBoardId(Long id, Pageable pageable){
+        List<WriterTools> list = findAllByBoardId(id);
+        int start = pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > list.size() ? list.size() : (start + pageable.getPageSize());
+
+        return new PageImpl<>(list.subList(start, end), pageable, list.size()).map(writerToolsMapper::toDto);
     }
 }

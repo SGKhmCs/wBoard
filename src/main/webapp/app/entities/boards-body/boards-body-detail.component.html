@@ -8,6 +8,12 @@
         <dd>
             <span>{{boardsBody.backgroundColor}}</span>
         </dd>
+        <dt><span jhiTranslate="wBoardApp.boardsBody.board">Board</span></dt>
+        <dd>
+            <div *ngIf="boardsBody.boardId">
+                <a [routerLink]="['/board', boardsBody.boardId]">{{boardsBody.boardName}}</a>
+            </div>
+        </dd>
     </dl>
 
     <button type="submit"

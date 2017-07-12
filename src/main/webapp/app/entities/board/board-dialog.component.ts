@@ -9,9 +9,6 @@ import { EventManager, AlertService } from 'ng-jhipster';
 import { Board } from './board.model';
 import { BoardPopupService } from './board-popup.service';
 import { BoardService } from './board.service';
-import { BoardsBody, BoardsBodyService } from '../boards-body';
-import { User, UserService } from '../../shared';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-board-dialog',
@@ -23,17 +20,10 @@ export class BoardDialogComponent implements OnInit {
     authorities: any[];
     isSaving: boolean;
 
-    bodies: BoardsBody[];
-
-    users: User[];
-    createdDateDp: any;
-
     constructor(
         public activeModal: NgbActiveModal,
         private alertService: AlertService,
         private boardService: BoardService,
-        private boardsBodyService: BoardsBodyService,
-        private userService: UserService,
         private eventManager: EventManager
     ) {
     }
@@ -41,21 +31,6 @@ export class BoardDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
-        this.boardsBodyService
-            .query({filter: 'board-is-null'})
-            .subscribe((res: ResponseWrapper) => {
-                if (!this.board.bodyId) {
-                    this.bodies = res.json;
-                } else {
-                    this.boardsBodyService
-                        .find(this.board.bodyId)
-                        .subscribe((subRes: BoardsBody) => {
-                            this.bodies = [subRes].concat(res.json);
-                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
-                }
-            }, (res: ResponseWrapper) => this.onError(res.json));
-        this.userService.query()
-            .subscribe((res: ResponseWrapper) => { this.users = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
 
     clear() {
@@ -101,14 +76,6 @@ export class BoardDialogComponent implements OnInit {
 
     private onError(error) {
         this.alertService.error(error.message, null, null);
-    }
-
-    trackBoardsBodyById(index: number, item: BoardsBody) {
-        return item.id;
-    }
-
-    trackUserById(index: number, item: User) {
-        return item.id;
     }
 }
 

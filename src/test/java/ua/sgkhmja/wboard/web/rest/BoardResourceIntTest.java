@@ -6,7 +6,6 @@ import ua.sgkhmja.wboard.domain.Board;
 import ua.sgkhmja.wboard.repository.BoardRepository;
 import ua.sgkhmja.wboard.service.BoardService;
 import ua.sgkhmja.wboard.repository.search.BoardSearchRepository;
-import ua.sgkhmja.wboard.service.BusinessLogicService;
 import ua.sgkhmja.wboard.service.dto.BoardDTO;
 import ua.sgkhmja.wboard.service.mapper.BoardMapper;
 import ua.sgkhmja.wboard.web.rest.errors.ExceptionTranslator;
@@ -26,8 +25,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,8 +49,11 @@ public class BoardResourceIntTest {
     private static final Boolean DEFAULT_PUB = false;
     private static final Boolean UPDATED_PUB = true;
 
-    private static final LocalDate DEFAULT_CREATED_DATE = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_DATE = LocalDate.now(ZoneId.systemDefault());
+    private static final Instant DEFAULT_CREATED_DATE = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_CREATED_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
+    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
 
     @Autowired
     private BoardRepository boardRepository;
@@ -61,9 +63,6 @@ public class BoardResourceIntTest {
 
     @Autowired
     private BoardService boardService;
-
-    @Autowired
-    private BusinessLogicService businessLogicService;
 
     @Autowired
     private BoardSearchRepository boardSearchRepository;
@@ -87,7 +86,7 @@ public class BoardResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        BoardResource boardResource = new BoardResource(boardService, businessLogicService);
+        BoardResource boardResource = new BoardResource(boardService);
         this.restBoardMockMvc = MockMvcBuilders.standaloneSetup(boardResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -104,7 +103,8 @@ public class BoardResourceIntTest {
         Board board = new Board()
             .name(DEFAULT_NAME)
             .pub(DEFAULT_PUB)
-            .createdDate(DEFAULT_CREATED_DATE);
+            .createdDate(DEFAULT_CREATED_DATE)
+            .createdBy(DEFAULT_CREATED_BY);
         return board;
     }
 
@@ -133,6 +133,7 @@ public class BoardResourceIntTest {
         assertThat(testBoard.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testBoard.isPub()).isEqualTo(DEFAULT_PUB);
         assertThat(testBoard.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
+        assertThat(testBoard.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
 
         // Validate the Board in Elasticsearch
         Board boardEs = boardSearchRepository.findOne(testBoard.getId());
@@ -191,7 +192,8 @@ public class BoardResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(board.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].pub").value(hasItem(DEFAULT_PUB.booleanValue())))
-            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(DEFAULT_CREATED_DATE.toString())));
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(DEFAULT_CREATED_DATE.toString())))
+            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())));
     }
 
     @Test
@@ -207,7 +209,8 @@ public class BoardResourceIntTest {
             .andExpect(jsonPath("$.id").value(board.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.pub").value(DEFAULT_PUB.booleanValue()))
-            .andExpect(jsonPath("$.createdDate").value(DEFAULT_CREATED_DATE.toString()));
+            .andExpect(jsonPath("$.createdDate").value(DEFAULT_CREATED_DATE.toString()))
+            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY.toString()));
     }
 
     @Test
@@ -231,7 +234,8 @@ public class BoardResourceIntTest {
         updatedBoard
             .name(UPDATED_NAME)
             .pub(UPDATED_PUB)
-            .createdDate(UPDATED_CREATED_DATE);
+            .createdDate(UPDATED_CREATED_DATE)
+            .createdBy(UPDATED_CREATED_BY);
         BoardDTO boardDTO = boardMapper.toDto(updatedBoard);
 
         restBoardMockMvc.perform(put("/api/boards")
@@ -246,6 +250,7 @@ public class BoardResourceIntTest {
         assertThat(testBoard.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testBoard.isPub()).isEqualTo(UPDATED_PUB);
         assertThat(testBoard.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
+        assertThat(testBoard.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
 
         // Validate the Board in Elasticsearch
         Board boardEs = boardSearchRepository.findOne(testBoard.getId());
@@ -307,7 +312,8 @@ public class BoardResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(board.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].pub").value(hasItem(DEFAULT_PUB.booleanValue())))
-            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(DEFAULT_CREATED_DATE.toString())));
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(DEFAULT_CREATED_DATE.toString())))
+            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())));
     }
 
     @Test

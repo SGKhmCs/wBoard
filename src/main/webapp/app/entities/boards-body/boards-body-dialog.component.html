@@ -18,6 +18,13 @@
                 [(ngModel)]="boardsBody.backgroundColor"  />
         </div>
 
+        <div class="form-group">
+            <label jhiTranslate="wBoardApp.boardsBody.board" for="field_board">Board</label>
+            <select class="form-control" id="field_board" name="board" [(ngModel)]="boardsBody.boardId">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="boardOption.id" *ngFor="let boardOption of boards; trackBy: trackBoardById">{{boardOption.name}}</option>
+            </select>
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" (click)="clear()">

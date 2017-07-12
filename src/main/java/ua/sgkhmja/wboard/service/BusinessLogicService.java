@@ -56,30 +56,23 @@ public class BusinessLogicService {
     public BoardDTO createBoardAndOwnerTools(BoardDTO boardDTO) {
         log.debug("Request to save Board and OwnerTools : {}", boardDTO);
 
-        if(boardDTO.getBodyId() == null) {
-            boardDTO.setBodyId(boardsBodyService.save(new BoardsBodyDTO()).getId());
-        }
-
-        if(boardDTO.getCreatedById() == null){
-            User user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get();
-            boardDTO.setCreatedByLogin(user.getLogin());
-            boardDTO.setCreatedById(user.getId());
-        }
+        boardDTO.setCreatedBy(SecurityUtils.getCurrentUserLogin());
+        //boardDTO.setCreatedDate();
 
         BoardDTO result = boardService.save(boardDTO);
 
         if(boardDTO.getId() == null) {
             OwnerToolsDTO ownerToolsDTO = ownerToolsService.createOwnerTools(result);
-            ownerToolsDTO = ownerToolsService.save(ownerToolsDTO);
+            ownerToolsService.save(ownerToolsDTO);
 
             AdminToolsDTO adminToolsDTO = adminToolsService.createAdminTools(result);
-            adminToolsDTO = adminToolsService.save(adminToolsDTO);
+            adminToolsService.save(adminToolsDTO);
 
             WriterToolsDTO writerToolsDTO = writerToolsService.createWrirerTools(result);
-            writerToolsDTO = writerToolsService.save(writerToolsDTO);
+            writerToolsService.save(writerToolsDTO);
 
             ReaderToolsDTO readerToolsDTO = readerToolsService.createReaderTools(result);
-            readerToolsDTO = readerToolsService.save(readerToolsDTO);
+            readerToolsService.save(readerToolsDTO);
         }
         return result;
     }

@@ -9,6 +9,8 @@ import { EventManager, AlertService } from 'ng-jhipster';
 import { BoardsBody } from './boards-body.model';
 import { BoardsBodyPopupService } from './boards-body-popup.service';
 import { BoardsBodyService } from './boards-body.service';
+import { Board, BoardService } from '../board';
+import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-boards-body-dialog',
@@ -20,10 +22,13 @@ export class BoardsBodyDialogComponent implements OnInit {
     authorities: any[];
     isSaving: boolean;
 
+    boards: Board[];
+
     constructor(
         public activeModal: NgbActiveModal,
         private alertService: AlertService,
         private boardsBodyService: BoardsBodyService,
+        private boardService: BoardService,
         private eventManager: EventManager
     ) {
     }
@@ -31,6 +36,19 @@ export class BoardsBodyDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
+        this.boardService
+            .query({filter: 'boardsbody-is-null'})
+            .subscribe((res: ResponseWrapper) => {
+                if (!this.boardsBody.boardId) {
+                    this.boards = res.json;
+                } else {
+                    this.boardService
+                        .find(this.boardsBody.boardId)
+                        .subscribe((subRes: Board) => {
+                            this.boards = [subRes].concat(res.json);
+                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
+                }
+            }, (res: ResponseWrapper) => this.onError(res.json));
     }
 
     clear() {
@@ -76,6 +94,10 @@ export class BoardsBodyDialogComponent implements OnInit {
 
     private onError(error) {
         this.alertService.error(error.message, null, null);
+    }
+
+    trackBoardById(index: number, item: Board) {
+        return item.id;
     }
 }
 

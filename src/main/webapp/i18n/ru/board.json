@@ -19,7 +19,6 @@
             "name": "Name",
             "pub": "Pub",
             "createdDate": "Created Date",
-            "body": "Body",
             "createdBy": "Created By"
         }
     }

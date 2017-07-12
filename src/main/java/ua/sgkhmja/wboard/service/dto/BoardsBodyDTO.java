@@ -2,6 +2,8 @@ package ua.sgkhmja.wboard.service.dto;
 
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -12,6 +14,10 @@ public class BoardsBodyDTO implements Serializable {
     private Long id;
 
     private Integer backgroundColor;
+
+    private Long boardId;
+
+    private String boardName;
 
     public Long getId() {
         return id;
@@ -27,6 +33,22 @@ public class BoardsBodyDTO implements Serializable {
 
     public void setBackgroundColor(Integer backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    public Long getBoardId() {
+        return boardId;
+    }
+
+    public void setBoardId(Long boardId) {
+        this.boardId = boardId;
+    }
+
+    public String getBoardName() {
+        return boardName;
+    }
+
+    public void setBoardName(String boardName) {
+        this.boardName = boardName;
     }
 
     @Override

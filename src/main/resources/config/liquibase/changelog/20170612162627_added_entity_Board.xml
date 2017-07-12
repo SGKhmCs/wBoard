@@ -29,18 +29,17 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="created_date" type="date">
+            <column name="created_date" type="timestamp">
                 <constraints nullable="true" />
             </column>
-            <column name="body_id" type="bigint">
-                <constraints unique="true" nullable="true" />
-            </column>
-            <column name="created_by_id" type="bigint">
+
+            <column name="created_by" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
+        <dropDefaultValue tableName="board" columnName="created_date" columnDataType="datetime"/>
         
     </changeSet>
 </databaseChangeLog>

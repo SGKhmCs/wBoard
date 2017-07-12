@@ -7,7 +7,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -35,14 +35,10 @@ public class Board implements Serializable {
     private Boolean pub;
 
     @Column(name = "created_date")
-    private LocalDate createdDate;
+    private Instant createdDate;
 
-    @OneToOne
-    @JoinColumn(unique = true)
-    private BoardsBody body;
-
-    @ManyToOne
-    private User createdBy;
+    @Column(name = "created_by")
+    private String createdBy;
 
     public Long getId() {
         return id;
@@ -78,43 +74,30 @@ public class Board implements Serializable {
         this.pub = pub;
     }
 
-    public LocalDate getCreatedDate() {
+    public Instant getCreatedDate() {
         return createdDate;
     }
 
-    public Board createdDate(LocalDate createdDate) {
+    public Board createdDate(Instant createdDate) {
         this.createdDate = createdDate;
         return this;
     }
 
-    public void setCreatedDate(LocalDate createdDate) {
+    public void setCreatedDate(Instant createdDate) {
         this.createdDate = createdDate;
     }
 
-    public BoardsBody getBody() {
-        return body;
-    }
-
-    public Board body(BoardsBody boardsBody) {
-        this.body = boardsBody;
-        return this;
-    }
-
-    public void setBody(BoardsBody boardsBody) {
-        this.body = boardsBody;
-    }
-
-    public User getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public Board createdBy(User user) {
-        this.createdBy = user;
+    public Board createdBy(String createdBy) {
+        this.createdBy = createdBy;
         return this;
     }
 
-    public void setCreatedBy(User user) {
-        this.createdBy = user;
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     @Override
@@ -144,6 +127,7 @@ public class Board implements Serializable {
             ", name='" + getName() + "'" +
             ", pub='" + isPub() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
+            ", createdBy='" + getCreatedBy() + "'" +
             "}";
     }
 }

@@ -16,7 +16,8 @@
             "detail": {
                 "title": "Boards Body"
             },
-            "backgroundColor": "Background Color"
+            "backgroundColor": "Background Color",
+            "board": "Board"
         }
     }
 }

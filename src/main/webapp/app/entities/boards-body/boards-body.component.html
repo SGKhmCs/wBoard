@@ -31,6 +31,7 @@
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="backgroundColor"><span jhiTranslate="wBoardApp.boardsBody.backgroundColor">Background Color</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="boardName"><span jhiTranslate="wBoardApp.boardsBody.board">Board</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
@@ -38,6 +39,11 @@
             <tr *ngFor="let boardsBody of boardsBodies ;trackBy: trackId">
                 <td><a [routerLink]="['../boards-body', boardsBody.id ]">{{boardsBody.id}}</a></td>
                 <td>{{boardsBody.backgroundColor}}</td>
+                <td>
+                    <div *ngIf="boardsBody.boardId">
+                        <a [routerLink]="['../board', boardsBody.boardId  ]" >{{boardsBody.boardName}}</a>
+                    </div>
+                </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

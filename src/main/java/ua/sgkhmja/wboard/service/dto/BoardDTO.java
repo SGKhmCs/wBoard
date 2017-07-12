@@ -1,11 +1,9 @@
 package ua.sgkhmja.wboard.service.dto;
 
 
-import java.time.LocalDate;
+import java.time.Instant;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -21,13 +19,9 @@ public class BoardDTO implements Serializable {
 
     private Boolean pub;
 
-    private LocalDate createdDate;
+    private Instant createdDate;
 
-    private Long bodyId;
-
-    private Long createdById;
-
-    private String createdByLogin;
+    private String createdBy;
 
     public Long getId() {
         return id;
@@ -53,36 +47,20 @@ public class BoardDTO implements Serializable {
         this.pub = pub;
     }
 
-    public LocalDate getCreatedDate() {
+    public Instant getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDate createdDate) {
+    public void setCreatedDate(Instant createdDate) {
         this.createdDate = createdDate;
     }
 
-    public Long getBodyId() {
-        return bodyId;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    public void setBodyId(Long boardsBodyId) {
-        this.bodyId = boardsBodyId;
-    }
-
-    public Long getCreatedById() {
-        return createdById;
-    }
-
-    public void setCreatedById(Long userId) {
-        this.createdById = userId;
-    }
-
-    public String getCreatedByLogin() {
-        return createdByLogin;
-    }
-
-    public void setCreatedByLogin(String userLogin) {
-        this.createdByLogin = userLogin;
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     @Override
@@ -113,6 +91,7 @@ public class BoardDTO implements Serializable {
             ", name='" + getName() + "'" +
             ", pub='" + isPub() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
+            ", createdBy='" + getCreatedBy() + "'" +
             "}";
     }
 }

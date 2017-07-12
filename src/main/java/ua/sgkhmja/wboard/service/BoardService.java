@@ -101,6 +101,4 @@ public class BoardService {
         Page<Board> result = boardSearchRepository.search(queryStringQuery(query), pageable);
         return result.map(boardMapper::toDto);
     }
-
-
 }

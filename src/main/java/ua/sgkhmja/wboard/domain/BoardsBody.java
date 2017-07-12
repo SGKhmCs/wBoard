@@ -27,6 +27,10 @@ public class BoardsBody implements Serializable {
     @Column(name = "background_color")
     private Integer backgroundColor;
 
+    @OneToOne
+    @JoinColumn(unique = true)
+    private Board board;
+
     public Long getId() {
         return id;
     }
@@ -46,6 +50,19 @@ public class BoardsBody implements Serializable {
 
     public void setBackgroundColor(Integer backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public BoardsBody board(Board board) {
+        this.board = board;
+        return this;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     @Override

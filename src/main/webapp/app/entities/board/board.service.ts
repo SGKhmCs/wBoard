@@ -66,13 +66,13 @@ export class BoardService {
 
     private convertItemFromServer(entity: any) {
         entity.createdDate = this.dateUtils
-            .convertLocalDateFromServer(entity.createdDate);
+            .convertDateTimeFromServer(entity.createdDate);
     }
 
     private convert(board: Board): Board {
         const copy: Board = Object.assign({}, board);
-        copy.createdDate = this.dateUtils
-            .convertLocalDateToServer(board.createdDate);
+
+        copy.createdDate = this.dateUtils.toDate(board.createdDate);
         return copy;
     }
 }

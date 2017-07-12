@@ -4,8 +4,7 @@ export class Board {
         public name?: string,
         public pub?: boolean,
         public createdDate?: any,
-        public bodyId?: number,
-        public createdById?: number,
+        public createdBy?: string,
     ) {
         this.pub = false;
     }

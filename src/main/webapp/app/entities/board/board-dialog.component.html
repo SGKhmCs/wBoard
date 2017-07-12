@@ -38,29 +38,17 @@
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="wBoardApp.board.createdDate" for="field_createdDate">Created Date</label>
-            <div class="input-group">
-                <input id="field_createdDate" type="text" class="form-control" name="createdDate" ngbDatepicker  #createdDateDp="ngbDatepicker" [(ngModel)]="board.createdDate"
-                />
-                <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" (click)="createdDateDp.toggle()"><i class="fa fa-calendar"></i></button>
-                </span>
+            <div class="d-flex">
+                <input id="field_createdDate" type="datetime-local" class="form-control" name="createdDate" [(ngModel)]="board.createdDate"
+                  />
             </div>
         </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="wBoardApp.board.createdBy" for="field_createdBy">Created By</label>
+            <input type="text" class="form-control" name="createdBy" id="field_createdBy"
+                [(ngModel)]="board.createdBy"  />
+        </div>
 
-        <div class="form-group">
-            <label jhiTranslate="wBoardApp.board.body" for="field_body">Body</label>
-            <select class="form-control" id="field_body" name="body" [(ngModel)]="board.bodyId">
-                <option [ngValue]="null"></option>
-                <option [ngValue]="boardsBodyOption.id" *ngFor="let boardsBodyOption of bodies; trackBy: trackBoardsBodyById">{{boardsBodyOption.id}}</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label jhiTranslate="wBoardApp.board.createdBy" for="field_createdBy">Created By</label>
-            <select class="form-control" id="field_createdBy" name="createdBy" [(ngModel)]="board.createdById" >
-                <option [ngValue]="null"></option>
-                <option [ngValue]="userOption.id" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.login}}</option>
-            </select>
-        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" (click)="clear()">

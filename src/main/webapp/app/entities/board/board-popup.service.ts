@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { DatePipe } from '@angular/common';
 import { Board } from './board.model';
 import { BoardService } from './board.service';
 
@@ -8,6 +9,7 @@ import { BoardService } from './board.service';
 export class BoardPopupService {
     private isOpen = false;
     constructor(
+        private datePipe: DatePipe,
         private modalService: NgbModal,
         private router: Router,
         private boardService: BoardService
@@ -22,13 +24,8 @@ export class BoardPopupService {
 
         if (id) {
             this.boardService.find(id).subscribe((board) => {
-                if (board.createdDate) {
-                    board.createdDate = {
-                        year: board.createdDate.getFullYear(),
-                        month: board.createdDate.getMonth() + 1,
-                        day: board.createdDate.getDate()
-                    };
-                }
+                board.createdDate = this.datePipe
+                    .transform(board.createdDate, 'yyyy-MM-ddThh:mm');
                 this.boardModalRef(component, board);
             });
         } else {

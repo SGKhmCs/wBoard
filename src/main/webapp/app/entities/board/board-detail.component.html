@@ -14,17 +14,11 @@
         </dd>
         <dt><span jhiTranslate="wBoardApp.board.createdDate">Created Date</span></dt>
         <dd>
-            <span>{{board.createdDate | date:'mediumDate'}}</span>
-        </dd>
-        <dt><span jhiTranslate="wBoardApp.board.body">Body</span></dt>
-        <dd>
-            <div *ngIf="board.bodyId">
-                <a [routerLink]="['/boards-body', board.bodyId]">{{board.bodyId}}</a>
-            </div>
+            <span>{{board.createdDate | date:'medium'}}</span>
         </dd>
         <dt><span jhiTranslate="wBoardApp.board.createdBy">Created By</span></dt>
         <dd>
-            {{board.createdByLogin}}
+            <span>{{board.createdBy}}</span>
         </dd>
     </dl>
 
